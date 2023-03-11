@@ -39,7 +39,7 @@ class _AddPageState extends State<AddPage> {
               MyDatabase db = MyDatabase();
               db.setCount(int.parse(
                   _controller.text)); // = int.parse(_controller.text);
-              print('db.getCount  == ${db.count}}');
+              print('db.getCount  == ${db.getCount()}}');
               context.read<ProviderBloc>().add(RootEvent());
             },
             child: const Text('Save')),

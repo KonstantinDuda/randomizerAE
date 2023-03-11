@@ -1,7 +1,7 @@
 class MyDatabase {
   static final MyDatabase _db = MyDatabase._internal();
 
-  late int count;
+  int _count = 10;
   factory MyDatabase() {
     return _db;
   }
@@ -9,10 +9,10 @@ class MyDatabase {
   MyDatabase._internal();
 
   setCount(int number) {
-    count = number;
+    _count = number;
   }
 
   getCount() {
-    return count;
+    return _count;
   }
 }
