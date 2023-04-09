@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:randomizer/database.dart';
 
@@ -14,103 +15,188 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
-  MyDatabase db = MyDatabase();
+  final MyDatabase _db = MyDatabase();
+  List<FormView> formList = [FormView()];
+  int _selectedIndex = 0;
+  ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      if (_db.getLength() > 0) {
+        for (int i = 0; i < _db.getLength(); i++) {
+          print(_db.getObj(i));
+          formList[i]._controllerName.text = _db.getObj(i).name;
+          formList[i]._controllerMaximum.text =
+              _db.getObj(i).maximum.toString();
+          formList[i]._controllerNumberOfResults.text =
+              _db.getObj(i).numberOfResults.toString();
+          _addForm();
+        }
+      }
+    });
+  }
+
+  _randomize() {
+    bool uniq = true;
+    for (var element in formList) {
+      var name = element._controllerName.text;
+      print(name);
+      var max = int.parse(element._controllerMaximum.text);
+      print(max);
+      var number = int.parse(element._controllerNumberOfResults.text);
+      print(number);
+      FormDatabase fdb = FormDatabase(
+        name,
+        max,
+        number,
+      );
+      for (int i = 0; i < _db.getLength(); i++) {
+        if (_db.getObj(i).name == fdb.name) uniq = false;
+      }
+      if (uniq) {
+        _db.addFDB(fdb);
+      }
+    }
+    //context.read<ProviderBloc>().add((const DialogEvent()));
+  }
+
+  _onItemTapped(int index) {
+    if (index == 1) {
+      _randomize();
+      context.read<ProviderBloc>().add(const DialogEvent());
+    } else {
+      _addForm();
+    }
+    setState(() {});
+  }
+
+  _addForm() {
+    print('add obj...');
+    setState(() {
+      formList.add(FormView());
+    });
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextButton(
-              style: ButtonStyle(
-                foregroundColor: _buttonsColor(1),
-              ),
-              onPressed: () {
-                print('1 Player pressed');
-                _buttonIsActive(1)
-                    ? _randomizer(context, 1)
-                    : print('Button is not active');
-                //_randomizer(context, 1);
-              },
-              child: const Text('1 Player'),
-            ),
-            TextButton(
-              style: ButtonStyle(
-                foregroundColor: _buttonsColor(2),
-              ),
-              onPressed: () {
-                print('2 Player pressed');
-                _buttonIsActive(2)
-                    ? _randomizer(context, 2)
-                    : print('Button is not active');
-                //_randomizer(context, 2);
-              },
-              child: const Text('2 Player'),
-            ),
-            TextButton(
-              style: ButtonStyle(
-                foregroundColor: _buttonsColor(3),
-              ),
-              onPressed: () {
-                print('3 Player pressed');
-                _buttonIsActive(3)
-                    ? _randomizer(context, 3)
-                    : print('Button is not active');
-                //_randomizer(context, 3);
-              },
-              child: const Text('3 Player'),
-            ),
-            TextButton(
-              style: ButtonStyle(
-                foregroundColor: _buttonsColor(4),
-              ),
-              // MaterialStatePropertyAll<Color>(Colors.blue)),
-              onPressed: () {
-                print('4 Player pressed');
-                _buttonIsActive(4)
-                    ? _randomizer(context, 4)
-                    : print('Button is not active');
-              },
-              child: const Text('4 Player'),
-            ),
-          ]),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Randomizer Aeons End'),
+      ),
+      body: SizedBox(
+        height: MediaQuery.of(context).size.height / 1.1,
+        child: Scrollbar(
+          thumbVisibility: true,
+          controller: _scrollController,
+          child: ListView(
+            controller: _scrollController,
+            scrollDirection: Axis.horizontal,
+            children: formList,
+          ),
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+              label: 'Add Form', icon: Icon(Icons.add_a_photo_outlined)),
+          //label: 'Create form', icon: Icon(Icons.article_outlined)),
+          //label: 'Choose random heroes', icon: Icon(Icons.casino_outlined)),
+          BottomNavigationBarItem(
+              label: 'Randomize', icon: Icon(Icons.casino_outlined)),
+          //label: 'Add picture', icon: Icon(Icons.add_a_photo_outlined)),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+      ),
     );
   }
+}
 
-  _randomizer(BuildContext context, int count) {
-    Set<int> results = {};
-    MyDatabase db = MyDatabase();
+class FormView extends StatelessWidget {
+  final TextEditingController _controllerName = TextEditingController();
+  final TextEditingController _controllerMaximum = TextEditingController();
+  final TextEditingController _controllerNumberOfResults =
+      TextEditingController();
 
-    while (results.length - 1 < count - 1) {
-      var number = Random().nextInt(db.getCount());
-      bool uniq = true;
-      //print('number == $number');
-      print('DBcount == ${db.getCount()}');
-      for (var i = 0; i < results.length - 1; i++) {
-        if (number == results.elementAt(i)) {
-          uniq = false;
-        }
-      }
-      if (uniq == true) {
-        results.add(number);
-      }
-    }
-    print(results);
-    context.read<ProviderBloc>().add((DialogEvent(results)));
-  }
+  FormView({super.key});
 
-  _buttonsColor(int number) {
-    MaterialStatePropertyAll<Color> color;
-    db.getCount() >= number
-        ? color = const MaterialStatePropertyAll<Color>(Colors.blue)
-        : color = const MaterialStatePropertyAll<Color>(Colors.grey);
-    return color;
-  }
-
-  _buttonIsActive(int number) {
-    bool isActive = false;
-    db.getCount() >= number ? isActive = true : isActive = false;
-    return isActive;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.blue,
+          width: 1.5,
+        ),
+      ),
+      margin: const EdgeInsets.fromLTRB(70, 10, 70, 30),
+      //width: MediaQuery.of(context).size.width / 2,
+      height: MediaQuery.of(context).size.height - 150,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          //const Divider(color: Colors.blue),
+          SizedBox(
+            width: MediaQuery.of(context).size.width / 2,
+            height: 32,
+            child: TextField(
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                border: InputBorder.none,
+                hintText: 'Enter the Object Name',
+              ),
+              controller: _controllerName,
+              expands: true,
+              maxLines: null,
+              //keyboardType: TextInputType.number,
+              autofocus: true,
+              onChanged: (value) {
+                print(_controllerName.text);
+              },
+              //inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            ),
+          ),
+          const Divider(),
+          SizedBox(
+            width: MediaQuery.of(context).size.width / 2,
+            height: 32,
+            child: TextField(
+              decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  border: InputBorder.none,
+                  hintText: 'Enter maximum object count'),
+              controller: _controllerMaximum,
+              expands: true,
+              maxLines: null,
+              keyboardType: TextInputType.number,
+              //autofocus: true,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            ),
+          ),
+          const Divider(),
+          SizedBox(
+            width: MediaQuery.of(context).size.width / 2,
+            height: 32,
+            child: TextField(
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                border: InputBorder.none,
+                hintText: 'Enter the count of objects that you need',
+              ),
+              controller: _controllerNumberOfResults,
+              expands: true,
+              maxLines: null,
+              keyboardType: TextInputType.number,
+              //autofocus: true,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            ),
+          ),
+          //const Divider(),
+        ],
+      ),
+    );
   }
 }

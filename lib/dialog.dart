@@ -1,32 +1,53 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:randomizer/bloc_provider.dart';
+import 'package:randomizer/database.dart';
 
-class MyDialog extends StatelessWidget {
-  Set<int> playerList;
-  String result = '';
-  MyDialog(this.playerList, {super.key}) {
-    print(playerList);
-    if (playerList.length > 0) {
-      print('list isEmpty');
-      if (playerList.length == 1) {
-        result = 'Player One = ${playerList.elementAt(0)}';
-      } else if (playerList.length == 2) {
-        result =
-            'Player One = ${playerList.elementAt(0)} \n Player Two = ${playerList.elementAt(1)}';
-      } else if (playerList.length == 3) {
-        result =
-            'Player One = ${playerList.elementAt(0)} \n Player Two = ${playerList.elementAt(1)} \n Player Three = ${playerList.elementAt(2)}';
-      } else if (playerList.length == 4) {
-        result =
-            'Player One = ${playerList.elementAt(0)} \n Player Two = ${playerList.elementAt(1)} \n Player Three = ${playerList.elementAt(2)} \n Player Four = ${playerList.elementAt(3)}';
-      } else {
-        result = 'Incorrect value';
+class MyDialog extends StatefulWidget {
+  //Set<int> playerList;
+
+  MyDialog(/*this.playerList,*/ {super.key}) {}
+
+  @override
+  State<MyDialog> createState() => _MyDialogState();
+}
+
+class _MyDialogState extends State<MyDialog> {
+  //List<Set<int>> results = [];
+  String stringResults = '';
+
+  @override
+  void initState() {
+    super.initState();
+
+    MyDatabase _db = MyDatabase();
+
+    for (var i = 0; i < _db.getLength(); i++) {
+      Set<int> mySet = {};
+      String outputText = '';
+      bool uniq = true;
+
+      for (var j = 0; j < _db.getObj(i).numberOfResults; j++) {
+        var randomNumber = Random().nextInt(_db.getObj(i).maximum);
+        for (var y = 0; y < mySet.length; y++) {
+          if (randomNumber == mySet.elementAt(y)) {
+            uniq = false;
+          }
+        }
+        if (uniq) {
+          mySet.add(randomNumber);
+        }
+
+        print('i==$i, j==$j, randome==$randomNumber');
       }
-    } else {
-      print('list is NOT Empty');
+
+      outputText = '${_db.getObj(i).name} = ${mySet.toString()}';
+      setState(() {
+        stringResults += '$outputText \n';
+      });
     }
-    print('dialog results == $result');
   }
 
   @override
@@ -34,13 +55,14 @@ class MyDialog extends StatelessWidget {
     return Column(
       children: [
         Center(
-          child: Text('$result'),
+          child: Text(stringResults),
         ),
         TextButton(
           onPressed: () {
+            stringResults = '';
             context.read<ProviderBloc>().add((RootEvent()));
           },
-          child: Text('Turn back to the main screen'),
+          child: const Text('Turn back to the main screen'),
         ),
       ],
     );

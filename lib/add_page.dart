@@ -37,9 +37,9 @@ class _AddPageState extends State<AddPage> {
         TextButton(
             onPressed: () {
               MyDatabase db = MyDatabase();
-              db.setCount(int.parse(
-                  _controller.text)); // = int.parse(_controller.text);
-              print('db.getCount  == ${db.getCount()}}');
+              //db.setCount(int.parse(
+              //    _controller.text)); // = int.parse(_controller.text);
+              //print('db.getCount  == ${db.getCount()}}');
               context.read<ProviderBloc>().add(RootEvent());
             },
             child: const Text('Save')),

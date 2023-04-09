@@ -13,11 +13,11 @@ class RootEvent extends ProviderEvent {}
 class AddEvent extends ProviderEvent {}
 
 class DialogEvent extends ProviderEvent {
-  final Set<int> list;
-  const DialogEvent(this.list);
+  //final Set<int> list;
+  const DialogEvent(/*this.list*/);
 
   @override
-  List<Object> get props => [list];
+  List<Object> get props => [/*list*/];
 }
 
 class ProviderState extends Equatable {
@@ -32,17 +32,17 @@ class RootState extends ProviderState {}
 class AddState extends ProviderState {}
 
 class DialogState extends ProviderState {
-  final Set<int> list;
-  const DialogState(this.list);
+  //final Set<int> list;
+  const DialogState(/*this.list*/);
 
   @override
-  List<Object> get props => [list];
+  List<Object> get props => [/*list*/];
 }
 
 class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
   ProviderBloc() : super(RootState()) {
     on<RootEvent>((event, emit) => emit(RootState()));
     on<AddEvent>((event, emit) => emit(AddState()));
-    on<DialogEvent>(((event, emit) => emit(DialogState(event.list))));
+    on<DialogEvent>(((event, emit) => emit(DialogState(/*event.list*/))));
   }
 }
