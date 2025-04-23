@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:randomizer_new/database/cards_stack.dart';
 
 class DbTemporary {
-  //late CardsStack turnOrderThree;
-  //late CardsStack turnOrderThreeBliz;
-  List<CardsStack> dbStacks = [];
+  final List<CardsStack> _dbStacks = [];
+  final List<CardsStack> _availableStacs = [];
+  final List<CardsStack> _activeStack = [];
+  static final DbTemporary db = DbTemporary._();
 
-  DbTemporary() {
+  DbTemporary._();
+
+
+  factory DbTemporary() {
     var cardOne = AECard(
       id: 1,
       text: '1',
@@ -80,7 +84,6 @@ class DbTemporary {
     stackColor: Colors.grey,
     cards: turnOrderThreeList,
   );
-  dbStacks.add(turnOrderThree);
 
   List<AECard> turnOrderThreeBlizList = [
     cardOne,
@@ -100,12 +103,41 @@ class DbTemporary {
     stackColor: Colors.green,
     cards: turnOrderThreeBlizList,
   );
-  dbStacks.add(turnOrderThreeBliz);
+
+  if (db._dbStacks.isEmpty) {
+    db._dbStacks.add(turnOrderThree);
+    db._dbStacks.add(turnOrderThreeBliz);
+      print("DBTemporary factory: db._dbStacks isEmpty so" 
+                " db._dbStacks.add(turnOrderThree)"
+                " db._dbStacks.add(turnOrderThreeBliz)");
+  } 
+  if (db._availableStacs.isEmpty) {
+    for (var element in db._dbStacks) {
+      if(element.isStandart) {
+        db._availableStacs.add(element);
+      }
+    }
+    print("DBTemporary factory: db._availableStacs isEmpty so" 
+                " db._availableStacs.addAll(db._dbStacks)");
+  }
+    
+  if (db._activeStack.isEmpty && db._availableStacs.isNotEmpty) {
+    db._activeStack.add(db._availableStacs[0]);
+  }
+
+  return db;
 }
 
-getStack() {
-  return  dbStacks;
+getStacks() {
+  return  _dbStacks;
 }
 
+getAvialableStacks() {
+  return _availableStacs;
 }
 
+getActiveStack() {
+  return _activeStack;
+  }
+
+}

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../database/cards_stack.dart';
 import '../../database/db_temporary.dart';
 
 class RootAppBar extends StatefulWidget {
@@ -12,8 +13,16 @@ class RootAppBar extends StatefulWidget {
 }
 
 class _RootAppBarState extends State<RootAppBar> {
-  DbTemporary db = DbTemporary();
+  DbTemporary dbObj = DbTemporary();
+  late List<CardsStack> db;
   
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    db = dbObj.getAvialableStacks();
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -78,14 +87,14 @@ class _RootAppBarState extends State<RootAppBar> {
                   height: 40,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: db.dbStacks.length,
+                    itemCount: db.length,
                     itemBuilder: (context, index) {
                       return Container(
                         margin: const EdgeInsets.only(left: 5, right: 5),
                         width: 20,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: db.dbStacks[index].stackColor,
+                          color: db[index].stackColor,
                           borderRadius: BorderRadius.circular(5),
                           border: Border.all(
                             color: Colors.black,

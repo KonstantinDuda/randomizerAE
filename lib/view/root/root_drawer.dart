@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../database/cards_stack.dart';
 import '../../database/db_temporary.dart';
 
 class RootDrawer extends StatefulWidget {
@@ -11,7 +12,16 @@ class RootDrawer extends StatefulWidget {
 }
 
 class _RootDrawerState extends State<RootDrawer> {
-  DbTemporary db = DbTemporary();
+  DbTemporary dbObj = DbTemporary();
+  List<CardsStack> db = [];
+  
+  @override
+  void initState() {
+    super.initState();
+    if(db.isEmpty) {
+      db = dbObj.getAvialableStacks();
+    }
+  }
     
   @override
   Widget build(BuildContext context) {
@@ -25,7 +35,7 @@ class _RootDrawerState extends State<RootDrawer> {
           ),
         Flexible(
           child: ListView.builder(
-            itemCount: db.dbStacks.length,
+            itemCount: db.length,
             itemBuilder: (context, index) {
               //var stackColor = textToColor(db.dbStacks[index].stackColor);
 //print("stackColor is $stackColor");
@@ -40,7 +50,7 @@ class _RootDrawerState extends State<RootDrawer> {
                         width: 190,
                         child: Text(
                           overflow: TextOverflow.ellipsis,
-                          db.dbStacks[index].name),
+                          db[index].name),
                       ),
                       onPressed: () {
                         // Handle stack selection
@@ -51,7 +61,7 @@ class _RootDrawerState extends State<RootDrawer> {
                       width: 20,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: db.dbStacks[index].stackColor,
+                        color: db[index].stackColor,
                         borderRadius: BorderRadius.circular(5),
                         border: Border.all(
                           color: Colors.black,

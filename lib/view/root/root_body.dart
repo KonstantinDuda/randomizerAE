@@ -28,14 +28,14 @@ class _RootBodyState extends State<RootBody> {
               children: <Widget>[
                 const Expanded(
                   child: Center(
-                    child: Text( 'Stack name', 
+                    child: Text('Stack name', 
                       style: TextStyle(fontSize: 30), ))
                   ),
                 Container(
                   padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                   margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                   child: const Center(
-                    child: Text('Change stack color', 
+                    child: Text('stack color', 
                         style: TextStyle(fontSize: 15)
                     ),
                   ),
@@ -55,8 +55,11 @@ class _RootBodyState extends State<RootBody> {
               ),
               borderRadius: BorderRadius.circular(20),
             ),
-          
           ),
+          onTap: () {
+            // Handle tap event
+            print("Tapped on the container");
+          },
         )
       ],
     ),

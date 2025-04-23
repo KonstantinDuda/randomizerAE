@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'bloc/observer.dart';
-import 'bloc/provider_bloc.dart';
+import 'bloc/providers/provider_bloc.dart';
 import 'view/loading_page.dart';
 import 'view/root/root_page.dart';
 
