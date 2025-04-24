@@ -35,13 +35,15 @@ class RootBodyState extends Equatable {
 }
 
 class RootBodySuccessActionState extends RootBodyState {
-  final List<CardsStack> stack;
-  final List<CardsStack> alredyPlayed;
+  final CardsStack stack;
+  final CardsStack alreadyPlayed;
 
-  const RootBodySuccessActionState([this.stack = const [], this.alredyPlayed = const []]);
+  const RootBodySuccessActionState([
+    this.stack = const CardsStack.empty(), 
+    this.alreadyPlayed = const CardsStack.empty()]);
 
   @override
-  List<Object> get props => [stack];
+  List<Object> get props => [stack, alreadyPlayed];
 }
 
 class RootBodyErrorActionState extends RootBodyState {

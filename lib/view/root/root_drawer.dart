@@ -58,7 +58,7 @@ class _RootDrawerState extends State<RootDrawer> {
                       },),
                     Container(
                       margin: const EdgeInsets.only(left: 5, right: 5),
-                      width: 20,
+                      width: 30,
                       height: 40,
                       decoration: BoxDecoration(
                         color: db[index].stackColor,

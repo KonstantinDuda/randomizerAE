@@ -5,11 +5,11 @@ import '../database/cards_stack.dart';
 import '../database/db_temporary.dart';
 
 class RootBodyBloc extends Bloc<RootBodyEvent, RootBodyState> {
-  List<CardsStack> stack = [];
-  List<CardsStack> alredyPlayed = [];
+  late CardsStack stack = const CardsStack.empty();
+  late CardsStack alreadyPlayed = const CardsStack.empty();
   final _database = DbTemporary();
   
-  RootBodyBloc() : super(const RootBodyState()) {
+  RootBodyBloc() : super(const RootBodySuccessActionState()) {
     on<RootBodyNextEvent>(_onNext);
     on<RootBodyDelWildEvent>(_onDelWild);
     on<RootBodyShuffleEvent>(_onShuffle);
@@ -18,19 +18,23 @@ class RootBodyBloc extends Bloc<RootBodyEvent, RootBodyState> {
 
   void _onNext(RootBodyNextEvent event, Emitter<RootBodyState> emit) {
     // Handle the next event
-    if(stack.isEmpty) {
+    if(stack.id == 0) {
       stack = _database.getActiveStack();
-      if(alredyPlayed.isNotEmpty) {
-        alredyPlayed.clear();
+      if(alreadyPlayed.id != 0) {
+        alreadyPlayed = const CardsStack.empty();
       }
-      stack.shuffle;
-      print("Stack is: $stack");
-      emit(RootBodySuccessActionState(stack, alredyPlayed));
+      stack.cards.shuffle();
+      print("RootBodyBloc _onNext stack.id == 0 stack == $stack");
+      emit(RootBodySuccessActionState(stack, alreadyPlayed));
     } else {
-      alredyPlayed.add(stack.last);
-      print(stack.last);
-      stack.removeLast();
-      emit(RootBodySuccessActionState(stack, alredyPlayed));
+      alreadyPlayed = stack;
+      alreadyPlayed.cards.clear();
+      alreadyPlayed.cards.add(stack.cards.last);
+
+      stack.cards.removeLast();
+
+      print("RootBodyBloc _onNext stack == $stack");
+      emit(RootBodySuccessActionState(stack, alreadyPlayed));
     }
     
   }
@@ -39,20 +43,22 @@ class RootBodyBloc extends Bloc<RootBodyEvent, RootBodyState> {
     // Handle the delete wild event
 
 
-    emit(RootBodySuccessActionState(stack, alredyPlayed));
+    emit(RootBodySuccessActionState(stack, alreadyPlayed));
   }
 
   void _onShuffle(RootBodyShuffleEvent event, Emitter<RootBodyState> emit) {
     // Handle the shuffle event
-
-
-    emit(RootBodySuccessActionState(stack, alredyPlayed));
+    if(stack.cards.isEmpty) {
+      stack = _database.getActiveStack();
+      stack.cards.shuffle();
+    emit(RootBodySuccessActionState(stack, alreadyPlayed));
+  }
   }
 
   void _onChangeSequence(RootBodyChangeSequenceEvent event, Emitter<RootBodyState> emit) {
     // Handle the change sequence event
 
 
-    emit(RootBodySuccessActionState(stack, alredyPlayed));
+    emit(RootBodySuccessActionState(stack, alreadyPlayed));
   }
 }

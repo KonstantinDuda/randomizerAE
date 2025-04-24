@@ -4,7 +4,7 @@ import 'package:randomizer_new/database/cards_stack.dart';
 class DbTemporary {
   final List<CardsStack> _dbStacks = [];
   final List<CardsStack> _availableStacs = [];
-  final List<CardsStack> _activeStack = [];
+  CardsStack _activeStack = const CardsStack.empty();
   static final DbTemporary db = DbTemporary._();
 
   DbTemporary._();
@@ -79,8 +79,9 @@ class DbTemporary {
 
   CardsStack turnOrderThree = CardsStack(
     id: 1,
-    name: 'Turn Order Three',
+    name: 'Turn Order Three with so long name',
     isStandart: true,
+    stackType: StackType.turnOrder,
     stackColor: Colors.grey,
     cards: turnOrderThreeList,
   );
@@ -100,6 +101,7 @@ class DbTemporary {
     id: 1,
     name: 'Turn Order Three Bliz',
     isStandart: true,
+    stackType: StackType.turnOrder,
     stackColor: Colors.green,
     cards: turnOrderThreeBlizList,
   );
@@ -121,8 +123,8 @@ class DbTemporary {
                 " db._availableStacs.addAll(db._dbStacks)");
   }
     
-  if (db._activeStack.isEmpty && db._availableStacs.isNotEmpty) {
-    db._activeStack.add(db._availableStacs[0]);
+  if (db._activeStack.id == 0 && db._availableStacs.isNotEmpty) {
+    db._activeStack = db._availableStacs[0];
   }
 
   return db;

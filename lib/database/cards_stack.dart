@@ -13,68 +13,50 @@ class AECard {
     required this.imgPath,
   });
 
-  factory AECard.fromJson(Map<String, dynamic> json) {
-    return AECard(
-      id: json['id'],
-      text: json['text'],
-      source: json['source'],
-      imgPath: json['imgPath'],
-    );
-  }
+  // TODO: add toJson and fromJson methods
+}
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'text': text,
-      'source': source,
-      'imgPath': imgPath,
-    };
-  }
+
+// Stacks 
+enum StackType {
+  turnOrder,
+  friendFoe,
+  gravehold,
+  hero,
+  nemesis,
 }
 
 class CardsStack {
-  int id;
-  String name;
-  bool isStandart;
-  Color stackColor;
-  List<AECard> cards;
+  final int id;
+  final String name;
+  final bool isStandart;
+  final StackType stackType;
+  final Color stackColor;
+  final List<AECard> cards;
 
   CardsStack({
     required this.id,
     required this.name,
     required this.isStandart,
+    required this.stackType,
     required this.stackColor,
     required this.cards,
   });
 
-  factory CardsStack.fromJson(Map<String, dynamic> json) {
-    var cardsFromJson = json['cards'] as List;
-    List<AECard> cardsList =
-        cardsFromJson.map((i) => AECard.fromJson(i)).toList();
+  const CardsStack.empty({
+    this.id = 0,
+    this.name = '',
+    this.isStandart = false,
+    this.stackType = StackType.turnOrder,
+    this.stackColor = Colors.white,
+    this.cards = const [],
+  });
 
-    return CardsStack(
-      id: json['id'],
-      name: json['name'],
-      isStandart: json['isStandart'],
-      stackColor: json['stackColor'],
-      cards: cardsList,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'isStandart': isStandart,
-      'stackColor': stackColor,
-      'cards': cards.map((card) => card.toJson()).toList(),
-    };
-  }
+  // TODO: add toJson and fromJson methods
 
   @override
   String toString() {
-    var result = 'CardsStack{id: $id, name: $name, isStandart: $isStandart,'
-                  ' stackColor: $stackColor cards: $cards';
+    var result = 'CardsStack{id: $id, name: $name, isStandart: $isStandart,';
     return result;
   }
 
@@ -94,28 +76,11 @@ class HeroStack {
     required this.feature,
   });
 
-  factory HeroStack.fromJson(Map<String, dynamic> json) {
-    return HeroStack(
-      heroData: CardsStack.fromJson(json['heroData']),
-      energyClosetCount: json['energyClosetCount'],
-      ability: json['ability'],
-      feature: json['feature'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'heroData': heroData.toJson(),
-      'energyClosetCount': energyClosetCount,
-      'ability': ability,
-      'feature': feature,
-    };
-  }
+  // TODO: add toJson and fromJson methods
 
   @override
   String toString() {
-    var result = 'CardsStack{heroData: ${heroData.toString()}, energyClosetCount:'
-                    ' $energyClosetCount, ability: $ability, feature: $feature';
+    var result = 'CardsStack{heroData.name: ${heroData.name}, energyClosetCount:';
     return result;
   }
 }
