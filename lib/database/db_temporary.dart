@@ -130,15 +130,15 @@ class DbTemporary {
   return db;
 }
 
-getStacks() {
+List<CardsStack> getStacks() {
   return  _dbStacks;
 }
 
-getAvialableStacks() {
+List<CardsStack> getAvialableStacks() {
   return _availableStacs;
 }
 
-getActiveStack() {
+CardsStack getActiveStack() {
   return _activeStack;
   }
 

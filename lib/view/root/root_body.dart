@@ -19,11 +19,16 @@ class _RootBodyState extends State<RootBody> {
       MediaQuery.of(context).size.width,
       MediaQuery.of(context).size.height - 104.5,
     );
+    final Size contentContainerSize = Size(
+      bodyContainerSize.width - 20,
+      bodyContainerSize.height - 60,
+    );
 
     return BlocBuilder<RootBodyBloc, RootBodyState>(builder: (context, state) {
       Color stackColor;
       late CardsStack stack;
       late CardsStack alrereadyPlayed;
+      List<Widget> varGridList = [];
       if(state is RootBodySuccessActionState) {
         stackColor = state.stack.stackColor;
         stack = state.stack;
@@ -37,17 +42,22 @@ class _RootBodyState extends State<RootBody> {
       gridObj(String text) {
         if(state is RootBodySuccessActionState) {
             return Container(
-              width: 40,
-              height: 70,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                border: Border.all(
-                  color: Colors.black,
-                  width: 2,
+              height: 200,
+              padding: const EdgeInsets.only(right: 10, left: 10),
+              child: Container(
+                margin: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(
+                    color: Colors.black,
+                    width: 2,
+                  ),
                 ),
-              ),
-              child: Text(text, 
-                style: const TextStyle(fontSize: 18),
+                child: Center(
+                  child: Text(text, 
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                ),
               ),
             );
         }
@@ -59,13 +69,17 @@ class _RootBodyState extends State<RootBody> {
       }
 
       gridList() {
-        List<Widget> gridList = [];
+        print("root_body.dart gridList()");
         if(alrereadyPlayed.id != 0) {
-          for (var i = 0; i < alrereadyPlayed.cards.length ; i++) {
-            gridList.add(gridObj(alrereadyPlayed.cards[i].text));
+          for (var i = 0; i < alrereadyPlayed.cards.length; i++) {
+            varGridList.add(gridObj(alrereadyPlayed.cards[i].text));
           }
+          print("root_body.dart gridList() varGridList == $varGridList \n");
+        } else {
+          print("root_body.dart gridList() else \n");
+          varGridList.clear();
         }
-        return gridList;
+        return varGridList;
       }
 
 
@@ -104,8 +118,8 @@ class _RootBodyState extends State<RootBody> {
             ),
         ),
             Container(
-              height: bodyContainerSize.height - 60,
-              width: bodyContainerSize.width - 20,
+              height: contentContainerSize.height,
+              width: contentContainerSize.width,
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(
@@ -114,103 +128,118 @@ class _RootBodyState extends State<RootBody> {
                 ),
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Stack(
-                children: [
+              child: Stack(children: [
 
-
-                  // Main object
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: GestureDetector(
-                      child: Container(
-                        width: 130,
-                        height: 220,
-                        decoration: BoxDecoration(
-                          color: stackColor,
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Center(child: Text(
-                          stack.id != 0 ? stack.name : "X", 
-                          style: TextStyle(fontSize: 30),
-                        )),
-                      ),
-                      onTap: () {
-                        print("Main object tapped");
-                      },
-                    ),
-                  ),
-
-                  GridView.count(crossAxisCount: 4, 
-                    children: <Widget>[
-                      ...gridList(),
-                    ]),
-
-
-                  // Discard wild
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: GestureDetector(
-                      child: Container(
-                        width: 100,
-                        height: 70,
-                        decoration: BoxDecoration(
-                          //color: stackColor,
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 2,
-                          ),
-                          borderRadius: const BorderRadius.only(
-                            bottomRight: Radius.circular(18),
-                            topLeft: Radius.circular(18),
-                          ),
-                        ),
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 10, top: 2),
-                          child: const Text("Discard wild",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ),
-                      ),
-                      onTap: () {
-                        print("Discard wild tapped");
-                      },
-                    ),
-                  ),
-
-                  // Change sequance
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: GestureDetector(
-                      child: Container(
-                        width: 100,
-                        height: 70,
-                        decoration: BoxDecoration(
-                          //color: stackColor,
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 2,
-                          ),
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(18),
-                            topRight: Radius.circular(18),
-                          ),
-                        ),
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 10, top: 2),
-                          child: const Text("Change sequance",
-                          style: TextStyle(fontSize: 18),)),
-                      ),
-                      onTap: () {
-                        print("Change sequance tapped");
-                      },
-                    ),
-                  ),
-                ],
+              
+              Container(
+                margin: const EdgeInsets.only(top: 5, left: 5, right: 5),
+                color: Colors.yellow,
+                height: contentContainerSize.height - 225,
+                child: GridView.count(
+                  crossAxisCount: 3, 
+                  children: <Widget>[
+                    ...gridList(),
+                  ]),
               ),
+              
+                
+
+              
+              
+              Stack(
+                    children: [
+
+                  
+                      // Change sequance
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: GestureDetector(
+                          child: Container(
+                            width: 100,
+                            height: 70,
+                            decoration: BoxDecoration(
+                              //color: stackColor,
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 2,
+                              ),
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(18),
+                                topRight: Radius.circular(18),
+                              ),
+                            ),
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 10, top: 2),
+                              child: const Text("Change sequance",
+                              style: TextStyle(fontSize: 18),)),
+                          ),
+                          onTap: () {
+                            print("Change sequance tapped");
+                          },
+                      ),),
+
+
+                      // Main object
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: GestureDetector(
+                          child: Container(
+                            width: 130,
+                            height: 220,
+                            decoration: BoxDecoration(
+                              color: stackColor,
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Center(child: Text(
+                              stack.id != 0 ? stack.name : "X", 
+                              style: const TextStyle(fontSize: 30),
+                            )),
+                          ),
+                          onTap: () {
+                            print("Main object tapped");
+                            context.read<RootBodyBloc>().add(const RootBodyNextEvent());
+                          },
+                        ),
+                      ),
+
+
+                      // Discard wild
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: GestureDetector(
+                          child: Container(
+                            width: 100,
+                            height: 70,
+                            decoration: BoxDecoration(
+                              //color: stackColor,
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 2,
+                              ),
+                              borderRadius: const BorderRadius.only(
+                                bottomRight: Radius.circular(18),
+                                topLeft: Radius.circular(18),
+                              ),
+                            ),
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 10, top: 2),
+                              child: const Text("Discard wild",
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ),
+                          ),
+                          onTap: () {
+                            print("Discard wild tapped");
+                          },
+                        ),
+                      ),
+                    ],
+              ),
+              ],),
         ),
       ],
     ),

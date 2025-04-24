@@ -13,6 +13,11 @@ class AECard {
     required this.imgPath,
   });
 
+  @override
+  String toString() {
+    var result = 'AECard text: $text';
+    return result;
+  }
   // TODO: add toJson and fromJson methods
 }
 
