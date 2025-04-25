@@ -55,7 +55,7 @@ class _RootBodyState extends State<RootBody> {
                 ),
                 child: Center(
                   child: Text(text, 
-                    style: const TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 15),
                   ),
                 ),
               ),
@@ -74,7 +74,7 @@ class _RootBodyState extends State<RootBody> {
           for (var i = 0; i < alrereadyPlayed.cards.length; i++) {
             varGridList.add(gridObj(alrereadyPlayed.cards[i].text));
           }
-          print("root_body.dart gridList() varGridList == $varGridList \n");
+          print("root_body.dart gridList() varGridList == ${varGridList.length} \n");
         } else {
           print("root_body.dart gridList() else \n");
           varGridList.clear();
@@ -133,10 +133,9 @@ class _RootBodyState extends State<RootBody> {
               
               Container(
                 margin: const EdgeInsets.only(top: 5, left: 5, right: 5),
-                color: Colors.yellow,
                 height: contentContainerSize.height - 225,
                 child: GridView.count(
-                  crossAxisCount: 3, 
+                  crossAxisCount: 4, 
                   children: <Widget>[
                     ...gridList(),
                   ]),
@@ -195,7 +194,7 @@ class _RootBodyState extends State<RootBody> {
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Center(child: Text(
-                              stack.id != 0 ? stack.name : "X", 
+                              stack.cards.isNotEmpty ? stack.name : "X", 
                               style: const TextStyle(fontSize: 30),
                             )),
                           ),

@@ -7,7 +7,7 @@ import '../database/db_temporary.dart';
 class RootBodyBloc extends Bloc<RootBodyEvent, RootBodyState> {
   late CardsStack stack = const CardsStack.empty();
   late CardsStack alreadyPlayed = const CardsStack.empty();
-  //final _database = DbTemporary();
+  final database = DbTemporary();
   
   RootBodyBloc() : super(const RootBodySuccessActionState()) {
     on<RootBodyNextEvent>(_onNext);
@@ -18,26 +18,16 @@ class RootBodyBloc extends Bloc<RootBodyEvent, RootBodyState> {
 
   void _onNext(RootBodyNextEvent event, Emitter<RootBodyState> emit) {
     // Handle the next event
-  final database = DbTemporary();
-  var lokalStack = database.getActiveStack();
 
     if(stack.id == 0 || stack.cards.isEmpty) {
-      stack = CardsStack(
-        id: lokalStack.id,
-        name: lokalStack.name,
-        isStandart: lokalStack.isStandart,
-        stackType: lokalStack.stackType,
-        stackColor: lokalStack.stackColor,
-        cards: lokalStack.cards,
-      );
+      stack = database.getActiveStack();
       if(alreadyPlayed.id != 0) {
         alreadyPlayed = const CardsStack.empty();
       }
       stack.cards.shuffle();
-      print("RootBodyBloc _onNext stack.id == 0 stack == $stack \n");
-      emit(RootBodySuccessActionState(stack, alreadyPlayed));
+      print("RootBodyBloc _onNext stack.id == 0 stack.cards == ${stack.cards} \n");
+      //emit(RootBodySuccessActionState(stack, alreadyPlayed));
     } else {
-      print("RootBodyBloc _onNext stack.id != 0 stack == $stack \n");
       if(alreadyPlayed.id == 0) {
         alreadyPlayed = CardsStack(
           id: stack.id,
@@ -48,34 +38,39 @@ class RootBodyBloc extends Bloc<RootBodyEvent, RootBodyState> {
           cards: [],
         );
       }
-      
-      print("RootBodyBloc _onNext stack.id != 0 stack.cards == ${stack.cards} \n");
       alreadyPlayed.cards.add(stack.cards.last);
-
       stack.cards.removeLast();
-      var newStack = CardsStack(
-          id: stack.id,
-          name: stack.name,
-          isStandart: stack.isStandart,
-          stackType: StackType.turnOrder,
-          stackColor: stack.stackColor,
-          cards: stack.cards,
-        );       // Something is wrong here
-      var newAlreadyPlayed = CardsStack(
-          id: alreadyPlayed.id,
-          name: alreadyPlayed.name,
-          isStandart: alreadyPlayed.isStandart,
-          stackType: StackType.turnOrder,
-          stackColor: alreadyPlayed.stackColor,
-          cards: alreadyPlayed.cards,
-        ); // Something is wrong here
-
-      print("RootBodyBloc _onNext stack == $stack \n");
-      print("RootBodyBloc _onNext alreadyPlayed.cards == ${alreadyPlayed.cards} \n");
-      
-      emit(RootBodySuccessActionState(newStack, newAlreadyPlayed));
     }
     
+    var newStack = CardsStack(
+      id: -1,
+      name: stack.name,
+      isStandart: stack.isStandart,
+      stackType: StackType.turnOrder,
+      stackColor: stack.stackColor,
+      cards: stack.cards,
+    );      // Something is wrong here
+
+    var newAlreadyPlayed = CardsStack(
+      id: alreadyPlayed.id,
+      name: alreadyPlayed.name,
+      isStandart: alreadyPlayed.isStandart,
+      stackType: StackType.turnOrder,
+      stackColor: alreadyPlayed.stackColor,
+      cards: alreadyPlayed.cards,
+    );       // Something is wrong here
+
+      
+
+    print("RootBodyBloc _onNext stack.id != 0 stack == $stack \n "
+                                  "stack.cards == ${stack.cards} \n");
+    print("RootBodyBloc _onNext stack.id != 0 newStack == $newStack \n "
+                                  "newStack.cards == ${newStack.cards} \n");
+
+    print("RootBodyBloc _onNext alreadyPlayed.cards == ${alreadyPlayed.cards} \n");
+      
+    emit(RootBodySuccessActionState(newStack, newAlreadyPlayed));
+
   }
 
   void _onDelWild(RootBodyDelWildEvent event, Emitter<RootBodyState> emit) {

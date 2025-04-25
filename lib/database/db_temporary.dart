@@ -98,7 +98,7 @@ class DbTemporary {
   ];
 
   CardsStack turnOrderThreeBliz = CardsStack(
-    id: 1,
+    id: 2,
     name: 'Turn Order Three Bliz',
     isStandart: true,
     stackType: StackType.turnOrder,
@@ -140,6 +140,10 @@ List<CardsStack> getAvialableStacks() {
 
 CardsStack getActiveStack() {
   return _activeStack;
-  }
+}
 
+
+void setActiveStack(CardsStack stack) {
+  _activeStack = stack;
+}
 }
