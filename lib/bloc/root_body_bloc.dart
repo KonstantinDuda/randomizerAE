@@ -60,14 +60,13 @@ class RootBodyBloc extends Bloc<RootBodyEvent, RootBodyState> {
       cards: alreadyPlayed.cards,
     );       // Something is wrong here
 
-    
 
     print("RootBodyBloc _onNext stack.id != 0 stack == $stack \n "
                                   "stack.cards == ${stack.cards} \n");
-    print("RootBodyBloc _onNext database.getActiveStack().cards "
-                            "== ${database.getActiveStack().cards} \n");
-    print("RootBodyBloc _onNext getStackById "
-                            "== ${database.getStackById(stack.id).cards} \n");
+    //print("RootBodyBloc _onNext database.getActiveStack().cards "
+      //                      "== ${database.getActiveStack().cards} \n");
+    //print("RootBodyBloc _onNext getStackById "
+      //                      "== ${database.getStackById(stack.id).cards} \n");
 
     print("RootBodyBloc _onNext alreadyPlayed.cards == ${alreadyPlayed.cards} \n");
       

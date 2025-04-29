@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AECard {
-  int id;
-  String text;
-  String imgPath;
+  int id = 0;
+  String text = "";
+  String imgPath = "";
 
   AECard({
     required this.id,
@@ -11,11 +11,11 @@ class AECard {
     required this.imgPath,
   });
 
-  factory AECard.fromJson(Map<String, dynamic> json) {
+  /*factory AECard.fromJson(Map<String, dynamic> json) {
     return AECard(
       id: json['id'],
       text: json['text'],
-      imgPath: json['imgPath'],
+      imgPath: json['img_path'],
     );
   }
 
@@ -23,8 +23,26 @@ class AECard {
     return {
       'id': id,
       'text': text,
-      'imgPath': imgPath,
+      'img_path': imgPath,
     };
+  }*/
+
+  AECard.fromMap(Map<String, Object?> map) {
+    id = map['id'] as int;
+    text = map['text'] as String;
+    imgPath = map['img_path'] as String;
+  }
+
+  Map<String, Object?> toMap() {
+    var map = <String, Object?>{
+      'text': text,
+      'img_path': imgPath,
+    };
+    if (id != 0) {
+      map['id'] = id;
+    }
+
+    return map;
   }
 
   @override
@@ -53,6 +71,13 @@ class CardsStack {
   final Color stackColor;
   final List<AECard> cards;
 
+  /*int id = 0;
+  String name = "";
+  bool isStandart = false;
+  StackType stackType = StackType.turnOrder;
+  Color stackColor = Colors.white;
+  List<AECard> cards = [];*/
+
   CardsStack({
     required this.id,
     required this.name,
@@ -77,9 +102,10 @@ class CardsStack {
       'name': json['name'],
       'isStandart': json['isStandart'],
       'stackType': StackType.values[json['stackType']],
-      'stackColor': Color(json['stackColor'].fromARGB32()), // Assuming fromARGB32 is a method to convert int to Color
+      //'stackColor': Color(json['stackColor'].fromARGB32()), // Assuming fromARGB32 is a method to convert int to Color
+      'stackColor': Color(json['stackColor'] as int),
       'cards': (json['cards'] as List)
-          .map((card) => AECard.fromJson(card))
+          .map((card) => AECard.fromMap(card))
           .toList(),
     };
 
@@ -93,15 +119,30 @@ class CardsStack {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  /*Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
       'isStandart': isStandart ? 1 : 0,
       'stackType': stackType.index,
       'stackColor': stackColor.toARGB32(),
-      'cards': cards.map((card) => card.toJson()).toList(),
+      'cards': cards.map((card) => card.toMap()).toList(),
     };
+  }*/
+
+  Map<String, Object?> toMap() {
+    var map = <String, Object?>{
+      'name': name,
+      'isStandart': isStandart ? 1 : 0,
+      'stackType': stackType.index,
+      'stackColor': stackColor.toARGB32(),
+      'cards': cards.map((card) => card.toMap()).toList(),
+    };
+    if (id != 0) {
+      map['id'] = id;
+    }
+
+    return map;
   }
 
   // TODO: add toJson and fromJson methods
@@ -116,12 +157,14 @@ class CardsStack {
 }
 
 class HeroStack {
+  int id;
   CardsStack heroStack;
   int energyClosetCount;
   String ability;
   String feature;
 
   HeroStack({
+    required this.id,
     required this.heroStack,
     required this.energyClosetCount,
     required this.ability,

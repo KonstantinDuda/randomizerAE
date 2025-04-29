@@ -14,13 +14,19 @@ class RootAppBar extends StatefulWidget {
 
 class _RootAppBarState extends State<RootAppBar> {
   DbTemporary dbObj = DbTemporary();
-  late List<CardsStack> db;
+  /*late */List<CardsStack> db = [];
   
 @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    db = dbObj.getAvialableStacks();
+    //db = dbObj.getAvialableStacks();
+    getData();
+  }
+
+  getData() async {
+    db = await dbObj.getAvialableStacks();
+    setState(() {});
   }
 
   @override
@@ -30,6 +36,7 @@ class _RootAppBarState extends State<RootAppBar> {
       width: size.width,
       color: Colors.blue,
       child: Container(
+        width: size.width -20,
         margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,

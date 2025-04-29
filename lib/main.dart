@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
     MaterialApp(
       home: BlocBuilder<ProviderBloc, ProviderState>(
           builder: (_, state) {
-          if (state is LoadingState) {
+          if (state is RootState) {
             return const LoadingPage();
           } else {
             return const RootPage();

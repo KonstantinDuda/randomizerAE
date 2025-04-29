@@ -26,7 +26,7 @@ class LoadingState extends ProviderState {}
 class RootState extends ProviderState {}
 
 class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
-  ProviderBloc() : super(RootState()) {
+  ProviderBloc() : super(LoadingState()) {
     on<LoadingEvent>((event, emit) => emit(LoadingState()));
     on<RootEvent>((event, emit) => emit(RootState()));
   }

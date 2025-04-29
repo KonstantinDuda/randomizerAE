@@ -19,8 +19,13 @@ class _RootDrawerState extends State<RootDrawer> {
   void initState() {
     super.initState();
     if(db.isEmpty) {
-      db = dbObj.getAvialableStacks();
+      getData();
     }
+  }
+
+  getData() async {
+    db = await dbObj.getAvialableStacks();
+    setState(() {});
   }
     
   @override

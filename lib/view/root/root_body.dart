@@ -36,7 +36,7 @@ class _RootBodyState extends State<RootBody> {
       } else {
         stackColor = Colors.white;
         stack = const CardsStack.empty();
-        alrereadyPlayed = const CardsStack.empty();
+        alrereadyPlayed =  const CardsStack.empty();
       }
 
       gridObj(String text) {

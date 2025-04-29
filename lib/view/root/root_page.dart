@@ -37,5 +37,3 @@ class _RootPage extends State<RootPage> {
   }
 
 }
-
-
