@@ -52,7 +52,7 @@ class RootBodyBloc extends Bloc<RootBodyEvent, RootBodyState> {
     );      // Something is wrong here
 
     var newAlreadyPlayed = CardsStack(
-      id: alreadyPlayed.id,
+      id: -2,
       name: alreadyPlayed.name,
       isStandart: alreadyPlayed.isStandart,
       stackType: StackType.turnOrder,
@@ -60,12 +60,14 @@ class RootBodyBloc extends Bloc<RootBodyEvent, RootBodyState> {
       cards: alreadyPlayed.cards,
     );       // Something is wrong here
 
-      
+    
 
     print("RootBodyBloc _onNext stack.id != 0 stack == $stack \n "
                                   "stack.cards == ${stack.cards} \n");
-    print("RootBodyBloc _onNext stack.id != 0 newStack == $newStack \n "
-                                  "newStack.cards == ${newStack.cards} \n");
+    print("RootBodyBloc _onNext database.getActiveStack().cards "
+                            "== ${database.getActiveStack().cards} \n");
+    print("RootBodyBloc _onNext getStackById "
+                            "== ${database.getStackById(stack.id).cards} \n");
 
     print("RootBodyBloc _onNext alreadyPlayed.cards == ${alreadyPlayed.cards} \n");
       
