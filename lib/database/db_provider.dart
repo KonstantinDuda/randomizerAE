@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:randomizer_new/database/cards_stack_db.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'cards_stack.dart';
@@ -45,10 +46,10 @@ class DBProvider {
             "id INTEGER PRIMARY KEY, "
             "text TEXT, "
             "img_path TEXT)");
-            await db.execute("CREATE TABLE IF NOT EXISTS $cardsStackTableName ("
+        await db.execute("CREATE TABLE IF NOT EXISTS $cardsStackTableName ("
             "id INTEGER PRIMARY KEY, "
             "name TEXT, "
-            "is_standart TEXT, "
+            "is_standart INTEGER, "
             "stack_type TEXT, "
             "stack_color INTEGER, "
             "cards TEXT)");
@@ -72,14 +73,25 @@ class DBProvider {
 // Create, Read, Update, Delete (CRUD) operations for AECard
   void createCard(AECard card) async {
     final db = await getDatabase;
+
+    print("\n");
+    print("db_provider \n");
+    print("db_provider createCard \n");
+    print("db_provider createCard int ${card.id} \n");
     if(card.id > 0) {
       var x = await getCardById(card.id);
       if(x.id == 0) {
-        await db.insert(cardsTableName, card.toMap());
+        await db.insert(cardsTableName, card.toMap(),
+          //conflictAlgorithm: ConflictAlgorithm.abort);
+        );
         print("DBProvider createCard() db.insert $card \n");
       } else {
         print("DBProvider createCard() card was in the Database \n");
       }
+    print("db_provider createCard int ${card.id} \n");
+    print("db_provider createCard \n");
+    print("db_provider \n");
+    print("\n");
     }
     
 
@@ -151,33 +163,92 @@ class DBProvider {
 // Create, Read, Update, Delete (CRUD) operations for CardsStack
   void createStack(CardsStack stack) async {
     final db = await getDatabase;
-    await db.insert(cardsStackTableName, stack.toMap());
+    //await db.insert(cardsStackTableName, stack.toMap());
+
+    CardsStackDB stackToDB = CardsStackDB(
+      id: stack.id, name: stack.name, isStandart: stack.isStandart, 
+      stackType: stack.stackType,  stackColor: stack.stackColor,
+      cardsId: []);
+    var ids = stackToDB.fromAECardToListInt(stack.cards);
+    stackToDB.cardsId.addAll(ids);
+    //fromCardsStackToCardsStackDB(stack);
+
 
     // For debugging purposes
-    List<Map<String, Object?>> maps = await db.query(cardsStackTableName);
+    // Change to using getStackById
+    print("\n");
+    print("db_provider \n");
+    print("db_provider db.createStack \n");
+    print("db_provider db.createStack Once \n");
+    List<CardsStackDB> dbList = [];
+    List<Map<String, dynamic>> maps = await db.query(cardsStackTableName);
     print("DBProvider createStack() maps == ${maps.length} \n");
     if(maps.isNotEmpty) {
       for (var element in maps) {
-        AECard stackFromDB = AECard.fromMap(element);
+        CardsStackDB stackFromDB = CardsStackDB.fromMap(element);
+        if(stackFromDB.id == stack.id) {
+          dbList.add(stackFromDB);
+        }
         print("DBProvider createStack() stackFromDB == ${stackFromDB.toString()} \n");
+      }
+      if(dbList.isEmpty) {
+        await db.insert(cardsStackTableName, stackToDB.toMap());
       }
     } else {
       print("DBProvider createStack() maps.isEmpty \n");
+      await db.insert(cardsStackTableName, stackToDB.toMap());
     }
+
+    print("db_provider db.createStack Once \n");
+    print("db_provider db.createStack \n");
+    print("db_provider \n");
+    print("\n");
   }
 
-  /*Future<CardsStack> getStackById(int id) async {
+  Future<CardsStack> getStackById(int id) async {
     final db = await getDatabase;
     List<Map<String, dynamic>> maps = await db.query(cardsStackTableName,
-        where: "stack_id = ?",
+        where: "id = ?",
         whereArgs: [id]);
     if (maps.isNotEmpty) {
-      return CardsStack.fromJson(maps.first);
+      print("\n");
+      print("\n");
+      print("\n");
+      print("\n");
+      print("getStackById maps.first == ${maps.first} \n");
+      print("\n");
+      print("\n");
+      print("\n");
+      print("\n");
+      var csDB = CardsStackDB.fromMap(maps.first);
+      List<AECard> list = [];
+
+      for (var element in csDB.cardsId) {
+        AECard card = await getCardById(element);
+        if(card.id > 0) {
+          list.add(card);
+        }
+      }
+
+      // CardsStack result = CardsStack(
+      //   id: csDB.id, 
+      //   name: csDB.name, 
+      //   isStandart: csDB.isStandart, 
+      //   stackType: csDB.stackType, 
+      //   stackColor: csDB.stackColor, 
+      //   cards: list);
+
+      CardsStack res = const CardsStack.empty();
+      var newRes = res.csDBToCS(csDB, list);
+
+      print("DBProvider getStackById($id) res to return == $newRes");
+
+      return newRes;  // CardsStack.fromJson(maps.first);
     } else {
-      return const const CardsStack.empty();
+      return const CardsStack.empty();
     }
   }
-
+/*
   Future<List<CardsStack>> getAllStacks() async {
     final db = await getDatabase;
     List<Map<String, dynamic>> maps = await db.query(cardsStackTableName);

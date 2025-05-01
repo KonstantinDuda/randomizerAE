@@ -57,10 +57,6 @@ class DbTemporary {
       imgPath: 'assets/images/blitz.png',
     );
 
-    print("\n");
-    print("DbTemporary \n");
-    print("DbTemporary db.createCard \n");
-    print("DbTemporary db.createCard Eight times \n");
     db.createCard(cardOne);
     db.createCard(cardTwo);
     db.createCard(cardThree);
@@ -70,11 +66,6 @@ class DbTemporary {
     db.createCard(cardFoe);
     db.createCard(cardFriend);
     db.createCard(cardBliz);
-    print("DbTemporary db.createCard Eight times \n");
-    print("DbTemporary db.createCard \n");
-    print("DbTemporary \n");
-    print("\n");
-
 
     List<AECard> turnOrderThreeList = [
     cardOne,
@@ -122,9 +113,25 @@ class DbTemporary {
   _dbStacks.add(turnOrderThreeBliz);
   _availableStacks.add(turnOrderThree);
   _availableStacks.add(turnOrderThreeBliz);
+  _activeStack = _dbStacks[0];
+  
+  db.createStack(turnOrderThree);
+  getStackFromDB(turnOrderThree.id);
   }
 
 
+  getStackFromDB(int id) async {
+    var tos = await db.getStackById(turnOrderThree.id);
+    print("\n");
+    print("\n");
+    print("\n");
+    print("\n");
+    print("DBTemporary getStackFromDB($id) == $tos \n");
+    print("\n");
+    print("\n");
+    print("\n");
+    print("\n");
+  }
   //Future<List<CardsStack>> getStacks() async {
   List<CardsStack> getStacks() {
     if(_dbStacks.isEmpty) {
@@ -152,21 +159,26 @@ class DbTemporary {
   }
 
   CardsStack getActiveStack() {
+    print("DBTemporary getActiveStack _activeStack.id == ${_activeStack.id}");
     if(_activeStack.cards.isEmpty) {
-      setActiveStack(0);
+      setActiveStack(_activeStack.id);
     }
     return _activeStack;
   }
 
   //void setActiveStack(int id) async {
     //var as = await db.getStackById(id);
-  void setActiveStack(int id) {
-    var as = _dbStacks[0];
+  void setActiveStack(int id) async {
+    /*var as = _dbStacks[0];
     if(as.id != 0) {
       _activeStack = as;
     } else {
       _activeStack = const CardsStack.empty();
-    }
+    }*/
+    print(_activeStack.id);
+    var newAS = await db.getStackById(id);
+    print("DBTemporary setActiveStack($id) on $newAS");
+    _activeStack = newAS;
   }
 
   //Future<CardsStack> getStackById(int id) async {

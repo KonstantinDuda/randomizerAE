@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:randomizer_new/database/cards_stack_db.dart';
 
 class AECard {
   int id = 0;
@@ -10,22 +11,6 @@ class AECard {
     required this.text,
     required this.imgPath,
   });
-
-  /*factory AECard.fromJson(Map<String, dynamic> json) {
-    return AECard(
-      id: json['id'],
-      text: json['text'],
-      imgPath: json['img_path'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'text': text,
-      'img_path': imgPath,
-    };
-  }*/
 
   AECard.fromMap(Map<String, Object?> map) {
     id = map['id'] as int;
@@ -63,6 +48,7 @@ enum StackType {
   nemesis,
 }
 
+
 class CardsStack {
   final int id;
   final String name;
@@ -70,13 +56,7 @@ class CardsStack {
   final StackType stackType;
   final Color stackColor;
   final List<AECard> cards;
-
-  /*int id = 0;
-  String name = "";
-  bool isStandart = false;
-  StackType stackType = StackType.turnOrder;
-  Color stackColor = Colors.white;
-  List<AECard> cards = [];*/
+  //final List<int> cardsId;
 
   CardsStack({
     required this.id,
@@ -85,6 +65,7 @@ class CardsStack {
     required this.stackType,
     required this.stackColor,
     required this.cards,
+    //required this.cardsId
   });
 
   const CardsStack.empty({
@@ -94,9 +75,11 @@ class CardsStack {
     this.stackType = StackType.turnOrder,
     this.stackColor = Colors.white,
     this.cards = const [],
+    //this.cardsId = const [],
   });
 
-  factory CardsStack.fromJson(Map<String, dynamic> json) {
+// This worked
+  /*factory CardsStack.fromJson(Map<String, dynamic> json) {
     var map = <String, dynamic>{
       'id': json['id'],
       'name': json['name'],
@@ -105,8 +88,8 @@ class CardsStack {
       //'stackColor': Color(json['stackColor'].fromARGB32()), // Assuming fromARGB32 is a method to convert int to Color
       'stackColor': Color(json['stackColor'] as int),
       'cards': (json['cards'] as List)
-          .map((card) => AECard.fromMap(card))
-          .toList(),
+           .map((card) => AECard.fromMap(card))
+           .toList(),
     };
 
     return CardsStack(
@@ -116,21 +99,14 @@ class CardsStack {
       stackType: map['stackType'],
       stackColor: map['stackColor'],
       cards: List<AECard>.from(map['cards']),
+      
     );
   }
-
-  /*Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'isStandart': isStandart ? 1 : 0,
-      'stackType': stackType.index,
-      'stackColor': stackColor.toARGB32(),
-      'cards': cards.map((card) => card.toMap()).toList(),
-    };
-  }*/
-
   Map<String, Object?> toMap() {
+    List<int> list = [];
+    for (var element in cards) {
+      list.add(element.id);
+    }
     var map = <String, Object?>{
       'name': name,
       'isStandart': isStandart ? 1 : 0,
@@ -143,9 +119,53 @@ class CardsStack {
     }
 
     return map;
+  }*/
+
+  /*factory CardsStack.fromJson(Map<String, dynamic> json) {
+    var map = <String, dynamic>{
+      'id': json['id'],
+      'name': json['name'],
+      'isStandart': json['is_standart'],
+      'stackType': StackType.values[json['stack_type']],
+      'stackColor': Color(json['stack_color'] as int),
+      'cards': json['cards'] as List<int>,
+    };
+
+    return CardsStack(
+      id: map['id'],
+      name: map['name'],
+      isStandart: map['isStandart'] == 0 ? false : true,
+      stackType: map['stackType'],
+      stackColor: map['stackColor'],
+      cardsId: List<int>.from(map['cards']),
+      
+    );
   }
 
+Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'isStandart': isStandart ? 1 : 0,
+      'stackType': stackType.index,
+      'stackColor': stackColor.toARGB32(),
+      'cards': cardsId.map((card) => card.toMap()).toList(),
+    };
+  }*/
+  
+
   // TODO: add toJson and fromJson methods
+  CardsStack csDBToCS(CardsStackDB stackDB, List<AECard> list) {
+    return CardsStack(
+      id: stackDB.id,
+      name: stackDB.name,
+      isStandart: stackDB.isStandart,
+      stackType: stackDB.stackType,
+      stackColor: stackDB.stackColor,
+      cards: list,
+    );
+  }
+
 
   @override
   String toString() {
