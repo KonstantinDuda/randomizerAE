@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:randomizer_new/bloc/event_state/root_body_es.dart';
+import 'package:randomizer_new/bloc/providers/provider_bloc.dart';
+import 'package:randomizer_new/bloc/root_body_bloc.dart';
 
 import '../../database/cards_stack.dart';
 import '../../database/db_temporary.dart';
@@ -59,6 +63,8 @@ class _RootDrawerState extends State<RootDrawer> {
                       ),
                       onPressed: () {
                         // Handle stack selection
+                        context.read<RootBodyBloc>().add(RootBodyChangeActiveStackEvent(db[index].id));
+                        context.read<ProviderBloc>().add(RootEvent());
                         Navigator.pop(context);
                       },),
                     Container(

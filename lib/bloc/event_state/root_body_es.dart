@@ -26,6 +26,14 @@ class RootBodyChangeSequenceEvent extends RootBodyEvent {
   const RootBodyChangeSequenceEvent();
 }
 
+class RootBodyChangeActiveStackEvent extends RootBodyEvent {
+  final int id;
+  const RootBodyChangeActiveStackEvent(this.id);
+
+  @override
+  List<Object> get props => [id];
+}
+
 // States
 class RootBodyState extends Equatable {
   const RootBodyState();
@@ -44,6 +52,10 @@ class RootBodySuccessActionState extends RootBodyState {
 
   @override
   List<Object> get props => [stack, alreadyPlayed];
+}
+
+class RootBodyClearScreenState extends RootBodyState {
+  const RootBodyClearScreenState();
 }
 
 class RootBodyErrorActionState extends RootBodyState {

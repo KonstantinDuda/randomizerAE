@@ -116,6 +116,7 @@ class DbTemporary {
   _activeStack = _dbStacks[0];
   
   db.createStack(turnOrderThree);
+  db.createStack(turnOrderThreeBliz);
   getStackFromDB(turnOrderThree.id);
   }
 

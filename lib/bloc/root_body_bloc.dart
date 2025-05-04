@@ -14,6 +14,7 @@ class RootBodyBloc extends Bloc<RootBodyEvent, RootBodyState> {
     on<RootBodyDelWildEvent>(_onDelWild);
     on<RootBodyShuffleEvent>(_onShuffle);
     on<RootBodyChangeSequenceEvent>(_onChangeSequence);
+    on<RootBodyChangeActiveStackEvent>(_onChangeActiveStack);
   }
 
   void _onNext(RootBodyNextEvent event, Emitter<RootBodyState> emit) {
@@ -97,5 +98,17 @@ class RootBodyBloc extends Bloc<RootBodyEvent, RootBodyState> {
 
 
     emit(RootBodySuccessActionState(stack, alreadyPlayed));
+  }
+
+  void _onChangeActiveStack(RootBodyChangeActiveStackEvent  event, Emitter<RootBodyState> emit) {
+    emit(const RootBodyClearScreenState());
+    var newAlreadyPlayed = const CardsStack.empty();
+    database.setActiveStack(event.id);
+    var newStack = database.getActiveStack();
+    print("RootBodyBlock. _onChangeActiveStack. "
+          "newAlredyPlayed.cards == ${newAlreadyPlayed.cards} \n "
+          "newStack.cards == ${newStack.cards}");
+    
+    emit(RootBodySuccessActionState(newStack, newAlreadyPlayed));
   }
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../bloc/event_state/root_body_es.dart';
+import '../../bloc/root_body_bloc.dart';
 import '../../database/cards_stack.dart';
 import '../../database/db_temporary.dart';
 
@@ -96,18 +99,24 @@ class _RootAppBarState extends State<RootAppBar> {
                     scrollDirection: Axis.horizontal,
                     itemCount: db.length,
                     itemBuilder: (context, index) {
-                      return Container(
-                        margin: const EdgeInsets.only(left: 5, right: 5),
-                        width: 30,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: db[index].stackColor,
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 2,
+                      return GestureDetector(
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 5, right: 5),
+                          width: 30,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: db[index].stackColor,
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 2,
+                            ),
                           ),
                         ),
+                        onTap: () {
+                          context.read<RootBodyBloc>().add(RootBodyChangeActiveStackEvent(db[index].id));
+                        
+                        },
                       );
                     },
                   ),

@@ -34,9 +34,15 @@ class _RootBodyState extends State<RootBody> {
         stack = state.stack;
         alrereadyPlayed = state.alreadyPlayed;
       } else {
+        print("RootBody Page state is NOT RootBodySuccessActionState");
         stackColor = Colors.white;
         stack = const CardsStack.empty();
         alrereadyPlayed =  const CardsStack.empty();
+        setState(() {
+        //   stackColor = Colors.white;
+        //   stack = const CardsStack.empty();
+        //   alrereadyPlayed =  const CardsStack.empty();
+        });
       }
 
       gridObj(String text) {
@@ -105,12 +111,23 @@ class _RootBodyState extends State<RootBody> {
                     ),
                   ),
                 Container(
+                  height: 28,
+                  width: 80,
                   padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                   margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                  child: Center(
-                    child: Text('stack color', 
-                        style: TextStyle(fontSize: 15, 
-                        color: stackColor,)
+                  //alignment: Alignment.topRight,
+                  decoration: BoxDecoration(
+                    color: stackColor,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: const Align(
+                    //alignment: Alignment.topCenter,
+                    child: Text('stack color',
+                        style: TextStyle(
+                          fontSize: 14, 
+                          color: Colors.black,
+                          height: -0.7,
+                          ),
                     ),
                   ),
                 ),
@@ -194,8 +211,11 @@ class _RootBodyState extends State<RootBody> {
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Center(child: Text(
+                              textAlign: TextAlign.center,
                               stack.cards.isNotEmpty ? stack.name : "X", 
-                              style: const TextStyle(fontSize: 30),
+                              style: TextStyle(
+                                fontSize: 30,
+                                color: stackColor == Colors.black ? Colors.white : Colors.black),
                             )),
                           ),
                           onTap: () {
