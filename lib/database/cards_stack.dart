@@ -52,7 +52,7 @@ enum StackType {
 class CardsStack {
   final int id;
   final String name;
-  final bool isStandart;
+  final bool isActive;
   final StackType stackType;
   final Color stackColor;
   final List<AECard> cards;
@@ -61,7 +61,7 @@ class CardsStack {
   CardsStack({
     required this.id,
     required this.name,
-    required this.isStandart,
+    required this.isActive,
     required this.stackType,
     required this.stackColor,
     required this.cards,
@@ -71,95 +71,18 @@ class CardsStack {
   const CardsStack.empty({
     this.id = 0,
     this.name = '',
-    this.isStandart = false,
+    this.isActive = false,
     this.stackType = StackType.turnOrder,
     this.stackColor = Colors.white,
     this.cards = const [],
     //this.cardsId = const [],
   });
-
-// This worked
-  /*factory CardsStack.fromJson(Map<String, dynamic> json) {
-    var map = <String, dynamic>{
-      'id': json['id'],
-      'name': json['name'],
-      'isStandart': json['isStandart'],
-      'stackType': StackType.values[json['stackType']],
-      //'stackColor': Color(json['stackColor'].fromARGB32()), // Assuming fromARGB32 is a method to convert int to Color
-      'stackColor': Color(json['stackColor'] as int),
-      'cards': (json['cards'] as List)
-           .map((card) => AECard.fromMap(card))
-           .toList(),
-    };
-
-    return CardsStack(
-      id: map['id'],
-      name: map['name'],
-      isStandart: map['isStandart'] == 0 ? false : true,
-      stackType: map['stackType'],
-      stackColor: map['stackColor'],
-      cards: List<AECard>.from(map['cards']),
-      
-    );
-  }
-  Map<String, Object?> toMap() {
-    List<int> list = [];
-    for (var element in cards) {
-      list.add(element.id);
-    }
-    var map = <String, Object?>{
-      'name': name,
-      'isStandart': isStandart ? 1 : 0,
-      'stackType': stackType.index,
-      'stackColor': stackColor.toARGB32(),
-      'cards': cards.map((card) => card.toMap()).toList(),
-    };
-    if (id != 0) {
-      map['id'] = id;
-    }
-
-    return map;
-  }*/
-
-  /*factory CardsStack.fromJson(Map<String, dynamic> json) {
-    var map = <String, dynamic>{
-      'id': json['id'],
-      'name': json['name'],
-      'isStandart': json['is_standart'],
-      'stackType': StackType.values[json['stack_type']],
-      'stackColor': Color(json['stack_color'] as int),
-      'cards': json['cards'] as List<int>,
-    };
-
-    return CardsStack(
-      id: map['id'],
-      name: map['name'],
-      isStandart: map['isStandart'] == 0 ? false : true,
-      stackType: map['stackType'],
-      stackColor: map['stackColor'],
-      cardsId: List<int>.from(map['cards']),
-      
-    );
-  }
-
-Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'isStandart': isStandart ? 1 : 0,
-      'stackType': stackType.index,
-      'stackColor': stackColor.toARGB32(),
-      'cards': cardsId.map((card) => card.toMap()).toList(),
-    };
-  }*/
   
-
-  // TODO: add toJson and fromJson methods
   CardsStack csDBToCS(CardsStackDB stackDB, List<AECard> list) {
     return CardsStack(
       id: stackDB.id,
       name: stackDB.name,
-      isStandart: stackDB.isStandart,
+      isActive: stackDB.isStandart,
       stackType: stackDB.stackType,
       stackColor: stackDB.stackColor,
       cards: list,
@@ -173,7 +96,6 @@ Map<String, dynamic> toJson() {
     return result;
   }
 
-  //TODO: треба переписувати колір в текст перед записом в БД і навпаки
 }
 
 class HeroStack {

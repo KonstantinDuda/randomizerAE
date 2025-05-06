@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:randomizer_new/bloc/event_state/root_body_es.dart';
-import 'package:randomizer_new/bloc/providers/provider_bloc.dart';
-import 'package:randomizer_new/bloc/root_body_bloc.dart';
+import 'package:randomizer_new/bloc/event_state/turn_order_body_es.dart';
+//import 'package:randomizer_new/bloc/providers/provider_bloc.dart';
+import 'package:randomizer_new/bloc/turn_order_body_bloc.dart';
 
 import '../../database/cards_stack.dart';
 import '../../database/db_temporary.dart';
@@ -18,6 +18,8 @@ class RootDrawer extends StatefulWidget {
 class _RootDrawerState extends State<RootDrawer> {
   DbTemporary dbObj = DbTemporary();
   List<CardsStack> db = [];
+  List<bool> boolList = [];
+  List<CardsStack> newAvList = [];
   
   @override
   void initState() {
@@ -28,7 +30,14 @@ class _RootDrawerState extends State<RootDrawer> {
   }
 
   getData() async {
-    db = await dbObj.getAvialableStacks();
+    db = await dbObj.getStacks(); //getAvialableStacks();
+    for (var i in db) {
+      boolList.add(i.isActive);
+      if(i.isActive) {
+        newAvList.add(i);
+      }
+    }
+    
     setState(() {});
   }
     
@@ -48,9 +57,10 @@ class _RootDrawerState extends State<RootDrawer> {
             itemBuilder: (context, index) {
               //var stackColor = textToColor(db.dbStacks[index].stackColor);
 //print("stackColor is $stackColor");
+//var isCheked = db[index].isActive;
 
               return SizedBox(
-                width: 200,
+                width: 250,
                 child: 
                 Row(
                   children: [
@@ -63,8 +73,8 @@ class _RootDrawerState extends State<RootDrawer> {
                       ),
                       onPressed: () {
                         // Handle stack selection
-                        context.read<RootBodyBloc>().add(RootBodyChangeActiveStackEvent(db[index].id));
-                        context.read<ProviderBloc>().add(RootEvent());
+                        context.read<TurnOrderBodyBloc>().add(TurnOrderBodyChangeActiveStackEvent(db[index].id));
+                        //context.read<ProviderBloc>().add(RootEvent());
                         Navigator.pop(context);
                       },),
                     Container(
@@ -79,6 +89,35 @@ class _RootDrawerState extends State<RootDrawer> {
                           width: 2,
                       ),
                     ),
+                    ),
+                    Checkbox(
+                      value: boolList[index], 
+                      onChanged: (bool? value) {
+                        setState(() {
+                          boolList[index] = value!;
+                        });
+                        // print("RootDrawer checkbox boolList after "
+                        //       "setState == ${boolList[index]} \n value == $value");
+
+                        if(boolList[index]) {
+                          CardsStack newStack = CardsStack(
+                            id: db[index].id, name: db[index].name, isActive: true, 
+                            stackType: db[index].stackType, 
+                            stackColor: db[index].stackColor, 
+                            cards: db[index].cards);
+                            print("RootDrawer checkbox newStack.id == ${newStack.id} \n" 
+                                " newStack.name == ${newStack.name} \n" 
+                                " newStack.isActive == ${newStack.isActive} \n"
+                                " newStack.cards == ${newStack.cards} \n");
+                          newAvList.add(newStack);
+                        } else {
+                          newAvList.remove(db[index]);
+                        }
+                        context.read<TurnOrderBodyBloc>()
+                          .add(TurnOrderBodyChangeAvailableStackListEvent(newAvList));
+                        
+                        //dbObj.updateAvialableStack(newAvList);
+                      }
                     ),
                   ],
                 ),

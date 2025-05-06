@@ -5,10 +5,16 @@ import 'package:randomizer_new/database/db_provider.dart';
 class DbTemporary {
   var db = DBProvider();
   final List<CardsStack> _dbStacks = [];
-  final List<CardsStack> _availableStacks = [];
+  List<CardsStack> _availableStacks = [];
   CardsStack _activeStack = const CardsStack.empty();
+  CardsStack turnOrderOne = const CardsStack.empty();
+  CardsStack turnOrderOneBliz = const CardsStack.empty();
+  CardsStack turnOrderTwo = const CardsStack.empty();
+  CardsStack turnOrderTwoBliz = const CardsStack.empty();
   CardsStack turnOrderThree = const CardsStack.empty();
   CardsStack turnOrderThreeBliz = const CardsStack.empty();
+  CardsStack turnOrderFour = const CardsStack.empty();
+  CardsStack turnOrderFourBliz = const CardsStack.empty();
 
   DbTemporary() {
     var cardOne = AECard(
@@ -67,7 +73,85 @@ class DbTemporary {
     db.createCard(cardFriend);
     db.createCard(cardBliz);
 
-    List<AECard> turnOrderThreeList = [
+    List<AECard> turnOrderOneList = [
+    cardOne,
+    cardOne,
+    cardWild,
+    cardNemesis,
+    cardNemesis,
+    cardFoe,
+    cardFriend,
+  ];
+
+  turnOrderOne = CardsStack(
+    id: 1,
+    name: 'Turn Order One',
+    isActive: false,
+    stackType: StackType.turnOrder,
+    stackColor: Colors.grey,
+    cards: turnOrderOneList,
+  );
+  
+  List<AECard> turnOrderOneBlizList = [
+    cardOne,
+    cardOne,
+    cardWild,
+    cardNemesis,
+    cardBliz,
+    cardFoe,
+    cardFriend,
+  ];
+
+  turnOrderOneBliz = CardsStack(
+    id: 2,
+    name: 'Turn Order One Bliz',
+    isActive: false,
+    stackType: StackType.turnOrder,
+    stackColor: Colors.green,
+    cards: turnOrderOneBlizList,
+  );
+  
+  List<AECard> turnOrderTwoList = [
+    cardOne,
+    cardTwo,
+    cardOne,
+    cardTwo,
+    cardNemesis,
+    cardNemesis,
+    cardFoe,
+    cardFriend,
+  ];
+
+  turnOrderTwo = CardsStack(
+    id: 3,
+    name: 'Turn Order Two',
+    isActive: false,
+    stackType: StackType.turnOrder,
+    stackColor: Colors.grey,
+    cards: turnOrderTwoList,
+  );
+  
+  List<AECard> turnOrderTwoBlizList = [
+    cardOne,
+    cardTwo,
+    cardOne,
+    cardTwo,
+    cardNemesis,
+    cardBliz,
+    cardFoe,
+    cardFriend,
+  ];
+
+  turnOrderTwoBliz = CardsStack(
+    id: 4,
+    name: 'Turn Order Two Bliz',
+    isActive: false,
+    stackType: StackType.turnOrder,
+    stackColor: Colors.green,
+    cards: turnOrderTwoBlizList,
+  );
+  
+  List<AECard> turnOrderThreeList = [
     cardOne,
     cardTwo,
     cardThree,
@@ -79,16 +163,15 @@ class DbTemporary {
   ];
 
   turnOrderThree = CardsStack(
-    id: 1,
+    id: 5,
     name: 'Turn Order Three with so long name',
-    isStandart: true,
+    isActive: true,
     stackType: StackType.turnOrder,
     stackColor: Colors.grey,
     cards: turnOrderThreeList,
   );
-  //db.createStack(turnOrderThree);
 
-  List<AECard> turnOrderThreeBlizList = [
+    List<AECard> turnOrderThreeBlizList = [
     cardOne,
     cardTwo,
     cardThree,
@@ -100,24 +183,82 @@ class DbTemporary {
   ];
 
   turnOrderThreeBliz = CardsStack(
-    id: 2,
+    id: 6,
     name: 'Turn Order Three Bliz',
-    isStandart: true,
+    isActive: true,
     stackType: StackType.turnOrder,
     stackColor: Colors.green,
     cards: turnOrderThreeBlizList,
   );
   //db.createStack(turnOrderThree);
+
+  List<AECard> turnOrderFourList = [
+    cardOne,
+    cardTwo,
+    cardThree,
+    cardFour,
+    cardNemesis,
+    cardNemesis,
+    cardFoe,
+    cardFriend,
+  ];
+
+  turnOrderFour = CardsStack(
+    id: 7,
+    name: 'Turn Order Four',
+    isActive: false,
+    stackType: StackType.turnOrder,
+    stackColor: Colors.grey,
+    cards: turnOrderFourList,
+  );
+
+  List<AECard> turnOrderFourBlizList = [
+    cardOne,
+    cardTwo,
+    cardThree,
+    cardFour,
+    cardNemesis,
+    cardBliz,
+    cardFoe,
+    cardFriend,
+  ];
+
+  turnOrderFourBliz = CardsStack(
+    id: 8,
+    name: 'Turn Order Four Bliz',
+    isActive: false,
+    stackType: StackType.turnOrder,
+    stackColor: Colors.green,
+    cards: turnOrderFourBlizList,
+  );
+
+  //db.createStack(turnOrderThree);
   //db.createStack(turnOrderThreeBliz);
+  _dbStacks.add(turnOrderOne);
+  _dbStacks.add(turnOrderOneBliz);
+  _dbStacks.add(turnOrderTwo);
+  _dbStacks.add(turnOrderTwoBliz);
   _dbStacks.add(turnOrderThree);
   _dbStacks.add(turnOrderThreeBliz);
-  _availableStacks.add(turnOrderThree);
-  _availableStacks.add(turnOrderThreeBliz);
-  _activeStack = _dbStacks[0];
+  _dbStacks.add(turnOrderFour);
+  _dbStacks.add(turnOrderFourBliz);
+  setAvilableStacs();
+  _activeStack = _dbStacks[4];
   
-  db.createStack(turnOrderThree);
-  db.createStack(turnOrderThreeBliz);
+  for (var element in _dbStacks) {
+    db.createStack(element);
+  }
+  //db.createStack(turnOrderThree);
+  //db.createStack(turnOrderThreeBliz);
   getStackFromDB(turnOrderThree.id);
+  }
+
+  void setAvilableStacs() {
+    for (var element in _dbStacks) {
+      if(element.isActive) {
+        _availableStacks.add(element);
+      }
+    }
   }
 
 
@@ -145,18 +286,33 @@ class DbTemporary {
 
   //Future<List<CardsStack>> getAvialableStacks() async {
   List<CardsStack> getAvialableStacks() {
-    List<CardsStack> stacks = [];
     if(_availableStacks.isEmpty) {
-      //stacks.addAll(await db.getAllStacks());
-      stacks.add(turnOrderThree);
+      _availableStacks.add(turnOrderThree);
+      _activeStack = _availableStacks[0];
     }
-    for (var element in stacks) {
-      if(element.isStandart) {
-        _availableStacks.add(element);
-      }
-    }
-    _activeStack = _availableStacks[0];
+    
     return _availableStacks;
+  }
+
+  updateAvialableStack(List<CardsStack> newList) {
+    print("DBTemporary updateAvialableStack newList == ${newList.length}");
+    if(newList.isNotEmpty) {
+      for (var i = 0; i < _dbStacks.length; i++) {
+        for (var y in newList) {
+          if(_dbStacks[i].id == y.id && _dbStacks[i].isActive != y.isActive) {
+            print("DBTemporary updateAvialableStack remove == ${_dbStacks[i]}");
+            _dbStacks.remove(_dbStacks[i]);
+          
+            _dbStacks.insert(i, y);  //add(y);
+            print("DBTemporary updateAvialableStack add == ${y.isActive}");
+          }
+        }
+      }
+      _availableStacks = newList;
+    } else {
+      _availableStacks = [];
+    }
+    
   }
 
   CardsStack getActiveStack() {
@@ -178,7 +334,7 @@ class DbTemporary {
     }*/
     print(_activeStack.id);
     var newAS = await db.getStackById(id);
-    print("DBTemporary setActiveStack($id) on $newAS");
+    print("DBTemporary setActiveStack($id) on $newAS \n color: ${newAS.stackColor}");
     _activeStack = newAS;
   }
 

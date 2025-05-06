@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:randomizer_new/view/root/root_app_bar.dart';
-import 'package:randomizer_new/view/root/root_body.dart';
+import 'package:randomizer_new/view/root/bodyes/turn_order.dart';
 
 import 'root_drawer.dart';
 
@@ -30,7 +30,7 @@ class _RootPage extends State<RootPage> {
           children: <Widget>[
             //myAppBar(size),
             RootAppBar(_scaffoldKey),
-            const RootBody(),
+            const TurnOrderBody(),
           ],
         ),
     );

@@ -74,10 +74,10 @@ class DBProvider {
   void createCard(AECard card) async {
     final db = await getDatabase;
 
-    print("\n");
-    print("db_provider \n");
-    print("db_provider createCard \n");
-    print("db_provider createCard int ${card.id} \n");
+    //print("\n");
+    //print("db_provider \n");
+    //print("db_provider createCard \n");
+    //print("db_provider createCard int ${card.id} \n");
     if(card.id > 0) {
       var x = await getCardById(card.id);
       if(x.id == 0) {
@@ -88,10 +88,10 @@ class DBProvider {
       } else {
         print("DBProvider createCard() card was in the Database \n");
       }
-    print("db_provider createCard int ${card.id} \n");
-    print("db_provider createCard \n");
-    print("db_provider \n");
-    print("\n");
+    //print("db_provider createCard int ${card.id} \n");
+    //print("db_provider createCard \n");
+    //print("db_provider \n");
+    //print("\n");
     }
     
 
@@ -115,10 +115,10 @@ class DBProvider {
         where: "id = ?",
         whereArgs: [id]);
     if (maps.isNotEmpty) {
-      print("DBProvider getCardById($id) the ${maps.first.toString()} was in the Database \n");
+      //print("DBProvider getCardById($id) the ${maps.first.toString()} was in the Database \n");
       return AECard.fromMap(maps.first);
     } else {
-      print("DBProvider getCardById($id) card does not Exist \n");
+      //print("DBProvider getCardById($id) card does not Exist \n");
       return AECard(id: 0, text: '', imgPath: '');
     }
   }
@@ -166,7 +166,7 @@ class DBProvider {
     //await db.insert(cardsStackTableName, stack.toMap());
 
     CardsStackDB stackToDB = CardsStackDB(
-      id: stack.id, name: stack.name, isStandart: stack.isStandart, 
+      id: stack.id, name: stack.name, isStandart: stack.isActive, 
       stackType: stack.stackType,  stackColor: stack.stackColor,
       cardsId: []);
     var ids = stackToDB.fromAECardToListInt(stack.cards);
@@ -182,7 +182,7 @@ class DBProvider {
     print("db_provider db.createStack Once \n");
     List<CardsStackDB> dbList = [];
     List<Map<String, dynamic>> maps = await db.query(cardsStackTableName);
-    print("DBProvider createStack() maps == ${maps.length} \n");
+    print("DBProvider createStack() maps.length == ${maps.length} \n");
     if(maps.isNotEmpty) {
       for (var element in maps) {
         CardsStackDB stackFromDB = CardsStackDB.fromMap(element);
@@ -192,6 +192,7 @@ class DBProvider {
         print("DBProvider createStack() stackFromDB == ${stackFromDB.toString()} \n");
       }
       if(dbList.isEmpty) {
+        print("DBProvider createStack db.insert ${stackToDB.stackColor}");
         await db.insert(cardsStackTableName, stackToDB.toMap());
       }
     } else {
@@ -230,14 +231,6 @@ class DBProvider {
         }
       }
 
-      // CardsStack result = CardsStack(
-      //   id: csDB.id, 
-      //   name: csDB.name, 
-      //   isStandart: csDB.isStandart, 
-      //   stackType: csDB.stackType, 
-      //   stackColor: csDB.stackColor, 
-      //   cards: list);
-
       CardsStack res = const CardsStack.empty();
       var newRes = res.csDBToCS(csDB, list);
 
@@ -248,6 +241,35 @@ class DBProvider {
       return const CardsStack.empty();
     }
   }
+
+  Future<List<CardsStack>> getAvailableStacks() async {
+    final db = await getDatabase;
+    List<Map<String, dynamic>> maps = await db.query(cardsStackTableName,
+      where: "is_standart = ?",
+      whereArgs: [1]
+    );
+    
+    List<CardsStackDB> csDB = [];
+    for (var element in maps) {
+      csDB.add(CardsStackDB.fromMap(element));
+    }
+
+    List<CardsStack> availableList = [];
+    for (var i = 0; i < csDB.length; i++) {
+      List<AECard> list = [];
+      for (var element in csDB[i].cardsId) {
+        AECard card = await getCardById(element);
+        if(card.id > 0) {
+          list.add(card);
+        }
+      }
+      var cs = const CardsStack.empty();
+      availableList.add(cs.csDBToCS(csDB[i], list));  
+    }
+
+    return availableList;
+  }
+
 /*
   Future<List<CardsStack>> getAllStacks() async {
     final db = await getDatabase;
