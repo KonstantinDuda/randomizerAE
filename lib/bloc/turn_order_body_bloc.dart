@@ -112,7 +112,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
   void _onChangeAvailableList(TurnOrderBodyChangeAvailableStackListEvent event, 
                                               Emitter<TurnOrderBodyState> emit) {
-    database.updateAvialableStack(event.newList);
+    database.updateAvialableStack(event.id);
 
 
     emit(const TurnOrderBodySuccessActionState());

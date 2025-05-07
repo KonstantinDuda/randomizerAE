@@ -35,13 +35,13 @@ class TurnOrderBodyChangeActiveStackEvent extends TurnOrderBodyEvent {
 }
 
 class TurnOrderBodyChangeAvailableStackListEvent extends TurnOrderBodyEvent {
-  final List<CardsStack> newList;
+  final List<int> id;
 
   const TurnOrderBodyChangeAvailableStackListEvent(
-    [this.newList = const []]);
+    [this.id = const []]);
 
   @override
-  List<Object> get props => [newList];
+  List<Object> get props => [id];
 }
 
 // States

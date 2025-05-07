@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:randomizer_new/bloc/providers/provider_bloc.dart';
 
 import '../../bloc/event_state/turn_order_body_es.dart';
+import '../../bloc/providers/root_body_provider.dart';
 import '../../bloc/turn_order_body_bloc.dart';
 import '../../database/cards_stack.dart';
 import '../../database/db_temporary.dart';
@@ -116,8 +116,7 @@ class _RootAppBarState extends State<RootAppBar> {
                         ),
                         onTap: () {
                           context.read<TurnOrderBodyBloc>().add(TurnOrderBodyChangeActiveStackEvent(db[index].id));
-                          context.read<ProviderBloc>().add(RootEvent());
-                        
+                          context.read<RootBodyProviderBloc>().add(RootBodyLoadingEvent());
                         },
                       );
                     },

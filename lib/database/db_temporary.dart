@@ -15,8 +15,14 @@ class DbTemporary {
   CardsStack turnOrderThreeBliz = const CardsStack.empty();
   CardsStack turnOrderFour = const CardsStack.empty();
   CardsStack turnOrderFourBliz = const CardsStack.empty();
+  
+  
+  static final DbTemporary _dbProvider = DbTemporary._();
+  DbTemporary._();
+  factory DbTemporary() { return _dbProvider;} 
 
-  DbTemporary() {
+  //DbTemporary() {
+  createData() {
     var cardOne = AECard(
       id: 1,
       text: '1',
@@ -254,6 +260,7 @@ class DbTemporary {
   }
 
   void setAvilableStacs() {
+    _availableStacks.clear();
     for (var element in _dbStacks) {
       if(element.isActive) {
         _availableStacks.add(element);
@@ -294,25 +301,27 @@ class DbTemporary {
     return _availableStacks;
   }
 
-  updateAvialableStack(List<CardsStack> newList) {
-    print("DBTemporary updateAvialableStack newList == ${newList.length}");
-    if(newList.isNotEmpty) {
-      for (var i = 0; i < _dbStacks.length; i++) {
-        for (var y in newList) {
-          if(_dbStacks[i].id == y.id && _dbStacks[i].isActive != y.isActive) {
-            print("DBTemporary updateAvialableStack remove == ${_dbStacks[i]}");
-            _dbStacks.remove(_dbStacks[i]);
-          
-            _dbStacks.insert(i, y);  //add(y);
-            print("DBTemporary updateAvialableStack add == ${y.isActive}");
+  updateAvialableStack(List<int> id) {
+
+     print("DBTemporary updateAvialableStack id == $id");
+     if(id != []) {
+        for (var i = 0; i < _dbStacks.length; i++) {
+          for (var j in id) {
+            if(_dbStacks[i].id == j) {
+              bool newState = !_dbStacks[i].isActive;
+              print("DBTemporary updateAvialableStack newState == $newState");
+              var newStack = CardsStack(
+                id: _dbStacks[i].id, name: _dbStacks[i].name, isActive: newState, 
+                stackType: _dbStacks[i].stackType, 
+                stackColor: _dbStacks[i].stackColor, cards: _dbStacks[i].cards
+              );
+              _dbStacks.remove(_dbStacks[i]);
+              _dbStacks.insert(i, newStack);
+            }
           }
         }
-      }
-      _availableStacks = newList;
-    } else {
-      _availableStacks = [];
-    }
-    
+     }
+     setAvilableStacs();
   }
 
   CardsStack getActiveStack() {

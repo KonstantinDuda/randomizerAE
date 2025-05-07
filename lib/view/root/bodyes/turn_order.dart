@@ -23,21 +23,31 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
       bodyContainerSize.width - 20,
       bodyContainerSize.height - 60,
     );
+    const Size mainObjSize = Size(130, 220);
+    final contetnBodySize = Size(
+      contentContainerSize.width - 10,
+      contentContainerSize.height - mainObjSize.height - 5,
+    );
+    ScrollController controller = ScrollController();
 
     return BlocBuilder<TurnOrderBodyBloc, TurnOrderBodyState>(builder: (context, state) {
+
       Color stackColor;
       late CardsStack stack;
-      late CardsStack alrereadyPlayed;
+      late CardsStack alreadyPlayed;
+      late List<AECard> even = [];
+      late List<AECard> odd = [];
+      
       List<Widget> varGridList = [];
       if(state is TurnOrderBodySuccessActionState) {
         stackColor = state.stack.stackColor;
         stack = state.stack;
-        alrereadyPlayed = state.alreadyPlayed;
+        alreadyPlayed = state.alreadyPlayed;
       } else {
         print("TurnOrderBody Page state is NOT TurnOrderBodySuccessActionState");
         stackColor = Colors.white;
         stack = const CardsStack.empty();
-        alrereadyPlayed =  const CardsStack.empty();
+        alreadyPlayed =  const CardsStack.empty();
         setState(() {
         //   stackColor = Colors.white;
         //   stack = const CardsStack.empty();
@@ -46,24 +56,58 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
       }
 
       gridObj(String text) {
+        print("root_body.dart gridObj()");
+        return Container(
+          height: contetnBodySize.height / 2 -10,
+          width: contetnBodySize.height / 3 - 10,
+          margin: const EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            border: Border.all(
+              color: Colors.black,
+              width: 2,
+            ),
+          ),
+          child: Center(
+            child: Text(text,
+              style: const TextStyle(fontSize: 25),
+            ),
+          ),
+        );
+      }
+
+      gridObjLimiter(String text) {
+        return Column(
+          children: [
+            gridObj(text),
+            Container(
+              height: contetnBodySize.height / 2 -10,
+              width: contetnBodySize.height / 3 - 10,
+              margin: const EdgeInsets.only(top: 5, left: 10),
+            ),
+          ],
+        );
+      }
+
+      gridColumnObj(/*String text*/ int id) {
+        var firstText = '';
+        var secondText = '';
+        if(even.isNotEmpty) {
+          firstText = even.last.text;
+        }
+        if(odd.isNotEmpty) {
+          secondText = odd.last.text;
+        }
+
         if(state is TurnOrderBodySuccessActionState) {
             return Container(
-              height: 200,
-              padding: const EdgeInsets.only(right: 10, left: 10),
-              child: Container(
-                margin: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  border: Border.all(
-                    color: Colors.black,
-                    width: 2,
-                  ),
-                ),
-                child: Center(
-                  child: Text(text, 
-                    style: const TextStyle(fontSize: 15),
-                  ),
-                ),
+              //color: Colors.green,
+              //padding: const EdgeInsets.only(right: 10, left: 10),
+              child: Column(
+                children: [
+                  gridObj(firstText),
+                  gridObj(secondText),
+                ],
               ),
             );
         }
@@ -75,24 +119,40 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
       }
 
       gridList() {
-        print("root_body.dart gridList()");
-        if(alrereadyPlayed.id != 0) {
-          for (var i = 0; i < alrereadyPlayed.cards.length; i++) {
-            varGridList.add(gridObj(alrereadyPlayed.cards[i].text));
-          }
-          print("root_body.dart gridList() varGridList == ${varGridList.length} \n");
-        } else {
-          print("root_body.dart gridList() else \n");
-          varGridList.clear();
+        print("root_body.dart gridList()");    
+        if(alreadyPlayed.id != 0) {
+          for (var i = 0; i < alreadyPlayed.cards.length; i++) {
+            if(i % 2 == 0) {
+              even.add(alreadyPlayed.cards[i]);
+              varGridList.insert(0, gridObjLimiter(alreadyPlayed.cards[i].text));
+            //varGridList.add(gridObjLimiter(alreadyPlayed.cards[i].text));
+            } else {
+              odd.add(alreadyPlayed.cards[i]);
+              varGridList.removeAt(0);
+              varGridList.insert(0, gridColumnObj(alreadyPlayed.cards[i].id));
+              //varGridList.removeLast();
+              //varGridList.add(gridColumnObj(alreadyPlayed.cards[i].id));           
+            }
+            //controller.animateTo(controller.position.maxScrollExtent, 
+            //      duration: const Duration(seconds: 1), curve: Curves.easeIn);
+             //varGridList.add(gridColumnObj(alreadyPlayed.cards[i].id));
+           }
         }
+
+        // if(alrereadyPlayed.id != 0) {
+        //   for (var i = 0; i < alrereadyPlayed.cards.length; i++) {
+        //     varGridList.add(gridObj(alrereadyPlayed.cards[i].text));
+        //   }
+        //   print("root_body.dart gridList() varGridList == ${varGridList.length} \n");
+        // } else {
+        //   print("root_body.dart gridList() else \n");
+        //   varGridList.clear();
+        // }
         return varGridList;
       }
 
 
-      return 
-    
-    
-    Container(
+    return Container(
       color: Colors.blue,
       height: bodyContainerSize.height,
       padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
@@ -150,12 +210,21 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
               
               Container(
                 margin: const EdgeInsets.only(top: 5, left: 5, right: 5),
-                height: contentContainerSize.height - 225,
-                child: GridView.count(
-                  crossAxisCount: 4, 
+                height: contetnBodySize.height,
+                width: contetnBodySize.width,
+                // child: GridView.count(
+                //   crossAxisCount: 4, 
+                //   children: <Widget>[
+                //     ...gridList(),
+                //   ]),
+                child: ListView(
+                  reverse: true,
+                  controller: controller,
+                  scrollDirection: Axis.horizontal,
                   children: <Widget>[
                     ...gridList(),
-                  ]),
+                  ],
+                ),
               ),
               
                 
@@ -200,8 +269,8 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                         alignment: Alignment.bottomCenter,
                         child: GestureDetector(
                           child: Container(
-                            width: 130,
-                            height: 220,
+                            width: mainObjSize.width,
+                            height: mainObjSize.height,
                             decoration: BoxDecoration(
                               color: stack.stackColor, //stackColor,
                               border: Border.all(
