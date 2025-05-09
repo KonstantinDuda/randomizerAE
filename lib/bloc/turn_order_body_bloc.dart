@@ -73,9 +73,50 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
   void _onDelWild(TurnOrderBodyDelWildEvent event, Emitter<TurnOrderBodyState> emit) {
     // Handle the delete wild event
+    List<AECard> newAlreadyCards = [];
+    newAlreadyCards.add(AECard(
+      id: 5,
+      text: 'Wild',
+      imgPath: 'assets/images/wild.png'));
+
+    for (var i = 0; i < stack.cards.length; i++) {
+      if(stack.cards[i].id == 5) {
+        stack.cards.removeAt(i);
+      }
+    }
+
+    print("TurnOrderBodyBlock onDelWild stack.cards after Wild deleted == ${stack.cards} \n");
+    alreadyPlayed = CardsStack(
+      id: stack.id,
+      name: stack.name,
+      isActive: false,
+      stackType: StackType.turnOrder,
+      stackColor: stack.stackColor,
+      cards: newAlreadyCards,
+    );
+
+    
+    List<AECard> newCardsList = stack.cards;
+    var newStack = CardsStack(
+      id: -1, //stack.id,
+      name: stack.name,
+      isActive: stack.isActive,
+      stackType: StackType.turnOrder,
+      stackColor: stack.stackColor,
+      cards: newCardsList,
+    );      // Something is wrong here
+
+    var newAlreadyPlayed = CardsStack(
+      id: -2, // alreadyPlayed.id,
+      name: alreadyPlayed.name,
+      isActive: alreadyPlayed.isActive,
+      stackType: StackType.turnOrder,
+      stackColor: alreadyPlayed.stackColor,
+      cards: newAlreadyCards,
+    );   
 
 
-    emit(TurnOrderBodySuccessActionState(stack, alreadyPlayed));
+    emit(TurnOrderBodySuccessActionState(newStack, newAlreadyPlayed));
   }
 
   void _onShuffle(TurnOrderBodyShuffleEvent event, Emitter<TurnOrderBodyState> emit) {
@@ -91,10 +132,22 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
   void _onChangeSequence(TurnOrderBodyChangeSequenceEvent event, 
                               Emitter<TurnOrderBodyState> emit) {
-    // Handle the change sequence event
+    var newCardsList = event.list;
 
+     var newStack = CardsStack(
+      id: stack.id,
+      name: stack.name,
+      isActive: stack.isActive,
+      stackType: stack.stackType,
+      stackColor: stack.stackColor,
+      cards: newCardsList,
+    ); 
+    stack = newStack;
+    print("TurnOrderBodyBlock _onChangeSequence "
+          "stack == $stack \n "
+          "newStack.cards == ${newStack.cards} \n ");
 
-    emit(TurnOrderBodySuccessActionState(stack, alreadyPlayed));
+    emit(TurnOrderBodySuccessActionState(newStack, alreadyPlayed));
   }
 
   void _onChangeActiveStack(TurnOrderBodyChangeActiveStackEvent  event, 

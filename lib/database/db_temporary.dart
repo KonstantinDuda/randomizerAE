@@ -113,7 +113,7 @@ class DbTemporary {
     name: 'Turn Order One Bliz',
     isActive: false,
     stackType: StackType.turnOrder,
-    stackColor: Colors.green,
+    stackColor: Colors.green, //Colors.grey.shade700,
     cards: turnOrderOneBlizList,
   );
   

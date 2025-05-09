@@ -4,6 +4,8 @@ import 'package:randomizer_new/bloc/event_state/turn_order_body_es.dart';
 import 'package:randomizer_new/bloc/turn_order_body_bloc.dart';
 import 'package:randomizer_new/database/cards_stack.dart';
 
+import 'dialog_ch_seq.dart';
+
 class TurnOrderBody extends StatefulWidget {
   const TurnOrderBody({super.key});
 
@@ -37,8 +39,9 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
       late CardsStack alreadyPlayed;
       late List<AECard> even = [];
       late List<AECard> odd = [];
-      
       List<Widget> varGridList = [];
+      late Widget gridListSecondObj;
+
       if(state is TurnOrderBodySuccessActionState) {
         stackColor = state.stack.stackColor;
         stack = state.stack;
@@ -55,7 +58,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
         });
       }
 
-      gridObj(String text) {
+      gridObj(String text, bool newObj) {
         print("root_body.dart gridObj()");
         return Container(
           height: contetnBodySize.height / 2 -10,
@@ -64,8 +67,8 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
             border: Border.all(
-              color: Colors.black,
-              width: 2,
+              color: newObj ? Colors.lightGreen : Colors.black,
+              width: newObj ? 4 : 2,
             ),
           ),
           child: Center(
@@ -79,7 +82,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
       gridObjLimiter(String text) {
         return Column(
           children: [
-            gridObj(text),
+            gridObj(text, true),
             Container(
               height: contetnBodySize.height / 2 -10,
               width: contetnBodySize.height / 3 - 10,
@@ -89,7 +92,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
         );
       }
 
-      gridColumnObj(/*String text*/ int id) {
+      gridColumnObj(int id, bool topObjIsNew, bool bottomObjIsNew) {
         var firstText = '';
         var secondText = '';
         if(even.isNotEmpty) {
@@ -105,8 +108,9 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
               //padding: const EdgeInsets.only(right: 10, left: 10),
               child: Column(
                 children: [
-                  gridObj(firstText),
-                  gridObj(secondText),
+                  gridObj(secondText, topObjIsNew),
+                  gridObj(firstText, bottomObjIsNew),
+                  
                 ],
               ),
             );
@@ -125,29 +129,20 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
             if(i % 2 == 0) {
               even.add(alreadyPlayed.cards[i]);
               varGridList.insert(0, gridObjLimiter(alreadyPlayed.cards[i].text));
-            //varGridList.add(gridObjLimiter(alreadyPlayed.cards[i].text));
+              if(varGridList.length > 1) {
+                varGridList.removeAt(1);
+                varGridList.insert(1, gridListSecondObj);
+              }
             } else {
               odd.add(alreadyPlayed.cards[i]);
               varGridList.removeAt(0);
-              varGridList.insert(0, gridColumnObj(alreadyPlayed.cards[i].id));
-              //varGridList.removeLast();
-              //varGridList.add(gridColumnObj(alreadyPlayed.cards[i].id));           
+              varGridList.insert(0, gridColumnObj(
+                alreadyPlayed.cards[i].id, true, false));
+              gridListSecondObj = gridColumnObj(
+                alreadyPlayed.cards[i].id, false, false);        
             }
-            //controller.animateTo(controller.position.maxScrollExtent, 
-            //      duration: const Duration(seconds: 1), curve: Curves.easeIn);
-             //varGridList.add(gridColumnObj(alreadyPlayed.cards[i].id));
            }
         }
-
-        // if(alrereadyPlayed.id != 0) {
-        //   for (var i = 0; i < alrereadyPlayed.cards.length; i++) {
-        //     varGridList.add(gridObj(alrereadyPlayed.cards[i].text));
-        //   }
-        //   print("root_body.dart gridList() varGridList == ${varGridList.length} \n");
-        // } else {
-        //   print("root_body.dart gridList() else \n");
-        //   varGridList.clear();
-        // }
         return varGridList;
       }
 
@@ -218,7 +213,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                 //     ...gridList(),
                 //   ]),
                 child: ListView(
-                  reverse: true,
+                  //reverse: true,
                   controller: controller,
                   scrollDirection: Axis.horizontal,
                   children: <Widget>[
@@ -230,12 +225,9 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                 
 
               
-              
+              // Change sequance
               Stack(
                     children: [
-
-                  
-                      // Change sequance
                       Align(
                         alignment: Alignment.bottomLeft,
                         child: GestureDetector(
@@ -260,6 +252,12 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                           ),
                           onTap: () {
                             print("Change sequance tapped");
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return ChangeSequanceDialog(list: stack.cards);
+                              },
+                            );
                           },
                       ),),
 
@@ -321,6 +319,9 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                             ),
                           ),
                           onTap: () {
+                            if(alreadyPlayed.cards.isEmpty) {
+                              context.read<TurnOrderBodyBloc>().add(const TurnOrderBodyDelWildEvent());
+                            }
                             print("Discard wild tapped");
                           },
                         ),

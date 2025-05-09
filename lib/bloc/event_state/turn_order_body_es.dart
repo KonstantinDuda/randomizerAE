@@ -23,7 +23,12 @@ class TurnOrderBodyShuffleEvent extends TurnOrderBodyEvent {
 }
 
 class TurnOrderBodyChangeSequenceEvent extends TurnOrderBodyEvent {
-  const TurnOrderBodyChangeSequenceEvent();
+  final List<AECard> list;
+  
+  const TurnOrderBodyChangeSequenceEvent([this.list = const []]);
+
+  @override
+  List<Object> get props => [list];
 }
 
 class TurnOrderBodyChangeActiveStackEvent extends TurnOrderBodyEvent {
