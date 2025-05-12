@@ -25,12 +25,6 @@ class DBProvider {
     //if (_aeonsEndDatabase != null) return _aeonsEndDatabase;
 
     _aeonsEndDatabase = await initDatabase();
-    print("Database was initialized \n");
-    print("Database was initialized \n");
-    print("Database was initialized \n");
-    print("Database was initialized \n");
-    print("Database was initialized \n");
-    print("Database was initialized \n");
     return _aeonsEndDatabase;
   }
 

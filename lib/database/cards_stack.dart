@@ -103,16 +103,27 @@ class HeroStack {
   CardsStack heroStack;
   int energyClosetCount;
   String ability;
-  String feature;
+
+// Support things  
+  int energyPointCount = 0;
+  String description = "";
+  String feature = "";
+  List <CardsStack> suportStacks = [];
+  int suportThingsCount = 0;
 
   HeroStack({
     required this.id,
     required this.heroStack,
     required this.energyClosetCount,
     required this.ability,
-    required this.feature,
   });
 
+  HeroStack.empty({
+    this.id = 0,
+    this.heroStack = const CardsStack.empty(),
+    this.energyClosetCount = 0,
+    this.ability = '',
+  });
   // TODO: add toJson and fromJson methods
 
   @override

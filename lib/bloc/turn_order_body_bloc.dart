@@ -121,13 +121,19 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
   void _onShuffle(TurnOrderBodyShuffleEvent event, Emitter<TurnOrderBodyState> emit) {
     // Handle the shuffle event
-    final database = DbTemporary();
-
-    if(stack.cards.isEmpty) {
-      stack = database.getActiveStack();
-      stack.cards.shuffle();
-    emit(TurnOrderBodySuccessActionState(stack, alreadyPlayed));
-  }
+  print("TurnOrderBodyBlock _onShuffle stack.cards.length == ${stack.cards.length} \n");
+    stack = database.getActiveStack();
+    stack.cards.shuffle();
+    alreadyPlayed = const CardsStack.empty();
+    var newStack = CardsStack(
+      id: -1, //stack.id,
+      name: stack.name,
+      isActive: stack.isActive,
+      stackType: StackType.turnOrder,
+      stackColor: stack.stackColor,
+      cards: stack.cards,
+    );
+    emit(TurnOrderBodySuccessActionState(newStack, alreadyPlayed));
   }
 
   void _onChangeSequence(TurnOrderBodyChangeSequenceEvent event, 
@@ -156,6 +162,8 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     var newAlreadyPlayed = const CardsStack.empty();
     database.setActiveStack(event.id);
     var newStack = database.getActiveStack();
+    stack = newStack;
+    alreadyPlayed = newAlreadyPlayed;
     print("TurnOrderBodyBlock. _onChangeActiveStack. "
           "newAlreadyPlayed.cards == ${newAlreadyPlayed.cards} \n "
           "newStack.cards == ${newStack.cards}");

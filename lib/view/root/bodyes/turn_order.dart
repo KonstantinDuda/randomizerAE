@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:randomizer_new/bloc/event_state/turn_order_body_es.dart';
 import 'package:randomizer_new/bloc/turn_order_body_bloc.dart';
 import 'package:randomizer_new/database/cards_stack.dart';
+import 'package:randomizer_new/view/root/bodyes/dialog_top_card.dart';
 
 import 'dialog_ch_seq.dart';
 
@@ -30,7 +31,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
       contentContainerSize.width - 10,
       contentContainerSize.height - mainObjSize.height - 5,
     );
-    ScrollController controller = ScrollController();
+    ScrollController myController = ScrollController();
 
     return BlocBuilder<TurnOrderBodyBloc, TurnOrderBodyState>(builder: (context, state) {
 
@@ -41,6 +42,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
       late List<AECard> odd = [];
       List<Widget> varGridList = [];
       late Widget gridListSecondObj;
+
 
       if(state is TurnOrderBodySuccessActionState) {
         stackColor = state.stack.stackColor;
@@ -78,6 +80,22 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
           ),
         );
       }
+
+      Widget gridListLastObj = Column(
+          children: [
+            Container(
+              height: contetnBodySize.height / 2 -10,
+              width: contetnBodySize.height / 3 - 10,
+              margin: const EdgeInsets.only(top: 5, left: 10),
+            ),
+            Container(
+              height: contetnBodySize.height / 2 -10,
+              width: contetnBodySize.height / 3 - 10,
+              margin: const EdgeInsets.only(top: 5, left: 10),
+            ),
+          ],
+        );
+      
 
       gridObjLimiter(String text) {
         return Column(
@@ -123,24 +141,75 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
       }
 
       gridList() {
-        print("root_body.dart gridList()");    
+        // Функція повертає список віджетів що потім відобразиться на екрані     
+        print("root_body.dart gridList()");
+        // alreadyPlayed ініціалізується empty обьєктом або тим що приходить з
+        // блоку, тому перевірка саме по ідентифікатору.
+        // пустий обьєкт завжди має id == 0. 
         if(alreadyPlayed.id != 0) {
+          // Проходжусь по списку карток що вже розіграні
           for (var i = 0; i < alreadyPlayed.cards.length; i++) {
+            // Розділяю картки на парні і непарні Тому що відмальовую по 2 карти в 
+            // одному віджеті. 
             if(i % 2 == 0) {
               even.add(alreadyPlayed.cards[i]);
-              varGridList.insert(0, gridObjLimiter(alreadyPlayed.cards[i].text));
-              if(varGridList.length > 1) {
-                varGridList.removeAt(1);
-                varGridList.insert(1, gridListSecondObj);
+              print("turn_order gridList() $i % 2 == 0");
+              
+              if(varGridList.isNotEmpty) {
+                if(varGridList.last == gridListLastObj) {
+                  // Якщо список віджетів не пустий і якщо останній віджет це пустий 
+                  // віджет що створений для коректної прокрутки екрану ( список 
+                  // прокручувався до останнього елемента) тільки коли створювався 
+                  // другий віджет в парі. Мене це не влаштовувало тож я створив таку 
+                  // пустишку що заповнює список і він прокручується як мені потрібно. 
+                  // Та мені треба видаляти цю пустишку щоб вона не займала місце 
+                  // між картками на екрані користувача
+                  varGridList.removeLast();
+                }
               }
+              // Список непарних елементів списку створюється коли вже є повноцінний 
+              // парний елемент. І якщо такий є, а я планую відмалювати ще один 
+              // віджет то старий мені треба перемалювати так щоб у ньому не було 
+              // картки з зеленим бортиком, що вказує на останню розіграну картку.
+              // Замінюю її заздалегідь створеним парним віджетом але зі звичайними 
+              // чорними бортиками.
+              if(odd.isNotEmpty) {
+                varGridList.removeAt(varGridList.length - 1);
+                varGridList.add(gridListSecondObj);
+              }
+              // Потім додаю не звичайний віджет, а лімітер (обмежувач) що не має 
+              // нижньої картки, а має тільки верхню і пустий простір знизу
+              varGridList.add(gridObjLimiter(alreadyPlayed.cards[i].text));
+              
             } else {
               odd.add(alreadyPlayed.cards[i]);
-              varGridList.removeAt(0);
-              varGridList.insert(0, gridColumnObj(
-                alreadyPlayed.cards[i].id, true, false));
+              print("turn_order gridList() i % 2 != 0");
+              
+              // Щоразу після того як я додав до непарного списку хоч один елемент
+              // в умові з парними я починаю створювати по 2 віджета. Правильний та
+              // пустий. Пустий віджет я видаляю тут, перш ніж додавати новий.
+              // Якщо останній віджет пустишка АБО в списку непарних карт довжина
+              // менше 2 то я видаляю останній, тому що мені треба видалити лімітер 
+              // що я створив раніше і замінити його на повноцінний парний елемент
+              if(varGridList.length > 1)
+                {varGridList.removeLast();}
+              if(varGridList.last == gridListLastObj || odd.length < 2) {
+                varGridList.removeLast();
+              }
+              varGridList.add(gridColumnObj(alreadyPlayed.cards[i].id, 
+                true, false));
+              // Мені не потрібно створювати пустишку для прокрутки якщо в секу вже 
+              // 1 або менше карт.
+              if(stack.cards.length > 1) {
+                varGridList.add(gridListLastObj);
+              }
+             
+             // Потім я записую такий самий парний елемент, але без зеленої рамки
               gridListSecondObj = gridColumnObj(
                 alreadyPlayed.cards[i].id, false, false);        
             }
+            myController.jumpTo(myController.position.maxScrollExtent);
+            
            }
         }
         return varGridList;
@@ -207,6 +276,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                 margin: const EdgeInsets.only(top: 5, left: 5, right: 5),
                 height: contetnBodySize.height,
                 width: contetnBodySize.width,
+                alignment: Alignment.center,
                 // child: GridView.count(
                 //   crossAxisCount: 4, 
                 //   children: <Widget>[
@@ -214,7 +284,8 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                 //   ]),
                 child: ListView(
                   //reverse: true,
-                  controller: controller,
+                  //shrinkWrap: true,
+                  controller: myController,
                   scrollDirection: Axis.horizontal,
                   children: <Widget>[
                     ...gridList(),
@@ -287,7 +358,22 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                           ),
                           onTap: () {
                             print("Main object tapped");
+                            if(stack.cards.isEmpty) {
+                              context.read<TurnOrderBodyBloc>().add(const TurnOrderBodyShuffleEvent());
+                            } else {
                             context.read<TurnOrderBodyBloc>().add(const TurnOrderBodyNextEvent());
+                            }
+                          },
+                          onLongPress: () {
+                            print("Main object long pressed");
+                            if(stack.cards.isNotEmpty) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return TopCardDialog(id: stack.cards.last.id , list: stack.cards);
+                              },
+                            );
+                            }
                           },
                         ),
                       ),

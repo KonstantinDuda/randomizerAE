@@ -115,8 +115,18 @@ class _RootAppBarState extends State<RootAppBar> {
                           ),
                         ),
                         onTap: () {
-                          context.read<TurnOrderBodyBloc>().add(TurnOrderBodyChangeActiveStackEvent(db[index].id));
-                          context.read<RootBodyProviderBloc>().add(RootBodyLoadingEvent());
+                          if(db[index].stackType == StackType.turnOrder) {
+                            context.read<TurnOrderBodyBloc>().add(TurnOrderBodyChangeActiveStackEvent(db[index].id));
+                            context.read<RootBodyProviderBloc>().add(const RootBodyTurnOrderEvent(CardsStack.empty()));
+                          } else if(db[index].stackType == StackType.friendFoe) {
+                            context.read<RootBodyProviderBloc>().add(RootBodyFriendFoeEvent());
+                          } else {
+                            context.read<RootBodyProviderBloc>().add(RootBodyLoadingEvent());
+                          }
+                          
+                          
+                          
+                          //context.read<RootBodyProviderBloc>().add(RootBodyLoadingEvent());
                         },
                       );
                     },

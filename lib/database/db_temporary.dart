@@ -16,6 +16,7 @@ class DbTemporary {
   CardsStack turnOrderFour = const CardsStack.empty();
   CardsStack turnOrderFourBliz = const CardsStack.empty();
   
+  List<HeroStack> friendfoeList = [];
   
   static final DbTemporary _dbProvider = DbTemporary._();
   DbTemporary._();
@@ -248,7 +249,7 @@ class DbTemporary {
   _dbStacks.add(turnOrderThreeBliz);
   _dbStacks.add(turnOrderFour);
   _dbStacks.add(turnOrderFourBliz);
-  setAvilableStacs();
+  //setAvilableStacs();
   _activeStack = _dbStacks[4];
   
   for (var element in _dbStacks) {
@@ -257,6 +258,114 @@ class DbTemporary {
   //db.createStack(turnOrderThree);
   //db.createStack(turnOrderThreeBliz);
   getStackFromDB(turnOrderThree.id);
+
+
+
+
+      //Friend and Foe creating
+  //Friend and Foe Cards
+  var cardDE = AECard(
+      id: 10,
+      text: 'Energize: \n Dalana, the Healer gains 2 charges. OR Any player gains 1 charge',
+      imgPath: 'assets/images/dalana energize.png',
+    );
+    var cardDS = AECard(
+      id: 11,
+      text: 'Soothing Aura: \n Any player draws a card. OR Any player gains 2 money tokens',
+      imgPath: 'assets/images/dalana soothing aura.png',
+    );
+    var cardDEn = AECard(
+      id: 12,
+      text: 'Enhance: \n Any player focuses a breach. OR Any player discards a prepped spell. '
+        'If they do. Dalana, the Healer gains 3 charges',
+      imgPath: 'assets/images/dalana enhance.png',
+    );
+    var cardDR = AECard(
+      id: 13,
+      text: 'Restore: \n Dalana, the Healer gains 2 charges. OR Any player returns a card '
+        'from their discard pile to their hand',
+      imgPath: 'assets/images/dalana restore.png',
+    );
+    var cardSCC = AECard(
+      id: 14,
+      text: 'Carrion Claw: \n The Scavenger gains 2 charges. OR Any player loses 2 charges',
+      imgPath: 'assets/images/scavenger carrion claw.png',
+    );
+    var cardSSW = AECard(
+      id: 15,
+      text: 'Screeching Wail: \n The Scavenger gains 1 charge. Any player may discard a prepped spell '
+        'that costs 3 money or more. If they dont, the Scavenger gains an additional 2 charges',
+      imgPath: 'assets/images/scavenger screeching wail.png',
+    );
+    var cardSR = AECard(
+      id: 16,
+      text: 'Reclaim: \n Any player discards their two most expensive cards in hand and then '
+        'draws a card. OR Gravehold suffers 3 damage',
+      imgPath: 'assets/images/scavenger reclaim.png',
+    );
+    var cardSSS = AECard(
+      id: 17,
+      text: 'Shadow Slash: \n Gravehold suffers 3 damage. OR The Scavenger gains 3 charges and the '
+        'friend gains 1 charge',
+      imgPath: 'assets/images/scavenger shadow slash.png',
+    );
+    /*var cardD = AECard(
+      id: 18,
+      text: '',
+      imgPath: 'assets/images/blitz.png',
+    );
+    var cardD = AECard(
+      id: 19,
+      text: '',
+      imgPath: 'assets/images/blitz.png',
+    );
+    var cardD = AECard(
+      id: 20,
+      text: '',
+      imgPath: 'assets/images/blitz.png',
+    );
+    var cardD = AECard(
+      id: 21,
+      text: '',
+      imgPath: 'assets/images/blitz.png',
+    );*/
+
+  // Freind and Foe stacks
+  CardsStack dalanaStack = CardsStack(
+    id: 9,
+    name: 'Dalana, the Healer',
+    isActive: true,
+    stackType: StackType.friendFoe,
+    stackColor: Colors.blue,
+    cards: [cardDE, cardDS, cardDEn, cardDR],
+  );
+  CardsStack scavengerStack = CardsStack(
+    id: 10,
+    name: 'The Scavenger',
+    isActive: true,
+    stackType: StackType.friendFoe,
+    stackColor: Colors.red,
+    cards: [cardSCC, cardSSW, cardSR, cardSSS],
+  );
+  _dbStacks.add(dalanaStack);
+  _dbStacks.add(scavengerStack);
+  setAvilableStacs();
+
+  // Friend and Foe HeroStacks
+  var friendDalanaTheHealer = HeroStack(
+    id: 1,
+    heroStack: dalanaStack,
+    energyClosetCount: 5,
+    ability: "Bandage: Any player orGravehold gains 4 life",
+  );
+  var foeScavenger = HeroStack(
+    id: 2,
+    heroStack: scavengerStack,
+    energyClosetCount: 4,
+    ability: "Cull the stragglers: The player with the lowest life suffers 4 damage",
+  );
+  friendfoeList.add(friendDalanaTheHealer);
+  friendfoeList.add(foeScavenger);
   }
 
   void setAvilableStacs() {
@@ -302,7 +411,6 @@ class DbTemporary {
   }
 
   updateAvialableStack(List<int> id) {
-
      print("DBTemporary updateAvialableStack id == $id");
      if(id != []) {
         for (var i = 0; i < _dbStacks.length; i++) {
@@ -335,22 +443,14 @@ class DbTemporary {
   //void setActiveStack(int id) async {
     //var as = await db.getStackById(id);
   void setActiveStack(int id) async {
-    /*var as = _dbStacks[0];
-    if(as.id != 0) {
-      _activeStack = as;
-    } else {
-      _activeStack = const CardsStack.empty();
-    }*/
     print(_activeStack.id);
     var newAS = await db.getStackById(id);
     print("DBTemporary setActiveStack($id) on $newAS \n color: ${newAS.stackColor}");
     _activeStack = newAS;
   }
 
-  //Future<CardsStack> getStackById(int id) async {
-    //var stack = await db.getStackById(id);
-    CardsStack getStackById(int id) {
-     var stack = _dbStacks[0];
+  CardsStack getStackById(int id) {
+    var stack = _dbStacks[0];
     if (stack.id != 0) {
       return stack;
     } else {
