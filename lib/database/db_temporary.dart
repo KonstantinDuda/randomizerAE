@@ -354,13 +354,15 @@ class DbTemporary {
   // Friend and Foe HeroStacks
   var friendDalanaTheHealer = HeroStack(
     id: 1,
-    heroStack: dalanaStack,
+    name: "Dalana, the Healer",
+    heroStacks: [dalanaStack],
     energyClosetCount: 5,
     ability: "Bandage: Any player orGravehold gains 4 life",
   );
   var foeScavenger = HeroStack(
     id: 2,
-    heroStack: scavengerStack,
+    name: "The Scavenger",
+    heroStacks: [scavengerStack],
     energyClosetCount: 4,
     ability: "Cull the stragglers: The player with the lowest life suffers 4 damage",
   );
@@ -376,7 +378,6 @@ class DbTemporary {
       }
     }
   }
-
 
   getStackFromDB(int id) async {
     var tos = await db.getStackById(turnOrderThree.id);
@@ -456,5 +457,20 @@ class DbTemporary {
     } else {
       return const CardsStack.empty();
     }
+  }
+
+  HeroStack getFriendFoeStackByStackId(int id) {
+    print("DBTemporary getFriendFoeStackByStackId($id) \n");
+    HeroStack heroStack;
+    for (var element in friendfoeList) {
+      for (var i = 0; i < element.heroStacks.length; i++) {
+        if (element.heroStacks[i].id == id) {
+          heroStack = element;
+          print("DBTemporary getFriendFoeStackByStackId($id) == $heroStack \n");
+        return heroStack;
+        }
+      }
+    }
+    return HeroStack.empty();
   }
 }

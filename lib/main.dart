@@ -5,6 +5,8 @@ import 'package:randomizer_new/bloc/event_state/turn_order_body_es.dart';
 import 'package:randomizer_new/bloc/turn_order_body_bloc.dart';
 import 'package:randomizer_new/database/db_temporary.dart';
 
+import 'bloc/event_state/friend_foe_body_es.dart';
+import 'bloc/friend_foe_body_bloc.dart';
 import 'bloc/observer.dart';
 import 'bloc/providers/provider_bloc.dart';
 import 'view/loading_page.dart';
@@ -33,7 +35,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return 
-    BlocProvider(create: (_) => TurnOrderBodyBloc()..add(const TurnOrderBodyNextEvent()),
+    //BlocProvider(create: (_) => TurnOrderBodyBloc()..add(const TurnOrderBodyNextEvent()),
+      MultiBlocProvider(providers: [
+        BlocProvider<TurnOrderBodyBloc>(
+          create: (_) => TurnOrderBodyBloc()..add(const TurnOrderBodyNextEvent()),
+        ),
+        BlocProvider<FriendFoeBodyBloc>(
+          create: (_) => FriendFoeBodyBloc()..add(const FriendFoeBodyNextEvent()),
+        ),
+      ],
       child: 
     MaterialApp(
       home: BlocBuilder<ProviderBloc, ProviderState>(

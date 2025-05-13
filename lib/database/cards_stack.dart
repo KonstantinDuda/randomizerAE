@@ -100,7 +100,8 @@ class CardsStack {
 
 class HeroStack {
   int id;
-  CardsStack heroStack;
+  String name;
+  //CardsStack heroStack;
   int energyClosetCount;
   String ability;
 
@@ -108,19 +109,21 @@ class HeroStack {
   int energyPointCount = 0;
   String description = "";
   String feature = "";
-  List <CardsStack> suportStacks = [];
+  List <CardsStack> heroStacks = [];
   int suportThingsCount = 0;
 
   HeroStack({
     required this.id,
-    required this.heroStack,
+    required this.name,
+    required this.heroStacks,
     required this.energyClosetCount,
     required this.ability,
   });
 
   HeroStack.empty({
     this.id = 0,
-    this.heroStack = const CardsStack.empty(),
+    this.name = "",
+    this.heroStacks = const [],
     this.energyClosetCount = 0,
     this.ability = '',
   });
@@ -128,7 +131,7 @@ class HeroStack {
 
   @override
   String toString() {
-    var result = 'CardsStack{heroData.name: ${heroStack.name}, energyClosetCount:';
+    var result = 'CardsStack {heroData.name: ${heroStacks[0].name}';
     return result;
   }
 }

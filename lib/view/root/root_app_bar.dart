@@ -18,9 +18,9 @@ class RootAppBar extends StatefulWidget {
 
 class _RootAppBarState extends State<RootAppBar> {
   DbTemporary dbObj = DbTemporary();
-  /*late */List<CardsStack> db = [];
-  
-@override
+  /*late */ List<CardsStack> db = [];
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -40,7 +40,7 @@ class _RootAppBarState extends State<RootAppBar> {
       width: size.width,
       color: Colors.blue,
       child: Container(
-        //width: size.width -140,
+        width: size.width - 140,
         margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -48,18 +48,16 @@ class _RootAppBarState extends State<RootAppBar> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text( 'Aeons End Randomizer' ),
+                const Text('Aeons End Randomizer'),
                 Container(
                   margin: const EdgeInsets.only(left: 10),
-                  child: Stack(
-                    children: [
-                      const Icon(Icons.circle_outlined),
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(4, 3, 0, 0),
-                        child: const Icon(Icons.question_mark, size: 16),
-                        ),
-                    ]
-                  ),
+                  child: Stack(children: [
+                    const Icon(Icons.circle_outlined),
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(4, 3, 0, 0),
+                      child: const Icon(Icons.question_mark, size: 16),
+                    ),
+                  ]),
                 ),
               ],
             ),
@@ -73,20 +71,19 @@ class _RootAppBarState extends State<RootAppBar> {
                         width: 70,
                         height: 50,
                         decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
-                          ),
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 2,
-                          )
-                        ),
+                            borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(20),
+                              bottomRight: Radius.circular(20),
+                            ),
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 2,
+                            )),
                       ),
                       Container(
                         margin: const EdgeInsets.only(left: 20),
                         child: const Icon(Icons.arrow_right, size: 50),
-                        ),
+                      ),
                     ],
                   ),
                   onTap: () {
@@ -115,17 +112,26 @@ class _RootAppBarState extends State<RootAppBar> {
                           ),
                         ),
                         onTap: () {
-                          if(db[index].stackType == StackType.turnOrder) {
-                            context.read<TurnOrderBodyBloc>().add(TurnOrderBodyChangeActiveStackEvent(db[index].id));
-                            context.read<RootBodyProviderBloc>().add(const RootBodyTurnOrderEvent(CardsStack.empty()));
-                          } else if(db[index].stackType == StackType.friendFoe) {
-                            context.read<RootBodyProviderBloc>().add(RootBodyFriendFoeEvent());
+                          if (db[index].stackType == StackType.turnOrder) {
+                            context.read<TurnOrderBodyBloc>().add(
+                                TurnOrderBodyChangeActiveStackEvent(
+                                    db[index].id));
+                            context.read<RootBodyProviderBloc>().add(
+                                const RootBodyTurnOrderEvent(
+                                    CardsStack.empty()));
+                          } else if (db[index].stackType == StackType.friendFoe) {
+                            var heroStack =
+                                dbObj.getFriendFoeStackByStackId(db[index].id);
+                                print("RootAppBar heroStack == $heroStack \n");
+                            context
+                                .read<RootBodyProviderBloc>()
+                                .add(RootBodyFriendFoeEvent(heroStack));
                           } else {
-                            context.read<RootBodyProviderBloc>().add(RootBodyLoadingEvent());
+                            context
+                                .read<RootBodyProviderBloc>()
+                                .add(RootBodyLoadingEvent());
                           }
-                          
-                          
-                          
+
                           //context.read<RootBodyProviderBloc>().add(RootBodyLoadingEvent());
                         },
                       );

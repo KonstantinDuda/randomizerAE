@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:randomizer_new/database/cards_stack.dart';
 import 'package:randomizer_new/view/root/root_app_bar.dart';
 import 'package:randomizer_new/view/root/bodyes/turn_order.dart';
 
@@ -45,7 +44,7 @@ class _RootPage extends State<RootPage> {
               } else if(state is RootBodyTurnOrderState) {
                 return const TurnOrderBody();
               } else if(state is RootBodyFriendFoeState) {
-                return FriendFoeBody(HeroStack.empty());
+                return FriendFoeBody(state.stack);
               } else {
                 return const LoadingRootBodyPage();
               }

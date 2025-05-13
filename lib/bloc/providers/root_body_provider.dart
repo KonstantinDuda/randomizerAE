@@ -21,7 +21,14 @@ class RootBodyTurnOrderEvent extends RootBodyProviderEvent {
   List<Object> get props => [stack];
 }
 
-class RootBodyFriendFoeEvent extends RootBodyProviderEvent {}
+class RootBodyFriendFoeEvent extends RootBodyProviderEvent {
+  final HeroStack stack;
+  
+  const RootBodyFriendFoeEvent(this.stack);
+  
+  @override
+  List<Object> get props => [stack];
+}
 
 
 
@@ -44,12 +51,19 @@ class RootBodyTurnOrderState extends RootBodyProviderState {
   List<Object> get props => [stack];
 }
 
-class RootBodyFriendFoeState extends RootBodyProviderState {}
+class RootBodyFriendFoeState extends RootBodyProviderState {
+  final HeroStack stack;
+
+  const RootBodyFriendFoeState(this.stack);
+
+  @override
+  List<Object> get props => [stack];
+}
 
 class RootBodyProviderBloc extends Bloc<RootBodyProviderEvent, RootBodyProviderState> {
   RootBodyProviderBloc() : super(const RootBodyTurnOrderState(CardsStack.empty())) {
     on<RootBodyLoadingEvent>((event, emit) => emit(RootBodyLoadingState()));
     on<RootBodyTurnOrderEvent>((event, emit) => emit(RootBodyTurnOrderState(event.stack)));
-    on<RootBodyFriendFoeEvent>((event, emit) => emit(RootBodyFriendFoeState()));
+    on<RootBodyFriendFoeEvent>((event, emit) => emit(RootBodyFriendFoeState(event.stack)));
   }
 }
