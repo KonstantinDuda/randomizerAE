@@ -44,22 +44,6 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
       late Widget gridListSecondObj;
 
 
-      if(state is TurnOrderBodySuccessActionState) {
-        stackColor = state.stack.stackColor;
-        stack = state.stack;
-        alreadyPlayed = state.alreadyPlayed;
-      } else {
-        print("TurnOrderBody Page state is NOT TurnOrderBodySuccessActionState");
-        stackColor = Colors.white;
-        stack = const CardsStack.empty();
-        alreadyPlayed =  const CardsStack.empty();
-        setState(() {
-        //   stackColor = Colors.white;
-        //   stack = const CardsStack.empty();
-        //   alrereadyPlayed =  const CardsStack.empty();
-        });
-      }
-
       gridObj(String text, bool newObj) {
         print("root_body.dart gridObj()");
         return Container(
@@ -215,6 +199,23 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
         return varGridList;
       }
 
+      if(state is TurnOrderBodySuccessActionState) {
+        stackColor = state.stack.stackColor;
+        stack = state.stack;
+        alreadyPlayed = state.alreadyPlayed;
+        
+      } else {
+        print("TurnOrderBody Page state is NOT TurnOrderBodySuccessActionState");
+        stackColor = Colors.white;
+        stack = const CardsStack.empty();
+        alreadyPlayed =  const CardsStack.empty();
+        setState(() {
+        //   stackColor = Colors.white;
+        //   stack = const CardsStack.empty();
+        //   alrereadyPlayed =  const CardsStack.empty();
+        });
+      }
+
 
     return Container(
       color: Colors.blue,
@@ -277,13 +278,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                 height: contetnBodySize.height,
                 width: contetnBodySize.width,
                 alignment: Alignment.center,
-                // child: GridView.count(
-                //   crossAxisCount: 4, 
-                //   children: <Widget>[
-                //     ...gridList(),
-                //   ]),
                 child: ListView(
-                  //reverse: true,
                   //shrinkWrap: true,
                   controller: myController,
                   scrollDirection: Axis.horizontal,
@@ -361,7 +356,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                             if(stack.cards.isEmpty) {
                               context.read<TurnOrderBodyBloc>().add(const TurnOrderBodyShuffleEvent());
                             } else {
-                            context.read<TurnOrderBodyBloc>().add(const TurnOrderBodyNextEvent());
+                              context.read<TurnOrderBodyBloc>().add(const TurnOrderBodyNextEvent());
                             }
                           },
                           onLongPress: () {

@@ -131,7 +131,7 @@ class HeroStack {
 
   @override
   String toString() {
-    var result = 'CardsStack {heroData.name: ${heroStacks[0].name}';
+    var result = 'CardsStack {heroData.name: ${heroStacks[0].name}}';
     return result;
   }
 }

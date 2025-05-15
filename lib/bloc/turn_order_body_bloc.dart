@@ -23,9 +23,9 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
     if(stack.id == 0 || stack.cards.isEmpty) {
       stack = database.getActiveStack();
-      if(alreadyPlayed.id != 0) {
+      //if(alreadyPlayed.id != 0) {
         alreadyPlayed = const CardsStack.empty();
-      }
+      //}
       stack.cards.shuffle();
       print("TurnOrderBodyBloc _onNext stack.id == 0 stack.cards == ${stack.cards} \n");
       //emit(TurnOrderBodySuccessActionState(stack, alreadyPlayed));
@@ -51,7 +51,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
       stackType: StackType.turnOrder,
       stackColor: stack.stackColor,
       cards: stack.cards,
-    );      // Something is wrong here
+    );
 
     var newAlreadyPlayed = CardsStack(
       id: -2,
@@ -60,7 +60,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
       stackType: StackType.turnOrder,
       stackColor: alreadyPlayed.stackColor,
       cards: alreadyPlayed.cards,
-    );       // Something is wrong here
+    );
 
 
     print("TurnOrderBodyBloc _onNext stack.id != 0 stack == $stack \n "
@@ -158,12 +158,26 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
   void _onChangeActiveStack(TurnOrderBodyChangeActiveStackEvent  event, 
                                       Emitter<TurnOrderBodyState> emit) {
-    emit(const TurnOrderBodyClearScreenState());
-    var newAlreadyPlayed = const CardsStack.empty();
-    database.setActiveStack(event.id);
-    var newStack = database.getActiveStack();
-    stack = newStack;
-    alreadyPlayed = newAlreadyPlayed;
+    //emit(const TurnOrderBodyClearScreenState());
+    CardsStack newAlreadyPlayed = const CardsStack.empty();
+    CardsStack newStack = const CardsStack.empty();
+    for (var i in database.friendfoeList) {
+      for (var j in i.heroStacks) {
+        if(j.id != event.id) {
+          newAlreadyPlayed = const CardsStack.empty();
+          database.setActiveStack(event.id);
+          newStack = database.getActiveStack();
+          stack = newStack;
+          alreadyPlayed = newAlreadyPlayed;
+        } else {
+          print("TurnOrderBodyBlock. _onChangeActiveStack. else");
+          newAlreadyPlayed = alreadyPlayed;
+          newStack = stack;
+        }
+      }
+    }
+
+    
     print("TurnOrderBodyBlock. _onChangeActiveStack. "
           "newAlreadyPlayed.cards == ${newAlreadyPlayed.cards} \n "
           "newStack.cards == ${newStack.cards}");

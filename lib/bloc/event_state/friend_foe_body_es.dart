@@ -11,7 +11,11 @@ class FriendFoeBodyEvent extends Equatable {
 }
 
 class FriendFoeBodyNextEvent extends FriendFoeBodyEvent {
-  const FriendFoeBodyNextEvent();
+  final int heroId;
+  const FriendFoeBodyNextEvent(this.heroId);
+
+  @override
+  List<Object> get props => [heroId];
 }
 
 class FriendFoeChangeActiveStackEvent extends FriendFoeBodyEvent {

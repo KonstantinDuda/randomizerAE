@@ -5,8 +5,10 @@ import 'package:randomizer_new/database/db_provider.dart';
 class DbTemporary {
   var db = DBProvider();
   final List<CardsStack> _dbStacks = [];
-  List<CardsStack> _availableStacks = [];
+  final List<CardsStack> _availableStacks = [];
   CardsStack _activeStack = const CardsStack.empty();
+  CardsStack _activeFriendStack = const CardsStack.empty();
+  CardsStack _activeFoeStack = const CardsStack.empty();
   CardsStack turnOrderOne = const CardsStack.empty();
   CardsStack turnOrderOneBliz = const CardsStack.empty();
   CardsStack turnOrderTwo = const CardsStack.empty();
@@ -349,6 +351,8 @@ class DbTemporary {
   );
   _dbStacks.add(dalanaStack);
   _dbStacks.add(scavengerStack);
+  setActiveFoeStack(scavengerStack.id);
+  setActiveFriendStack(dalanaStack.id);
   setAvilableStacs();
 
   // Friend and Foe HeroStacks
@@ -357,7 +361,7 @@ class DbTemporary {
     name: "Dalana, the Healer",
     heroStacks: [dalanaStack],
     energyClosetCount: 5,
-    ability: "Bandage: Any player orGravehold gains 4 life",
+    ability: "Bandage: Any player or Gravehold gains 4 life",
   );
   var foeScavenger = HeroStack(
     id: 2,
@@ -448,6 +452,21 @@ class DbTemporary {
     var newAS = await db.getStackById(id);
     print("DBTemporary setActiveStack($id) on $newAS \n color: ${newAS.stackColor}");
     _activeStack = newAS;
+  }
+
+  void setActiveFriendStack(int id) async {
+    _activeFriendStack = await db.getStackById(id);
+  }
+
+  void setActiveFoeStack(int id) async {
+    _activeFoeStack = await db.getStackById(id);
+  }
+
+  CardsStack getActiveFriendStack() {
+    return _activeFriendStack;
+  }
+  CardsStack getActiveFoeStack() {
+    return _activeFoeStack;
   }
 
   CardsStack getStackById(int id) {
