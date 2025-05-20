@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
           create: (_) => TurnOrderBodyBloc()..add(const TurnOrderBodyNextEvent()),
         ),
         BlocProvider<FriendFoeBodyBloc>(
-          create: (context) => FriendFoeBodyBloc()..add(const FriendFoeBodyNextEvent(0)),
+          create: (context) => FriendFoeBodyBloc()..add(const FriendFoeBodyInitialEvent(0)),
         ),
       ],
       child: 

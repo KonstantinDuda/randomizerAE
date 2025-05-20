@@ -493,7 +493,7 @@ class DbTemporary {
     }
   }
 
-  HeroStack getFriendFoeStackByStackId(int id) {
+  HeroStack getHeroStackByStackId(int id) {
     print("DBTemporary getFriendFoeStackByStackId($id) \n");
     HeroStack heroStack;
     for (var element in friendfoeList) {

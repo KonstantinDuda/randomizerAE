@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:randomizer_new/database/cards_stack.dart';
+import 'package:randomizer_new/database/db_temporary.dart';
 import 'package:randomizer_new/view/root/bodyes/my_card.dart';
 
 import '../../../bloc/event_state/friend_foe_body_es.dart';
@@ -8,9 +9,7 @@ import '../../../bloc/friend_foe_body_bloc.dart';
 import '../../../bloc/providers/root_body_provider.dart';
 
 class FriendFoeBody extends StatefulWidget {
-  //final HeroStack stack;
-
-  const FriendFoeBody(/*this.stack,*/ {super.key});
+  const FriendFoeBody({super.key});
 
   @override
   State<FriendFoeBody> createState() => _FriendFoeBody();
@@ -19,13 +18,7 @@ class FriendFoeBody extends StatefulWidget {
 class _FriendFoeBody extends State<FriendFoeBody> {
   @override
   Widget build(BuildContext context) {
-    //bool isHeroEmpty = widget.stack.id == 0 ? true : false;
-    //bool isCardOptional = true;
-
-    //var ability = widget.stack.ability.split(":");
-    //var abilityName = ability[0];
-    //var abilityDescription = ability[1];
-
+    
     final Size bodyContainerSize = Size(
       MediaQuery.of(context).size.width,
       MediaQuery.of(context).size.height - 104.5,
@@ -38,20 +31,18 @@ class _FriendFoeBody extends State<FriendFoeBody> {
 
     return BlocBuilder<FriendFoeBodyBloc, FriendFoeBodyState>(
         builder: (context, state) {
-      //List<AECard> cards = widget.stack.heroStacks[0].cards;
-      //var cardNameText = cards[0].text.split(":");
-      //var cardTexts = cardNameText[1].split("OR");
-
-      HeroStack hero = HeroStack.empty();
       
+      var database = DbTemporary();
+      HeroStack hero = HeroStack.empty();
       var isHeroEmpty = hero.id == 0 ? true : false;
       var abilityName = "";
       var abilityDescription = "";
+      
       late CardsStack stack;
       late CardsStack alreadyPlayed;
       List<String> cardNamesText = [];
       List<String> cardTextsBeforeOr = [];
-      bool isCardOptional = true;
+      List<bool> isCardOptional = [];
       List<String> cardTextsAfterOr = [];
 
       List<Widget> widgetList = [];
@@ -59,36 +50,47 @@ class _FriendFoeBody extends State<FriendFoeBody> {
       if (state is FriendFoeBodySuccessActionState) {
         stack = state.stack;
         alreadyPlayed = state.alreadyPlayed;
+
+        hero = database.getHeroStackByStackId(stack.id);
+        hero.id == 0 ? isHeroEmpty = true : isHeroEmpty = false;
+        abilityName = hero.ability.split(":")[0];
+        abilityDescription = hero.ability.split(":")[1];
+
         for (var element in stack.cards) {
           var name = element.text.split(":");
           cardNamesText.add(name[0]);
           var texts = name[1].split("OR");
           cardTextsBeforeOr.add(texts[0]);
           if (texts.length > 1) {
+            isCardOptional.add(true);
             cardTextsAfterOr.add(texts[1]);
           } else {
-            isCardOptional = false;
+            isCardOptional.add(false);
             cardTextsAfterOr.add("");
           }
         }
+
+        //setState(() { });
       } else {
         stack = const CardsStack.empty();
         alreadyPlayed = const CardsStack.empty();
+        setState(() { });
       }
 
       energyClosets() {
         List<Widget> closets = [];
-        //var energyPC = widget.stack.energyPointCount;
-        var energyPC = isHeroEmpty ? 0 : hero.energyPointCount;
+
         var energyCC = isHeroEmpty ? 0 : hero.energyClosetCount;
-        // if (energyPC > widget.stack.energyClosetCount) {
-        //   energyPC -= widget.stack.energyClosetCount;
-        // }
+        var energyPC = isHeroEmpty ? 0 : hero.energyPointCount;
+        
+
         if (energyPC > energyCC) {
           energyPC -= energyCC;
         }
+        //print("FriendFoeBody energyPC == $energyPC \n");
+        //print("FriendFoeBody energyCC == $energyCC \n");
         //for (int i = 0; i < widget.stack.energyClosetCount; i++) {
-        if (energyPC > 0) {
+        if (energyCC > 0) {
           for (int i = 0; i < energyCC; i++) {
             closets.add(
               Container(
@@ -110,11 +112,28 @@ class _FriendFoeBody extends State<FriendFoeBody> {
         return closets;
       }
 
-      //widgetToList() {}
+      myTextWidget(String text, double fontSize) {
+        var localFontSize = fontSize;
+        if(text.length > 40) {
+          localFontSize -= 2;
+          if(text.length > 60) {
+            localFontSize -= 2;
+          }
+        }
+        return Text(
+          text,
+          style: TextStyle(
+            fontSize: localFontSize,
+          ),
+          textAlign: TextAlign.center,
+        );
+      }
 
       listWidgets() {
         if (alreadyPlayed.cards.isNotEmpty) {
-          for (var element in alreadyPlayed.cards) {
+          for (var i = 0; i < alreadyPlayed.cards.length; i++) {
+            var element = alreadyPlayed.cards[i];
+            print("FriendFoeBody listWidgets isCardOptional[i] == ${isCardOptional[i]} \n");
             widgetList.add(
               MyCard(
                 Column(
@@ -123,30 +142,34 @@ class _FriendFoeBody extends State<FriendFoeBody> {
                     Text(
                       element.text.split(":")[0],
                       style: const TextStyle(
+                        fontSize: 14,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      element.text.split(":")[1].split("OR")[0],
+                      style: const TextStyle(
+                        fontSize: 10,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      isCardOptional[0] ? "OR" : "",
+                      style: const TextStyle(
                         fontSize: 12,
                       ),
                       textAlign: TextAlign.center,
                     ),
                     Text(
-                      isCardOptional ? "OR" : "",
+                      isCardOptional[0] ? element.text.split(":")[1].split("OR")[1] : "",
                       style: const TextStyle(
-                        fontSize: 16,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    Text(
-                      element.text.split(":")[1],
-                      style: const TextStyle(
-                        fontSize: 12,
+                        fontSize: 10,
                       ),
                       textAlign: TextAlign.center,
                     ),
                   ],
                 ),
                 Size(mainObjSize.width - 40, mainObjSize.height - 40),
-                Colors.white,
-                2,
-                Colors.black,
                 margin: const EdgeInsets.all(5),
               ),
             );
@@ -248,82 +271,52 @@ class _FriendFoeBody extends State<FriendFoeBody> {
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 18,
                                   ),
                                 ),
                               ),
-                              MyCard(
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      cardTextsBeforeOr.isEmpty
-                                          ? "X"
-                                          : cardTextsBeforeOr.last,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    Text(
-                                      isCardOptional ? "OR" : "",
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    Text(
-                                      cardTextsAfterOr.isEmpty
-                                          ? "X"
-                                          : cardTextsAfterOr
-                                              .last, //cardTextsAfterOr.last,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
-                                Size(mainObjSize.width, mainObjSize.height),
-                                Colors.white,
-                                3,
-                                Colors.black,
-                                margin: const EdgeInsets.all(0),
-                              ),
-                              /*Container(
-                              width: mainObjSize.width,
-                              height: mainObjSize.height,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.black,
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(isHeroEmpty ? "X" : cardTextsBeforeOr.last,
+                              GestureDetector(
+                                child: MyCard(
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        cardTextsBeforeOr.isEmpty
+                                            ? "X"
+                                            : cardTextsBeforeOr.last,
                                         style: const TextStyle(
-                                          fontSize: 12,
+                                          fontSize: 16,
                                         ),
                                         textAlign: TextAlign.center,
-                                    ),
-                                    Text(isCardOptional ? "OR" : "",
-                                      style: const TextStyle(
-                                        fontSize: 16,
                                       ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    Text(isHeroEmpty ? "X" : cardTextsAfterOr.last,//cardTextsAfterOr.last,
-                                      style: const TextStyle(
-                                        fontSize: 12,
+                                      Text(
+                                        isCardOptional.last ? "OR" : "",
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                        textAlign: TextAlign.center,
                                       ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
+                                      Text(
+                                        cardTextsAfterOr.isEmpty
+                                            ? "X" : cardTextsAfterOr.last,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ),
+                                  Size(mainObjSize.width, mainObjSize.height),
+                                  margin: const EdgeInsets.all(0),
+                                ),
+                                onTap: () {
+                                  print("FriendFoeBody onTap cardName == ${cardNamesText.last}");
+                                  context.read<FriendFoeBodyBloc>().add(FriendFoeBodyNextEvent(hero.id));
+                                  setState(() {
+                                    
+                                  });
+                                },
                               ),
-                            ),*/
                             ],
                           ),
                           const VerticalDivider(),

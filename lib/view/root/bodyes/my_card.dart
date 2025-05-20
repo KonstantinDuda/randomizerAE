@@ -3,14 +3,17 @@ import 'package:flutter/material.dart';
 class MyCard extends StatelessWidget {
   final Widget child;
   final Size size;
-  final Color color;
+  final Color bodyColor;
   final double borderWidth;
   final Color borderColor;
   final EdgeInsetsGeometry margin;
 
-  const MyCard(
-      this.child, this.size, this.color, this.borderWidth, this.borderColor,
-      {this.margin = const EdgeInsets.all(5), super.key});
+  const MyCard(this.child, this.size,
+      {this.bodyColor = Colors.white,
+      this.borderColor = Colors.black,
+      this.borderWidth = 2,
+      this.margin = const EdgeInsets.all(5),
+      super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +22,7 @@ class MyCard extends StatelessWidget {
       height: size.height,
       margin: margin,
       decoration: BoxDecoration(
-        color: color, //stackColor,
+        color: bodyColor, //stackColor,
         border: Border.all(
           color: borderColor,
           width: borderWidth,

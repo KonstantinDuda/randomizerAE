@@ -21,15 +21,18 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
     // Handle the initial event
     print("FriendFoeBodyBloc _onInit event.heroId == ${event.heroId} \n");
     friendStack = database.getActiveFriendStack();
+    if(friendStack.id != 0) {
     friendAlreadyPlayed = CardsStack(
       id: friendStack.id,
       name: friendStack.name,
       isActive: true,
       stackType: StackType.friendFoe,
       stackColor: friendStack.stackColor,
-      cards: [],
-    );
+        cards: [],
+      );
+    }
     foeStack = database.getActiveFoeStack();
+    if(foeStack.id != 0) {
     foeAlreadyPlayed = CardsStack(
       id: foeStack.id,
       name: foeStack.name,
@@ -37,19 +40,22 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
       stackType: StackType.friendFoe,
       stackColor: foeStack.stackColor,
       cards: [],
-    );
+    );}
     var stack = const CardsStack.empty();
     var alreadyPlayed = const CardsStack.empty();
     var hero = database.getHeroById(event.heroId);
     print("FriendFoeBodyBloc _onInit HeroStack == $hero \n");
+    if(hero.id != 0) {
     if(hero.heroStacks[0].id  == friendStack.id) {
       stack = friendStack;
+      alreadyPlayed = friendAlreadyPlayed;
     } else if (hero.heroStacks[0].id == foeStack.id) {
       stack = foeStack;
+      alreadyPlayed = foeAlreadyPlayed;
     } else {
       print(
           "FriendFoeBodyBloc _onInit event.heroId != 0 != friendStack.id != foeStack.id \n");
-    }
+    }}
     
     emit(FriendFoeBodySuccessActionState(stack, alreadyPlayed));
   }

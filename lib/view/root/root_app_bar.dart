@@ -124,12 +124,12 @@ class _RootAppBarState extends State<RootAppBar> {
                                     //CardsStack.empty()));
                           } else if (db[index].stackType == StackType.friendFoe) {
                             var heroStack =
-                                dbObj.getFriendFoeStackByStackId(db[index].id);
+                                dbObj.getHeroStackByStackId(db[index].id);
                                 print("RootAppBar heroStack == $heroStack \n");
                             context.read<FriendFoeBodyBloc>().add(FriendFoeBodyInitialEvent(heroStack.id));
                             context
                                 .read<RootBodyProviderBloc>()
-                                .add(RootBodyFriendFoeEvent(heroStack));
+                                .add(RootBodyFriendFoeEvent(/*heroStack*/));
                           } else {
                             context
                                 .read<RootBodyProviderBloc>()

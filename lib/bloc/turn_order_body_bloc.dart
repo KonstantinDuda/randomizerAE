@@ -150,7 +150,6 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
         break;
       }
     }
-    // TODO: Не перемальовується якщо замішувати кілька карт підряд
 
     // var newStack = CardsStack(
     //   id: -1, //stack.id,

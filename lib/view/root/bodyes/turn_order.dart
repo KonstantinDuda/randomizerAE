@@ -49,30 +49,15 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
       gridObj(String text, bool newObj) {
         print("root_body.dart gridObj()");
         return GestureDetector(
-          child: /*Container(
-            height: contetnBodySize.height / 2 -10,
-            width: contetnBodySize.height / 3 - 10,
-            margin: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              border: Border.all(
-                color: newObj ? Colors.lightGreen : Colors.black,
-                width: newObj ? 4 : 2,
-              ),
-            ),
-            child: Center(
-              child: Text(text,
-                style: const TextStyle(fontSize: 25),
-              ),
-            ),
-          ),*/
+          child:
           MyCard(
             Center(
               child: Text(text,
                 style: const TextStyle(fontSize: 23),
               ),
-            ), Size(contetnBodySize.height / 3 - 10, contetnBodySize.height / 2 -10), Colors.white, 
-            newObj ? 4 : 2, newObj ? Colors.lightGreen : Colors.black
+            ), Size(contetnBodySize.height / 3 - 10, contetnBodySize.height / 2 -10),
+            borderWidth:  newObj ? 4 : 2, 
+            borderColor: newObj ? Colors.lightGreen : Colors.black
           ),
           onLongPress: () {
             context.read<TurnOrderBodyBloc>().add(TurnOrderBodyShuffleInStackEvent(text));
@@ -377,7 +362,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                                 color: stackColor == Colors.black ? Colors.white : Colors.black),
                               )
                             ), Size(mainObjSize.width, mainObjSize.height), 
-                            stack.stackColor, 2, Colors.black, margin: const EdgeInsets.all(0),),
+                            bodyColor: stack.stackColor, margin: const EdgeInsets.all(0),),
                           onTap: () {
                             print("Main object tapped");
                             if(stack.cards.isEmpty) {
