@@ -13,19 +13,20 @@ import 'view/loading_page.dart';
 import 'view/root/root_page.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   var dbProvider = DbTemporary();
   dbProvider.createData();
   Bloc.observer = SimpleBlocObserver();
-  void getState() async {
+  //void getState() async {
     runApp(
       BlocProvider(
         create: (context) => ProviderBloc(), 
         child: const MyApp()),
     );
-  }
+  //}
   //runApp(const MyApp());
 
-  getState();
+  //getState();
 }
 
 class MyApp extends StatelessWidget {
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
           create: (_) => TurnOrderBodyBloc()..add(const TurnOrderBodyNextEvent()),
         ),
         BlocProvider<FriendFoeBodyBloc>(
-          create: (_) => FriendFoeBodyBloc()..add(const FriendFoeBodyNextEvent(0)),
+          create: (context) => FriendFoeBodyBloc()..add(const FriendFoeBodyNextEvent(0)),
         ),
       ],
       child: 

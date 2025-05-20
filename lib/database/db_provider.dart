@@ -68,10 +68,6 @@ class DBProvider {
   void createCard(AECard card) async {
     final db = await getDatabase;
 
-    //print("\n");
-    //print("db_provider \n");
-    //print("db_provider createCard \n");
-    //print("db_provider createCard int ${card.id} \n");
     if(card.id > 0) {
       var x = await getCardById(card.id);
       if(x.id == 0) {
@@ -82,10 +78,6 @@ class DBProvider {
       } else {
         print("DBProvider createCard() card was in the Database \n");
       }
-    //print("db_provider createCard int ${card.id} \n");
-    //print("db_provider createCard \n");
-    //print("db_provider \n");
-    //print("\n");
     }
     
 
@@ -170,10 +162,6 @@ class DBProvider {
 
     // For debugging purposes
     // Change to using getStackById
-    print("\n");
-    print("db_provider \n");
-    print("db_provider db.createStack \n");
-    print("db_provider db.createStack Once \n");
     List<CardsStackDB> dbList = [];
     List<Map<String, dynamic>> maps = await db.query(cardsStackTableName);
     print("DBProvider createStack() maps.length == ${maps.length} \n");
@@ -193,11 +181,6 @@ class DBProvider {
       print("DBProvider createStack() maps.isEmpty \n");
       await db.insert(cardsStackTableName, stackToDB.toMap());
     }
-
-    print("db_provider db.createStack Once \n");
-    print("db_provider db.createStack \n");
-    print("db_provider \n");
-    print("\n");
   }
 
   Future<CardsStack> getStackById(int id) async {
@@ -206,15 +189,6 @@ class DBProvider {
         where: "id = ?",
         whereArgs: [id]);
     if (maps.isNotEmpty) {
-      print("\n");
-      print("\n");
-      print("\n");
-      print("\n");
-      print("getStackById maps.first == ${maps.first} \n");
-      print("\n");
-      print("\n");
-      print("\n");
-      print("\n");
       var csDB = CardsStackDB.fromMap(maps.first);
       List<AECard> list = [];
 
@@ -228,7 +202,7 @@ class DBProvider {
       CardsStack res = const CardsStack.empty();
       var newRes = res.csDBToCS(csDB, list);
 
-      print("DBProvider getStackById($id) res to return == $newRes");
+      //print("DBProvider getStackById($id) res to return == $newRes");
 
       return newRes;  // CardsStack.fromJson(maps.first);
     } else {

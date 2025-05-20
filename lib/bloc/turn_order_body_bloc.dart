@@ -13,6 +13,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     on<TurnOrderBodyNextEvent>(_onNext);
     on<TurnOrderBodyDelWildEvent>(_onDelWild);
     on<TurnOrderBodyShuffleEvent>(_onShuffle);
+    on<TurnOrderBodyShuffleInStackEvent>(_onShuffleIn);
     on<TurnOrderBodyChangeSequenceEvent>(_onChangeSequence);
     on<TurnOrderBodyChangeActiveStackEvent>(_onChangeActiveStack);
     on<TurnOrderBodyChangeAvailableStackListEvent>(_onChangeAvailableList);
@@ -136,6 +137,41 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     emit(TurnOrderBodySuccessActionState(newStack, alreadyPlayed));
   }
 
+  void _onShuffleIn(TurnOrderBodyShuffleInStackEvent event, Emitter<TurnOrderBodyState> emit) {
+    // Handle the shuffle in stack event
+    print("TurnOrderBodyBlock _onShuffleIn text == ${event.text} \n");
+    print("TurnOrderBodyBloc _onShuffleIn alreadyPlayed.cards == ${alreadyPlayed.cards} \n");
+
+    AECard card = AECard(id: 0, text: "", imgPath: "");
+    for (var i = 0; i < alreadyPlayed.cards.length; i++) {
+      if(alreadyPlayed.cards[i].text == event.text) {
+        card = alreadyPlayed.cards[i];
+        alreadyPlayed.cards.removeAt(i);
+        break;
+      }
+    }
+    // TODO: Не перемальовується якщо замішувати кілька карт підряд
+
+    // var newStack = CardsStack(
+    //   id: -1, //stack.id,
+    //   name: stack.name,
+    //   isActive: stack.isActive,
+    //   stackType: StackType.turnOrder,
+    //   stackColor: stack.stackColor,
+    //   cards: stack.cards,
+    // );
+    if(card.id > 0) {
+      stack.cards.add(card);
+      stack.cards.shuffle();
+    }
+    //stack = newStack;
+
+    print("TurnOrderBodyBloc _onShuffleIn stack == $stack \n ");
+    print("TurnOrderBodyBloc _onShuffleIn alreadyPlayed.cards == ${alreadyPlayed.cards} \n");
+
+    emit(TurnOrderBodySuccessActionState(/*newStack*/ stack, alreadyPlayed));
+  }
+
   void _onChangeSequence(TurnOrderBodyChangeSequenceEvent event, 
                               Emitter<TurnOrderBodyState> emit) {
     var newCardsList = event.list;
@@ -178,7 +214,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     }
 
     
-    print("TurnOrderBodyBlock. _onChangeActiveStack. "
+    print("TurnOrderBodyBlock. _onChangeActiveStack. $newStack \n"
           "newAlreadyPlayed.cards == ${newAlreadyPlayed.cards} \n "
           "newStack.cards == ${newStack.cards}");
     

@@ -4,6 +4,7 @@ import 'package:randomizer_new/bloc/event_state/turn_order_body_es.dart';
 import 'package:randomizer_new/bloc/turn_order_body_bloc.dart';
 import 'package:randomizer_new/database/cards_stack.dart';
 import 'package:randomizer_new/view/root/bodyes/dialog_top_card.dart';
+import 'package:randomizer_new/view/root/bodyes/my_card.dart';
 
 import 'dialog_ch_seq.dart';
 
@@ -15,6 +16,7 @@ class TurnOrderBody extends StatefulWidget {
 }
 
 class _TurnOrderBodyState extends State<TurnOrderBody> {
+  ScrollController myController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
       contentContainerSize.width - 10,
       contentContainerSize.height - mainObjSize.height - 5,
     );
-    ScrollController myController = ScrollController();
+    
 
     return BlocBuilder<TurnOrderBodyBloc, TurnOrderBodyState>(builder: (context, state) {
 
@@ -46,22 +48,36 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
 
       gridObj(String text, bool newObj) {
         print("root_body.dart gridObj()");
-        return Container(
-          height: contetnBodySize.height / 2 -10,
-          width: contetnBodySize.height / 3 - 10,
-          margin: const EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            border: Border.all(
-              color: newObj ? Colors.lightGreen : Colors.black,
-              width: newObj ? 4 : 2,
+        return GestureDetector(
+          child: /*Container(
+            height: contetnBodySize.height / 2 -10,
+            width: contetnBodySize.height / 3 - 10,
+            margin: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              border: Border.all(
+                color: newObj ? Colors.lightGreen : Colors.black,
+                width: newObj ? 4 : 2,
+              ),
             ),
-          ),
-          child: Center(
-            child: Text(text,
-              style: const TextStyle(fontSize: 25),
+            child: Center(
+              child: Text(text,
+                style: const TextStyle(fontSize: 25),
+              ),
             ),
+          ),*/
+          MyCard(
+            Center(
+              child: Text(text,
+                style: const TextStyle(fontSize: 23),
+              ),
+            ), Size(contetnBodySize.height / 3 - 10, contetnBodySize.height / 2 -10), Colors.white, 
+            newObj ? 4 : 2, newObj ? Colors.lightGreen : Colors.black
           ),
+          onLongPress: () {
+            context.read<TurnOrderBodyBloc>().add(TurnOrderBodyShuffleInStackEvent(text));
+            setState(() {});
+          },
         );
       }
 
@@ -332,7 +348,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: GestureDetector(
-                          child: Container(
+                          child: /*Container(
                             width: mainObjSize.width,
                             height: mainObjSize.height,
                             decoration: BoxDecoration(
@@ -350,7 +366,18 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                                 fontSize: 30,
                                 color: stackColor == Colors.black ? Colors.white : Colors.black),
                             )),
-                          ),
+                          ),*/
+                          MyCard( 
+                            Center(
+                              child: Text(
+                              textAlign: TextAlign.center,
+                              stack.cards.isNotEmpty ? stack.name : "X", 
+                              style: TextStyle(
+                                fontSize: 30,
+                                color: stackColor == Colors.black ? Colors.white : Colors.black),
+                              )
+                            ), Size(mainObjSize.width, mainObjSize.height), 
+                            stack.stackColor, 2, Colors.black, margin: const EdgeInsets.all(0),),
                           onTap: () {
                             print("Main object tapped");
                             if(stack.cards.isEmpty) {

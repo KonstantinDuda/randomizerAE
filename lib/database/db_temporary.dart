@@ -331,6 +331,15 @@ class DbTemporary {
       text: '',
       imgPath: 'assets/images/blitz.png',
     );*/
+    db.createCard(cardDE);
+    db.createCard(cardDS);
+    db.createCard(cardDEn);
+    db.createCard(cardDR);
+    db.createCard(cardSCC);
+    db.createCard(cardSSW);
+    db.createCard(cardSR);
+    db.createCard(cardSSS);
+
 
   // Freind and Foe stacks
   CardsStack dalanaStack = CardsStack(
@@ -349,16 +358,21 @@ class DbTemporary {
     stackColor: Colors.red,
     cards: [cardSCC, cardSSW, cardSR, cardSSS],
   );
+  db.createStack(dalanaStack);
+  db.createStack(scavengerStack);
   _dbStacks.add(dalanaStack);
   _dbStacks.add(scavengerStack);
   setActiveFoeStack(scavengerStack.id);
   setActiveFriendStack(dalanaStack.id);
   setAvilableStacs();
+  _activeFriendStack = dalanaStack;
+  _activeFoeStack = scavengerStack;
 
   // Friend and Foe HeroStacks
   var friendDalanaTheHealer = HeroStack(
     id: 1,
     name: "Dalana, the Healer",
+    isFriend: true,
     heroStacks: [dalanaStack],
     energyClosetCount: 5,
     ability: "Bandage: Any player or Gravehold gains 4 life",
@@ -366,6 +380,7 @@ class DbTemporary {
   var foeScavenger = HeroStack(
     id: 2,
     name: "The Scavenger",
+    isFriend: false,
     heroStacks: [scavengerStack],
     energyClosetCount: 4,
     ability: "Cull the stragglers: The player with the lowest life suffers 4 damage",
@@ -448,9 +463,9 @@ class DbTemporary {
   //void setActiveStack(int id) async {
     //var as = await db.getStackById(id);
   void setActiveStack(int id) async {
-    print(_activeStack.id);
+    //print(_activeStack.id);
     var newAS = await db.getStackById(id);
-    print("DBTemporary setActiveStack($id) on $newAS \n color: ${newAS.stackColor}");
+    //print("DBTemporary setActiveStack($id) on $newAS \n color: ${newAS.stackColor}");
     _activeStack = newAS;
   }
 
@@ -488,6 +503,15 @@ class DbTemporary {
           print("DBTemporary getFriendFoeStackByStackId($id) == $heroStack \n");
         return heroStack;
         }
+      }
+    }
+    return HeroStack.empty();
+  }
+
+  HeroStack getHeroById(int id) {
+    for (var element in friendfoeList) {
+      if(id == element.id) {
+        return element;
       }
     }
     return HeroStack.empty();

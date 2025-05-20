@@ -10,6 +10,14 @@ class FriendFoeBodyEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class FriendFoeBodyInitialEvent extends FriendFoeBodyEvent {
+  final int heroId;
+  const FriendFoeBodyInitialEvent(this.heroId);
+
+  @override
+  List<Object> get props => [heroId];
+}
+
 class FriendFoeBodyNextEvent extends FriendFoeBodyEvent {
   final int heroId;
   const FriendFoeBodyNextEvent(this.heroId);

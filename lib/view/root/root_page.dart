@@ -44,7 +44,7 @@ class _RootPage extends State<RootPage> {
               } else if(state is RootBodyTurnOrderState) {
                 return const TurnOrderBody();
               } else if(state is RootBodyFriendFoeState) {
-                return FriendFoeBody(state.stack);
+                return FriendFoeBody(/*state.stack*/);
               } else {
                 return const LoadingRootBodyPage();
               }

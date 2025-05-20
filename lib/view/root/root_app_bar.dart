@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:randomizer_new/bloc/event_state/friend_foe_body_es.dart';
 
 import '../../bloc/event_state/turn_order_body_es.dart';
+import '../../bloc/friend_foe_body_bloc.dart';
 import '../../bloc/providers/root_body_provider.dart';
 import '../../bloc/turn_order_body_bloc.dart';
 import '../../database/cards_stack.dart';
@@ -40,7 +42,7 @@ class _RootAppBarState extends State<RootAppBar> {
       width: size.width,
       color: Colors.blue,
       child: Container(
-        width: size.width - 140,
+        //width: size.width - 140,
         margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -118,11 +120,13 @@ class _RootAppBarState extends State<RootAppBar> {
                                     db[index].id));
                             context.read<RootBodyProviderBloc>().add(
                                 const RootBodyTurnOrderEvent(
-                                    CardsStack.empty()));
+                                    ));
+                                    //CardsStack.empty()));
                           } else if (db[index].stackType == StackType.friendFoe) {
                             var heroStack =
                                 dbObj.getFriendFoeStackByStackId(db[index].id);
                                 print("RootAppBar heroStack == $heroStack \n");
+                            context.read<FriendFoeBodyBloc>().add(FriendFoeBodyInitialEvent(heroStack.id));
                             context
                                 .read<RootBodyProviderBloc>()
                                 .add(RootBodyFriendFoeEvent(heroStack));

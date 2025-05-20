@@ -75,7 +75,7 @@ class _RootDrawerState extends State<RootDrawer> {
                       ),
                       onPressed: () {
                         // Handle stack selection
-                        context.read<TurnOrderBodyBloc>().add(TurnOrderBodyChangeActiveStackEvent(db[index].id));
+                        //context.read<TurnOrderBodyBloc>().add(TurnOrderBodyChangeActiveStackEvent(db[index].id));
                         //context.read<ProviderBloc>().add(RootEvent());
                         Navigator.pop(context);
                       },),
@@ -98,28 +98,6 @@ class _RootDrawerState extends State<RootDrawer> {
                         setState(() {
                           boolList[index] = value!;
                         });
-                        // print("RootDrawer checkbox boolList after "
-                        //       "setState == ${boolList[index]} \n value == $value");
-
-                        // if(boolList[index]) {
-                        //   CardsStack newStack = CardsStack(
-                        //     id: db[index].id, name: db[index].name, isActive: true, 
-                        //     stackType: db[index].stackType, 
-                        //     stackColor: db[index].stackColor, 
-                        //     cards: db[index].cards);
-                        //     print("RootDrawer checkbox newStack.id == ${newStack.id} \n" 
-                        //         " newStack.name == ${newStack.name} \n" 
-                        //         " newStack.isActive == ${newStack.isActive} \n"
-                        //         " newStack.cards == ${newStack.cards} \n");
-                        //   newAvList.add(newStack);
-                        // } else {
-                        //   newAvList.remove(db[index]);
-                        // }
-                        // context.read<TurnOrderBodyBloc>()
-                        //   .add(TurnOrderBodyChangeAvailableStackListEvent(/*newAvList*/db[index].id));
-                        // context.read<ProviderBloc>().add(LoadingEvent());
-                        
-                        //dbObj.updateAvialableStack(newAvList);
                       }
                     ),
                   ],
