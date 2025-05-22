@@ -399,7 +399,7 @@ class DbTemporary {
   }
 
   getStackFromDB(int id) async {
-    var tos = await db.getStackById(turnOrderThree.id);
+    var tos = await db.getStackById(id);
     print("\n");
     print("\n");
     print("\n");
@@ -471,16 +471,57 @@ class DbTemporary {
 
   void setActiveFriendStack(int id) async {
     _activeFriendStack = await db.getStackById(id);
-  }
-
-  void setActiveFoeStack(int id) async {
-    _activeFoeStack = await db.getStackById(id);
+    print("DBTemporary setActiveFriendStack($id) on ${_activeFriendStack.cards} \n");
+    for (var i = 0; i < friendfoeList.length; i++) {
+      if(friendfoeList[i].heroStacks[0].id == id) {
+        friendfoeList[i].heroStacks[0] = _activeFriendStack;
+        print("DBTemporary setActiveFriendStack friendfoeList[i].heroStacks[0] == ${friendfoeList[i].heroStacks[0]} \n");
+      }   
+    }
+//    friendfoeList[0].heroStacks[0] = _activeFriendStack;
   }
 
   CardsStack getActiveFriendStack() {
+    if(_activeFriendStack.cards.isNotEmpty) {
+      return _activeFriendStack;
+    } else {
+      setActiveFriendStack(_activeFriendStack.id);
+    }
+    for(var i = 0; i < friendfoeList.length; i++) {
+      if(friendfoeList[i].heroStacks[0].id == _activeFriendStack.id) {
+        friendfoeList[i].heroStacks[0] = _activeFriendStack;
+        print("DBTemporary getActiveFriendStack friendfoeList[i].heroStacks[0] == ${friendfoeList[i].heroStacks[0]} \n");
+      }
+    }
+    print("DBTemporary getActiveFriendStack _activeFriendStack.cards == ${_activeFriendStack.cards}");
     return _activeFriendStack;
   }
+
+  void setActiveFoeStack(int id) async {
+    print("DBTemporary setActiveFoeStack($id) on ${_activeFriendStack.cards} \n");
+    _activeFoeStack = await db.getStackById(id);
+    for (var i = 0; i < friendfoeList.length; i++) {
+      if(friendfoeList[i].heroStacks[0].id == id) {
+        friendfoeList[i].heroStacks[0] = _activeFoeStack;
+        print("DBTemporary setActiveFriendStack friendfoeList[i].heroStacks[0] == ${friendfoeList[i].heroStacks[0]} \n");
+      }   
+    }
+  }
   CardsStack getActiveFoeStack() {
+    if(_activeFoeStack.cards.isNotEmpty) {
+      return _activeFoeStack;
+    } else {
+      setActiveFoeStack(_activeFoeStack.id);
+    }
+     for(var i = 0; i < friendfoeList.length; i++) {
+      if(friendfoeList[i].heroStacks[0].id == _activeFoeStack.id) {
+        friendfoeList[i].heroStacks[0] = _activeFoeStack;
+        print("DBTemporary getActiveFoeStack friendfoeList[i].heroStacks[0] == ${friendfoeList[i].heroStacks[0]} \n");
+      }
+    }
+    print("DBTemporary getActiveFriendStack _activeFoeStack.cards == ${_activeFoeStack.cards}");
+
+
     return _activeFoeStack;
   }
 
@@ -494,26 +535,34 @@ class DbTemporary {
   }
 
   HeroStack getHeroStackByStackId(int id) {
-    print("DBTemporary getFriendFoeStackByStackId($id) \n");
-    HeroStack heroStack;
+    //print("DBTemporary getHeroStackByStackId($id) \n");
+    HeroStack heroStack = HeroStack.empty();
     for (var element in friendfoeList) {
       for (var i = 0; i < element.heroStacks.length; i++) {
         if (element.heroStacks[i].id == id) {
           heroStack = element;
-          print("DBTemporary getFriendFoeStackByStackId($id) == $heroStack \n");
+          //print("DBTemporary getHeroStackByStackId($id) == $heroStack \n");
         return heroStack;
         }
       }
-    }
+ }
+ if(heroStack.id == 0) {
+    print("DBTemporary getHeroStackByStackId($id) == HeroStack.empty() \n");
+
+ }
     return HeroStack.empty();
+
   }
 
   HeroStack getHeroById(int id) {
+    print("DBTemporary getHeroById($id) \n");
     for (var element in friendfoeList) {
+      print("DBTemporary getHeroById($id) element.id == ${element.id} \n");
       if(id == element.id) {
         return element;
       }
     }
+
     return HeroStack.empty();
   }
 }

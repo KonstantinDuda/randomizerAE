@@ -21,7 +21,8 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
     // Handle the initial event
     print("FriendFoeBodyBloc _onInit event.heroId == ${event.heroId} \n");
     friendStack = database.getActiveFriendStack();
-    if(friendStack.id != 0) {
+    print("FriendFoeBodyBloc _onInit friendStack.cards == ${friendStack.cards} \n");
+    if(friendStack.id != 0 && friendStack.cards.isNotEmpty) {
     friendAlreadyPlayed = CardsStack(
       id: friendStack.id,
       name: friendStack.name,
@@ -30,9 +31,14 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
       stackColor: friendStack.stackColor,
         cards: [],
       );
+    } else {
+      database.setActiveFriendStack(friendStack.id);
+      friendStack = database.getActiveFriendStack();
+      friendStack.cards.shuffle();
+      print("FriendFoeBodyBloc _onInit friend ELSE friendStack.cards == ${friendStack.cards} \n");
     }
     foeStack = database.getActiveFoeStack();
-    if(foeStack.id != 0) {
+    if(foeStack.id != 0 && foeStack.cards.isNotEmpty) {
     foeAlreadyPlayed = CardsStack(
       id: foeStack.id,
       name: foeStack.name,
@@ -40,7 +46,15 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
       stackType: StackType.friendFoe,
       stackColor: foeStack.stackColor,
       cards: [],
-    );}
+    );
+    } else {
+      database.setActiveFoeStack(foeStack.id);
+      foeStack = database.getActiveFoeStack();
+      foeStack.cards.shuffle();
+      print("FriendFoeBodyBloc _onInit foe ELSE foeStack.cards == ${foeStack.cards} \n");
+    }
+    
+    
     var stack = const CardsStack.empty();
     var alreadyPlayed = const CardsStack.empty();
     var hero = database.getHeroById(event.heroId);
@@ -55,7 +69,9 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
     } else {
       print(
           "FriendFoeBodyBloc _onInit event.heroId != 0 != friendStack.id != foeStack.id \n");
-    }}
+    }
+      //stack.cards.shuffle();
+    }
     
     emit(FriendFoeBodySuccessActionState(stack, alreadyPlayed));
   }

@@ -193,7 +193,10 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
               gridListSecondObj = gridColumnObj(
                 alreadyPlayed.cards[i].id, false, false);        
             }
-            myController.jumpTo(myController.position.maxScrollExtent);
+            if (myController.hasClients) {
+              myController.jumpTo(myController.position.maxScrollExtent);  
+            }
+            
             
            }
         }
@@ -333,25 +336,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: GestureDetector(
-                          child: /*Container(
-                            width: mainObjSize.width,
-                            height: mainObjSize.height,
-                            decoration: BoxDecoration(
-                              color: stack.stackColor, //stackColor,
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Center(child: Text(
-                              textAlign: TextAlign.center,
-                              stack.cards.isNotEmpty ? stack.name : "X", 
-                              style: TextStyle(
-                                fontSize: 30,
-                                color: stackColor == Colors.black ? Colors.white : Colors.black),
-                            )),
-                          ),*/
+                          child:
                           MyCard( 
                             Center(
                               child: Text(
