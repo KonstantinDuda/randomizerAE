@@ -13,6 +13,8 @@ class LoadingEvent extends ProviderEvent {}
 
 class RootEvent extends ProviderEvent {}
 
+class CreateEvent extends ProviderEvent {}
+
 // States
 class ProviderState extends Equatable {
   const ProviderState();
@@ -25,9 +27,12 @@ class LoadingState extends ProviderState {}
 
 class RootState extends ProviderState {}
 
+class CreateState extends ProviderState {}
+
 class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
   ProviderBloc() : super(RootState()) {
     on<LoadingEvent>((event, emit) => emit(LoadingState()));
     on<RootEvent>((event, emit) => emit(RootState()));
+    on<CreateEvent>((event, emit) => emit(CreateState()));
   }
 }

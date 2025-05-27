@@ -54,9 +54,9 @@ class FriendFoeBodySuccessActionState extends FriendFoeBodyState {
   List<Object> get props => [stack, alreadyPlayed];
 }
 
-class FriendFoeBodyClearScreenState extends FriendFoeBodyState {
-  const FriendFoeBodyClearScreenState();
-}
+// class FriendFoeBodyClearScreenState extends FriendFoeBodyState {
+//   const FriendFoeBodyClearScreenState();
+// }
 
 class FriendFoeBodyErrorActionState extends FriendFoeBodyState {
   const FriendFoeBodyErrorActionState();

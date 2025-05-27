@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:randomizer_new/bloc/event_state/turn_order_body_es.dart';
-import 'package:randomizer_new/bloc/turn_order_body_bloc.dart';
-import 'package:randomizer_new/database/db_temporary.dart';
 
+import 'bloc/create_stack_bloc.dart';
+import 'bloc/event_state/create_stack_es.dart';
+import 'bloc/event_state/turn_order_body_es.dart';
+import 'bloc/turn_order_body_bloc.dart';
+import 'database/db_temporary.dart';
 import 'bloc/event_state/friend_foe_body_es.dart';
 import 'bloc/friend_foe_body_bloc.dart';
 import 'bloc/observer.dart';
 import 'bloc/providers/provider_bloc.dart';
+import 'view/create_stack_page.dart';
 import 'view/loading_page.dart';
 import 'view/root/root_page.dart';
 
@@ -42,7 +45,10 @@ class MyApp extends StatelessWidget {
           create: (_) => TurnOrderBodyBloc()..add(const TurnOrderBodyNextEvent()),
         ),
         BlocProvider<FriendFoeBodyBloc>(
-          create: (context) => FriendFoeBodyBloc()..add(const FriendFoeBodyInitialEvent(0)),
+          create: (_) => FriendFoeBodyBloc()..add(const FriendFoeBodyInitialEvent(0)),
+        ),
+        BlocProvider<CreateStackBloc>(
+          create: (_) => CreateStackBloc()..add(CreateStackInitialEvent()),
         ),
       ],
       child: 
@@ -51,6 +57,8 @@ class MyApp extends StatelessWidget {
           builder: (_, state) {
           if (state is RootState) {
             return const RootPage();
+          } else if(state is CreateState) {
+            return const CreateStackPage();
           } else {
             
             return const LoadingPage();

@@ -19,7 +19,7 @@ class DBProvider {
   DBProvider() {
     initDatabase();
   }
-  
+
   Future<Database> get getDatabase async {
     WidgetsFlutterBinding.ensureInitialized();
     //if (_aeonsEndDatabase != null) return _aeonsEndDatabase;
@@ -47,8 +47,8 @@ class DBProvider {
             "stack_type TEXT, "
             "stack_color INTEGER, "
             "cards TEXT)");
-            
-            /*"CREATE TABLE IF NOT EXISTS $heroStackTableName ("
+
+        /*"CREATE TABLE IF NOT EXISTS $heroStackTableName ("
             "id INTEGER PRIMARY KEY,"
             "hero_stack TEXT,"
             "energy_closet_count INTEGER,"
@@ -58,28 +58,26 @@ class DBProvider {
               "FOREIGN KEY (stack_id) REFERENCES $cardsStackTableName (id)"
               "ON DELETE CASCADE"
               "ON UPDATE CASCADE)"*/
-            
       },
     );
   }
-
 
 // Create, Read, Update, Delete (CRUD) operations for AECard
   void createCard(AECard card) async {
     final db = await getDatabase;
 
-    if(card.id > 0) {
+    if (card.id > 0) {
       var x = await getCardById(card.id);
-      if(x.id == 0) {
-        await db.insert(cardsTableName, card.toMap(),
+      if (x.id == 0) {
+        await db.insert(
+          cardsTableName, card.toMap(),
           //conflictAlgorithm: ConflictAlgorithm.abort);
         );
-        print("DBProvider createCard() db.insert $card \n");
+        // print("DBProvider createCard() db.insert $card \n");
       } else {
         print("DBProvider createCard() card was in the Database \n");
       }
     }
-    
 
     // For debugging purposes
     /*List<Map<String, Object?>> maps = await db.query(cardsTableName);
@@ -92,14 +90,12 @@ class DBProvider {
     } else {
       print("DBProvider createCard() maps.isEmpty");
     }*/
-    
   }
 
   Future<AECard> getCardById(int id) async {
     final db = await getDatabase;
-    List<Map<String, Object?>> maps = await db.query(cardsTableName,
-        where: "id = ?",
-        whereArgs: [id]);
+    List<Map<String, Object?>> maps =
+        await db.query(cardsTableName, where: "id = ?", whereArgs: [id]);
     if (maps.isNotEmpty) {
       //print("DBProvider getCardById($id) the ${maps.first.toString()} was in the Database \n");
       return AECard.fromMap(maps.first);
@@ -109,18 +105,7 @@ class DBProvider {
     }
   }
 
-  /*Future<AECard> getCardByText(String text) async {
-    final db = await getDatabase;
-    List<Map<String, dynamic>> maps = await db.query(cardsTableName,
-        where: "text = ?",
-        whereArgs: [text]);
-    if (maps.isNotEmpty) {
-      return AECard.fromJson(maps.first);
-    } else {
-      return AECard(id: 0, text: '', imgPath: '');
-    }
-  }
-
+  /*
   void updateCard(AECard card) async {
     final db = await getDatabase;
     await db.update(cardsTableName, card.toJson(),
@@ -135,15 +120,45 @@ class DBProvider {
         where: "card_id = ?",
         whereArgs: [id]
       );
-  }
+  }*/
 
   Future<List<AECard>> getAllCards() async {
     final db = await getDatabase;
     List<Map<String, dynamic>> maps = await db.query(cardsTableName);
-    return List.generate(maps.length, (i) {
-      return AECard.fromJson(maps[i]);
-    });
-  }*/
+    var result = List.generate(maps.length, (i) => AECard.fromMap(maps[i]));
+    //print("DBProvider getAllCards result == $result");
+    // return List.generate(maps.length, (i) {
+    //   return AECard.fromMap(maps[i]);
+    // });
+    return result;
+  }
+
+  Future<List<AECard>> getTurnOrderCards() async {
+    final db = await getDatabase;
+    List<Map<String, dynamic>> maps = await db.query(cardsTableName, 
+      where: "id < ?",
+      whereArgs: [11],
+    );
+    var result = List.generate(maps.length, (i) => AECard.fromMap(maps[i]));
+    print("DBProvider getTurnOrderCards result == $result");
+    
+    return result;
+  }
+
+Future<List<AECard>> getFriendFoeCards() async {
+    final db = await getDatabase;
+    List<Map<String, dynamic>> maps = await db.query(cardsTableName, 
+      where: "stack_type = ?",
+      whereArgs: ["friendFoe"],
+    );
+    // TODO add other limitation
+    var result = List.generate(maps.length, (i) => AECard.fromMap(maps[i]));
+    print("DBProvider getTurnOrderCards result == $result");
+    
+    return result;
+  }
+  
+
 
 
 // Create, Read, Update, Delete (CRUD) operations for CardsStack
@@ -152,28 +167,32 @@ class DBProvider {
     //await db.insert(cardsStackTableName, stack.toMap());
 
     CardsStackDB stackToDB = CardsStackDB(
-      id: stack.id, name: stack.name, isStandart: stack.isActive, 
-      stackType: stack.stackType,  stackColor: stack.stackColor,
-      cardsId: []);
+        id: stack.id,
+        name: stack.name,
+        isStandart: stack.isActive,
+        stackType: stack.stackType,
+        stackColor: stack.stackColor,
+        cardsId: []);
     var ids = stackToDB.fromAECardToListInt(stack.cards);
     stackToDB.cardsId.addAll(ids);
     //fromCardsStackToCardsStackDB(stack);
-
+    //print("DBProvider createStack() stackToDB == $stackToDB \n");
 
     // For debugging purposes
     // Change to using getStackById
     List<CardsStackDB> dbList = [];
     List<Map<String, dynamic>> maps = await db.query(cardsStackTableName);
-    print("DBProvider createStack() maps.length == ${maps.length} \n");
-    if(maps.isNotEmpty) {
+    //print("DBProvider createStack() maps.length == ${maps.length} \n");
+    if (maps.isNotEmpty) {
       for (var element in maps) {
         CardsStackDB stackFromDB = CardsStackDB.fromMap(element);
-        if(stackFromDB.id == stack.id) {
+        if (stackFromDB.id == stack.id) {
           dbList.add(stackFromDB);
         }
-        print("DBProvider createStack() stackFromDB == ${stackFromDB.toString()} \n");
+        //print(
+        //    "DBProvider createStack() stackFromDB == ${stackFromDB.toString()} \n");
       }
-      if(dbList.isEmpty) {
+      if (dbList.isEmpty) {
         print("DBProvider createStack db.insert ${stackToDB.stackColor}");
         await db.insert(cardsStackTableName, stackToDB.toMap());
       }
@@ -185,16 +204,15 @@ class DBProvider {
 
   Future<CardsStack> getStackById(int id) async {
     final db = await getDatabase;
-    List<Map<String, dynamic>> maps = await db.query(cardsStackTableName,
-        where: "id = ?",
-        whereArgs: [id]);
+    List<Map<String, dynamic>> maps =
+        await db.query(cardsStackTableName, where: "id = ?", whereArgs: [id]);
     if (maps.isNotEmpty) {
       var csDB = CardsStackDB.fromMap(maps.first);
       List<AECard> list = [];
 
       for (var element in csDB.cardsId) {
         AECard card = await getCardById(element);
-        if(card.id > 0) {
+        if (card.id > 0) {
           list.add(card);
         }
       }
@@ -204,35 +222,119 @@ class DBProvider {
 
       //print("DBProvider getStackById($id) res to return == $newRes");
 
-      return newRes;  // CardsStack.fromJson(maps.first);
+      return newRes; // CardsStack.fromJson(maps.first);
     } else {
       return const CardsStack.empty();
     }
   }
 
+  Future<List<CardsStack>> getAllStacks() async {
+    final db = await getDatabase;
+    List<Map<String, dynamic>> maps = await db
+        .query(cardsStackTableName);
+
+    List<CardsStack> stacks = [];
+    stacks = await _pullCardsToStack(maps);
+    //print("DBProvider getAllStacks() stacks == $stacks");
+
+    return stacks;
+  }
+
   Future<List<CardsStack>> getAvailableStacks() async {
     final db = await getDatabase;
-    List<Map<String, dynamic>> maps = await db.query(cardsStackTableName,
-      where: "is_standart = ?",
-      whereArgs: [1]
-    );
+    List<Map<String, dynamic>> maps = await db
+        .query(cardsStackTableName, where: "is_standart = ?", whereArgs: [1]);
+
+    List<CardsStack> availableList = [];
+    availableList = await _pullCardsToStack(maps);
     
-    List<CardsStackDB> csDB = [];
+    // List<CardsStackDB> csDB = [];
+    // for (var element in maps) {
+    //   csDB.add(CardsStackDB.fromMap(element));
+    // }
+
+    
+    // for (var i = 0; i < csDB.length; i++) {
+    //   List<AECard> list = [];
+    //   for (var element in csDB[i].cardsId) {
+    //     AECard card = await getCardById(element);
+    //     if (card.id > 0) {
+    //       list.add(card);
+    //     }
+    //   }
+    //   var cs = const CardsStack.empty();
+    //   availableList.add(cs.csDBToCS(csDB[i], list));
+    // }
+
+    return availableList;
+  }
+
+  Future<List<CardsStack>> getTurnOrderStacks() async {
+    final db = await getDatabase;
+    List<Map<String, dynamic>> maps = await db.query(cardsStackTableName,
+        where: "stack_type = ?", whereArgs: ["StackType.turnOrder"]);
+    
+    print("DBProvider getTurnOrderStacks() maps == $maps");
+    List<CardsStack> availableList = await _pullCardsToStack(maps);
+    print("DBProvider getTurnOrderStacks() availableList == $availableList");
+
+
+    /*List<CardsStackDB> csDB = [];
     for (var element in maps) {
       csDB.add(CardsStackDB.fromMap(element));
     }
 
+    
+    if (csDB.isNotEmpty) {
+      for (var i = 0; i < csDB.length; i++) {
+        List<AECard> list = [];
+        for (var id in csDB[i].cardsId) {
+          AECard card = await getCardById(id);
+          if (card.id > 0) {
+            list.add(card);
+          }
+        }
+
+        var cs = const CardsStack.empty();
+        availableList.add(cs.csDBToCS(csDB[i], list));
+      }
+    }*/
+
+    return availableList;
+  }
+
+  Future<List<CardsStack>> getFriendFoeStacks() async {
+    final db = await getDatabase;
+    List<Map<String, dynamic>> maps = await db.query(cardsStackTableName,
+        where: "stack_type = ?", whereArgs: ["StackType.friendFoe"]);
+    
+    List<CardsStack> availableList = await _pullCardsToStack(maps);
+
+    return availableList;
+  }
+
+  Future<List<CardsStack>> _pullCardsToStack(List<Map<String, dynamic>> maps) async {
+    List<CardsStackDB> csDB = [];
     List<CardsStack> availableList = [];
-    for (var i = 0; i < csDB.length; i++) {
-      List<AECard> list = [];
-      for (var element in csDB[i].cardsId) {
-        AECard card = await getCardById(element);
-        if(card.id > 0) {
-          list.add(card);
+    if (maps.isNotEmpty) {
+      for (var element in maps) {
+        csDB.add(CardsStackDB.fromMap(element));
+      }
+
+      if (csDB.isNotEmpty) {
+        for (var i = 0; i < csDB.length; i++) {
+          List<AECard> list = [];
+          for (var id in csDB[i].cardsId) {
+            AECard card = await getCardById(id);
+            if (card.id > 0) {
+              list.add(card);
+            }
+          }
+
+          var cs = const CardsStack.empty();
+          availableList.add(cs.csDBToCS(csDB[i], list));
         }
       }
-      var cs = const CardsStack.empty();
-      availableList.add(cs.csDBToCS(csDB[i], list));  
     }
 
     return availableList;
@@ -263,5 +365,4 @@ class DBProvider {
         whereArgs: [id]
       );
   }*/
-
 }

@@ -21,7 +21,7 @@ class _RootDrawerState extends State<RootDrawer> {
   DbTemporary dbObj = DbTemporary();
   List<CardsStack> db = [];
   List<bool> boolList = [];
-  //List<CardsStack> newAvList = [];
+  //TODO: rewrite on BLOC
   
   @override
   void initState() {
@@ -57,10 +57,7 @@ class _RootDrawerState extends State<RootDrawer> {
           child: ListView.builder(
             itemCount: db.length,
             itemBuilder: (context, index) {
-              //var stackColor = textToColor(db.dbStacks[index].stackColor);
-//print("stackColor is $stackColor");
-//var isCheked = db[index].isActive;
-
+              
               return SizedBox(
                 width: 250,
                 child: 
@@ -74,9 +71,7 @@ class _RootDrawerState extends State<RootDrawer> {
                           db[index].name),
                       ),
                       onPressed: () {
-                        // Handle stack selection
-                        //context.read<TurnOrderBodyBloc>().add(TurnOrderBodyChangeActiveStackEvent(db[index].id));
-                        //context.read<ProviderBloc>().add(RootEvent());
+                        
                         Navigator.pop(context);
                       },),
                     Container(
@@ -121,8 +116,10 @@ class _RootDrawerState extends State<RootDrawer> {
           },
         ),
         const Divider(),
-      TextButton(child: const Text('Add / Create  stack'),
-        onPressed: () {},
+      TextButton(child: const Text('Update / Create  stack'),
+        onPressed: () {
+          context.read<ProviderBloc>().add(CreateEvent());
+        },
       ),],
     ),);  
   }
