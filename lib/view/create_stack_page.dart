@@ -23,7 +23,7 @@ class _CreateStackPageState extends State<CreateStackPage> {
   List<DropdownMenuItem> cardsDMI = [];
   List<DropdownMenuItem> stacksDMI = [];
   List<DropdownMenuItem> heroStacksDMI = [];
-  List<String> stackTypes = [
+  List<String> stackTypes = const [
     "Turn order",
     "Friend / Foe",
     "Gravehold",
@@ -127,141 +127,135 @@ class _CreateStackPageState extends State<CreateStackPage> {
                   ),
                 ],
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    children: [
-                      Row(
-                        children: [
-                          const Text("Is Active: "),
-                          Checkbox(
-                              value: stacks[index].isActive,
+              Container(
+                width: screenSize.width - 170,
+                height: 270,
+                alignment: Alignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text("Is Active: "),
+                            Checkbox(
+                                value: stacks[index].isActive,
+                                onChanged: (value) {
+                                  var newStack = CardsStack(
+                                      id: stacks[index].id,
+                                      name: stacks[index].name,
+                                      isActive: !stacks[index].isActive,
+                                      stackType: stacks[index].stackType,
+                                      stackColor: stacks[index].stackColor,
+                                      cards: cards);
+                                  context.read<CreateStackBloc>().add(
+                                        CreateStackUpdateStackEvent(newStack),
+                                      );
+                                  setState(() {
+                                    // stacks[index].isActive = !stacks[index].isActive;
+                                  });
+                                }),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text("Stack Type: "),
+                            DropdownButton<String>(
+                              value: typesList[index], 
+                              items: stackTypes.map((String type) {
+                                print("CreateStackPage stackWidget DropdownButton type == $type");
+                                return DropdownMenuItem<String>(
+                                  value: type,
+                                  child: Text(type),
+                                );
+                              }).toList(),
                               onChanged: (value) {
-                                var newStack = CardsStack(
-                                    id: stacks[index].id,
-                                    name: stacks[index].name,
-                                    isActive: !stacks[index].isActive,
-                                    stackType: stacks[index].stackType,
-                                    stackColor: stacks[index].stackColor,
-                                    cards: cards);
-                                context.read<CreateStackBloc>().add(
-                                      CreateStackUpdateStackEvent(newStack),
-                                    );
-                                setState(() {
-                                  // stacks[index].isActive = !stacks[index].isActive;
-                                });
-                              }),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text("Stack Type: "),
-                          DropdownButton<String>(
-                            value: typesList[index], //stackType,
-                            /*items: const [
-                              DropdownMenuItem(
-                                value: "Turn order",
-                                child: Text("Turn order"),
-                              ),
-                              DropdownMenuItem(
-                                value: "Friend / Foe",
-                                child: Text("Friend / Foe"),
-                              ),
-                              DropdownMenuItem(
-                                value: "Gravehold",
-                                child: Text("Gravehold"),
-                              ),
-                              DropdownMenuItem(
-                                value: "Hero",
-                                child: Text("Hero"),
-                              ),
-                              DropdownMenuItem(
-                                value: "Nemesis",
-                                child: Text("Nemesis"),
-                              ),
-                              DropdownMenuItem(
-                                value: "Is empty",
-                                child: Text("Is empty"),
-                              ),
-                            ],*/
-                            items: stackTypes.map((String type) {
-                              return DropdownMenuItem<String>(
-                                value: type,
-                                child: Text(type),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              if (value != stackTypes[index]) {
+                                print("CreateStackPage stackWidget DropdownButton onChange value == $value, index == $index");
+                                if (value != typesList[index]) {
+                                  print(
+                                      "${stacks[index].name} Stack type changed to $value");
+                                  setState(() { // TODO move changes to BLOC
+                                    //stackTypes[index] = value!;
+                                    typesList[index] = value!;
+                                  });
+                                } else {
+                                  print(
+                                      "${stacks[index].id} Stack type not changed");
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text("Stack color: "),
+                            /*DropdownButton<Color>(
+                              value: stackColor,
+                              items: const [
+                                DropdownMenuItem(
+                                  value: Colors.green,
+                                  child: Text("Turn order"),
+                                ),
+                                DropdownMenuItem(
+                                  value: Colors.blue,
+                                  child: Text("Friend"),
+                                ),
+                                DropdownMenuItem(
+                                  value: Colors.red,
+                                  child: Text("Foe"),
+                                ),
+                                DropdownMenuItem(
+                                  value: Colors.grey,
+                                  child: Text("Gravehold"),
+                                ),
+                                DropdownMenuItem(
+                                  value: Colors.amberAccent,
+                                  child: Text("Hero"),
+                                ),
+                                DropdownMenuItem(
+                                  value: Colors.black,
+                                  child: Text("Nemesis"),
+                                ),
+                                DropdownMenuItem(
+                                  value: Colors.white,
+                                  child: Text("Is empty"),
+                                ),
+                              ],
+                              onChanged: (value) {
                                 print(
-                                    "${stacks[index].id} Stack type changed to $value");
-                                setState(() {
-                                  stackTypes[index] = value!;
-                                });
-                              } else {
-                                print(
-                                    "${stacks[index].id} Stack type not changed");
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text("Stack color: "),
-                          /*DropdownButton<Color>(
-                            value: stackColor,
-                            items: const [
-                              DropdownMenuItem(
-                                value: Colors.green,
-                                child: Text("Turn order"),
-                              ),
-                              DropdownMenuItem(
-                                value: Colors.blue,
-                                child: Text("Friend"),
-                              ),
-                              DropdownMenuItem(
-                                value: Colors.red,
-                                child: Text("Foe"),
-                              ),
-                              DropdownMenuItem(
-                                value: Colors.grey,
-                                child: Text("Gravehold"),
-                              ),
-                              DropdownMenuItem(
-                                value: Colors.amberAccent,
-                                child: Text("Hero"),
-                              ),
-                              DropdownMenuItem(
-                                value: Colors.black,
-                                child: Text("Nemesis"),
-                              ),
-                              DropdownMenuItem(
-                                value: Colors.white,
-                                child: Text("Is empty"),
-                              ),
-                            ],
-                            onChanged: (value) {
-                              print(
-                                  "${stacks[index]} Stack color changed to $value");
-                            },
-                          ),*/
-                        ],
-                      ),
-                    ],
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: const Text("Update stack"),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
+                                    "${stacks[index]} Stack color changed to $value");
+                              },
+                            ),*/
+                          ],
+                        ),
+                      ],
                     ),
-                    child: const Text("Delete stack"),
-                  ),
-                ],
+                    const Expanded(child: SizedBox()),
+                    Container(
+                      alignment: Alignment.bottomRight,
+                      margin: const EdgeInsets.only(right: 5),
+                      child: Column(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {},
+                            child: const Text("Update stack"),
+                          ),
+                          ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                      ),
+                      child: const Text("Delete stack"),
+                    ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -304,6 +298,7 @@ class _CreateStackPageState extends State<CreateStackPage> {
         cards = state.cards;
         stacks = state.stacks;
         screenSize = MediaQuery.of(context).size;
+        typesList.clear();
         for (var element in stacks) {
           //print("CreateStackPage build element.name == ${element.name} element.stackType == ${element.stackType}");
           var stackType = "";
@@ -320,7 +315,10 @@ class _CreateStackPageState extends State<CreateStackPage> {
           } else {
             stackType = "Is empty";
           }
-          typesList.add(stackType);
+          if (stackType != "" && stacks.length > typesList.length) {
+            typesList.add(stackType);  
+          }
+          print("CreateStackPage build typesList == $typesList");
         }
       } else {
         print(
