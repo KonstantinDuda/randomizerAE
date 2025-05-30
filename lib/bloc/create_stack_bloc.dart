@@ -12,7 +12,6 @@ class CreateStackBloc extends Bloc<CreateStackEvent, CreateStackState> {
 
   List<AECard> cards = [];
   List<CardsStack> stacks = [];
-  
 
   CreateStackBloc() : super(const CreateStackSuccessActionState()) {
     on<CreateStackInitialEvent>(_onInit);
@@ -34,34 +33,41 @@ class CreateStackBloc extends Bloc<CreateStackEvent, CreateStackState> {
   }
 
   _onNewCard(CreateStackNewCardEvent event, Emitter<CreateStackState> emit) {
-
- emit(CreateStackSuccessActionState(cards, stacks));
+    emit(CreateStackSuccessActionState(cards, stacks));
   }
 
-  _onUpdateCard(CreateStackUpdateCardEvent event, Emitter<CreateStackState> emit) {
+  _onUpdateCard(
+      CreateStackUpdateCardEvent event, Emitter<CreateStackState> emit) {
     print("CreateStackBloc _onUpdateCard event.card.id == ${event.card.id}");
 
- emit(CreateStackSuccessActionState(cards, stacks));
+    emit(CreateStackSuccessActionState(cards, stacks));
   }
 
-  _onDeleteCard(CreateStackDeleteCardEvent event, Emitter<CreateStackState> emit) {
-
- emit(CreateStackSuccessActionState(cards, stacks));
+  _onDeleteCard(
+      CreateStackDeleteCardEvent event, Emitter<CreateStackState> emit) {
+    emit(CreateStackSuccessActionState(cards, stacks));
   }
 
   _onNewStack(CreateStackNewStackEvent event, Emitter<CreateStackState> emit) {
-
- emit(CreateStackSuccessActionState(cards, stacks));
+    emit(CreateStackSuccessActionState(cards, stacks));
   }
 
-  _onUpdateStack(CreateStackUpdateStackEvent event, Emitter<CreateStackState> emit) {
+  _onUpdateStack(
+      CreateStackUpdateStackEvent event, Emitter<CreateStackState> emit) async {
+    print("CreateStackBloc _onUpdateStack event.stack == ${event.stack}");
 
- emit(CreateStackSuccessActionState(cards, stacks));
+    var stackFromDB = await db.getStackById(event.stack.id);
+    if(stackFromDB == event.stack) {
+      print("CreateStackBloc _onUpdateStack stackFromDB == event.stack");
+    } else {
+      print("CreateStackBloc _onUpdateStack stackFromDB != event.stack");
+    }
+
+    emit(CreateStackSuccessActionState(cards, stacks));
   }
 
-  _onDeleteStack(CreateStackDeleteStackEvent event, Emitter<CreateStackState> emit) {
-
- emit(CreateStackSuccessActionState(cards, stacks));
+  _onDeleteStack(
+      CreateStackDeleteStackEvent event, Emitter<CreateStackState> emit) {
+    emit(CreateStackSuccessActionState(cards, stacks));
   }
-
 }

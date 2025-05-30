@@ -13,8 +13,8 @@ class DBProvider {
   late Database _aeonsEndDatabase;
 
   static const String cardsTableName = "Cards_Table";
-  static const String cardsStackTableName = "Stack_Table";
-  static const String heroStackTableName = "Hero_Table";
+  static const String cardsStackTableName = "Stack_Table"; // TODO rename on stackTableName
+  static const String heroTableName = "Hero_Table";
 
   DBProvider() {
     initDatabase();
@@ -105,13 +105,20 @@ class DBProvider {
     }
   }
 
-  /*
+  
   void updateCard(AECard card) async {
     final db = await getDatabase;
-    await db.update(cardsTableName, card.toJson(),
+
+    var cardBefore = await getCardById(card.id);
+    print("DBProvider updste card, card before: $cardBefore");
+
+    await db.update(cardsTableName, card.toMap(),
         where: "card_id = ?",
         whereArgs: [card.id]
       );
+
+    var cardAfter = await getCardById(card.id);
+    print("DBProvider updste card, card before: $cardAfter");
   }
   
   void deleteCard(int id) async {
@@ -120,7 +127,7 @@ class DBProvider {
         where: "card_id = ?",
         whereArgs: [id]
       );
-  }*/
+  }
 
   Future<List<AECard>> getAllCards() async {
     final db = await getDatabase;
@@ -248,23 +255,6 @@ Future<List<AECard>> getFriendFoeCards() async {
     List<CardsStack> availableList = [];
     availableList = await _pullCardsToStack(maps);
     
-    // List<CardsStackDB> csDB = [];
-    // for (var element in maps) {
-    //   csDB.add(CardsStackDB.fromMap(element));
-    // }
-
-    
-    // for (var i = 0; i < csDB.length; i++) {
-    //   List<AECard> list = [];
-    //   for (var element in csDB[i].cardsId) {
-    //     AECard card = await getCardById(element);
-    //     if (card.id > 0) {
-    //       list.add(card);
-    //     }
-    //   }
-    //   var cs = const CardsStack.empty();
-    //   availableList.add(cs.csDBToCS(csDB[i], list));
-    // }
 
     return availableList;
   }
@@ -278,27 +268,6 @@ Future<List<AECard>> getFriendFoeCards() async {
     List<CardsStack> availableList = await _pullCardsToStack(maps);
     print("DBProvider getTurnOrderStacks() availableList == $availableList");
 
-
-    /*List<CardsStackDB> csDB = [];
-    for (var element in maps) {
-      csDB.add(CardsStackDB.fromMap(element));
-    }
-
-    
-    if (csDB.isNotEmpty) {
-      for (var i = 0; i < csDB.length; i++) {
-        List<AECard> list = [];
-        for (var id in csDB[i].cardsId) {
-          AECard card = await getCardById(id);
-          if (card.id > 0) {
-            list.add(card);
-          }
-        }
-
-        var cs = const CardsStack.empty();
-        availableList.add(cs.csDBToCS(csDB[i], list));
-      }
-    }*/
 
     return availableList;
   }
@@ -340,21 +309,23 @@ Future<List<AECard>> getFriendFoeCards() async {
     return availableList;
   }
 
-/*
-  Future<List<CardsStack>> getAllStacks() async {
-    final db = await getDatabase;
-    List<Map<String, dynamic>> maps = await db.query(cardsStackTableName);
-    return List.generate(maps.length, (i) {
-      return CardsStack.fromJson(maps[i]);
-    });
-  }
 
   void updateStack(CardsStack stack) async {
     final db = await getDatabase;
-    await db.update(cardsStackTableName, stack.toJson(),
-        where: "stack_id = ?",
+    CardsStackDB stackDB = CardsStackDB(id: stack.id, name: stack.name, isStandart: stack.isActive, stackType: stack.stackType, stackColor: stack.stackColor, 
+      cardsId: stack.cards.map((card) => card.id).toList());
+
+    var stackBefore = await getCardById(stack.id);
+    print("DBProvider updste card, card before: $stackBefore, stackDB == $stackDB");
+
+    await db.update(cardsStackTableName, stackDB.toMap(),
+        where: "card_id = ?",
         whereArgs: [stack.id]
       );
+
+    var stackAfter = await getCardById(stack.id);
+    print("DBProvider updste card, card before: $stackAfter");
+
   }
 
 
@@ -364,5 +335,5 @@ Future<List<AECard>> getFriendFoeCards() async {
         where: "stack_id = ?",
         whereArgs: [id]
       );
-  }*/
+  }
 }

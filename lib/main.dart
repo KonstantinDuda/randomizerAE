@@ -11,7 +11,7 @@ import 'bloc/event_state/friend_foe_body_es.dart';
 import 'bloc/friend_foe_body_bloc.dart';
 import 'bloc/observer.dart';
 import 'bloc/providers/provider_bloc.dart';
-import 'view/create_stack_page.dart';
+import 'view/create/create_stack_page.dart';
 import 'view/loading_page.dart';
 import 'view/root/root_page.dart';
 
