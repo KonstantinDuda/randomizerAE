@@ -204,6 +204,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
       }
 
       if(state is TurnOrderBodySuccessActionState) {
+        print("TurnOrderBody Page state IS TurnOrderBodySuccessActionState");
         stackColor = state.stack.stackColor;
         stack = state.stack;
         alreadyPlayed = state.alreadyPlayed;

@@ -23,6 +23,7 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
     friendStack = database.getActiveFriendStack();
     print("FriendFoeBodyBloc _onInit friendStack.cards == ${friendStack.cards} \n");
     if(friendStack.id != 0 && friendStack.cards.isNotEmpty) {
+      print("FriendFoeBodyBloc _onInit friendStack.id != 0 && friendStack.cards.isNotEmpty \n");
     friendAlreadyPlayed = CardsStack(
       id: friendStack.id,
       name: friendStack.name,
@@ -31,6 +32,7 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
       stackColor: friendStack.stackColor,
         cards: [],
       );
+      friendStack.cards.shuffle();
     } else {
       database.setActiveFriendStack(friendStack.id);
       friendStack = database.getActiveFriendStack();
@@ -47,6 +49,7 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
       stackColor: foeStack.stackColor,
       cards: [],
     );
+    foeStack.cards.shuffle();
     } else {
       database.setActiveFoeStack(foeStack.id);
       foeStack = database.getActiveFoeStack();

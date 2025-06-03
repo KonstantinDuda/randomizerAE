@@ -45,6 +45,9 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
 
   _onDeleteCard(
       CRUDStackDeleteCardEvent event, Emitter<CRUDStackState> emit) {
+
+print("CRUDStackBloc delete card.id == ${event.id}");
+    
     emit(CRUDStackSuccessActionState(cards, stacks));
   }
 
@@ -57,10 +60,11 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
     print("CRUDStackBloc _onUpdateStack event.stack == ${event.stack}");
 
     var stackFromDB = await db.getStackById(event.stack.id);
-    if(stackFromDB == event.stack) {
-      print("CRUDStackBloc _onUpdateStack stackFromDB == event.stack");
+    if(stackFromDB.id == event.stack.id) {
+      print("CRUDStackBloc _onUpdateStack stackFromDB.id == event.stack.id");
+      
     } else {
-      print("CRUDStackBloc _onUpdateStack stackFromDB != event.stack");
+      print("CRUDStackBloc _onUpdateStack stackFromDB.id != event.stack.id");
     }
 
     emit(CRUDStackSuccessActionState(cards, stacks));

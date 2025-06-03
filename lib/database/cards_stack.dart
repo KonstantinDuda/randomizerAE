@@ -103,7 +103,7 @@ class CardsStack {
     );
   }
 
-  @override
+  /*@override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     //if(other is! CardsStackDB) return false;
@@ -139,7 +139,7 @@ class CardsStack {
 
   @override
   int get hashCode =>
-      Object.hash(id, name, isActive, stackType, stackColor, cards);
+      Object.hash(id, name, isActive, stackType, stackColor, cards);*/
 
   @override
   String toString() {

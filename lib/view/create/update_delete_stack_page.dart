@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:randomizer_new/view/create/dialog_create_card.dart';
 import 'package:randomizer_new/view/create/stack_widget.dart';
 import 'package:randomizer_new/view/root/bodyes/my_card.dart';
 
@@ -21,26 +22,6 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
   List<HeroStack> heroStacks = [];
   Size screenSize = Size(0, 0);
 
-  /*List<DropdownMenuItem> cardsDMI = [];
-  List<DropdownMenuItem> stacksDMI = [];
-  List<DropdownMenuItem> heroStacksDMI = [];
-  List<String> stackTypes = const [
-    "Turn order",
-    "Friend / Foe",
-    "Gravehold",
-    "Hero",
-    "Nemesis",
-    "Is empty"
-  ];
-  List<Color> stackColors = const [
-    Color.fromARGB(255, 76, 175, 80),
-    Color.fromARGB(255, 33, 150, 243),
-    Color.fromARGB(255, 244, 67, 54),
-    Color.fromARGB(255, 158, 158, 158),
-    Color.fromARGB(255, 255, 193, 7),
-    Color.fromARGB(255, 0, 0, 0),
-    Color.fromARGB(255, 255, 255, 255),
-  ];*/
   List<String> typesList = [];
   List<Color> colorsList = [];
   var curentColor = const Color.fromARGB(255, 255, 255, 255);
@@ -69,11 +50,15 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
           const Size(150, 220),
         ),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            // TODO Add functional
+          },
           child: const Text("Update card"),
         ),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            context.read<CRUDStackBloc>().add(CRUDStackDeleteCardEvent(cards[index].id));
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.red,
           ),
@@ -82,185 +67,6 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
       ],
     );
   }
-
-  /*myStack(
-    //String stackName,
-    Widget stackName,
-    String cardNames,
-    bool checkbox,
-    String curentType,
-    Color curentColor,
-    Function changeName,
-    Function addCard,
-    Function checkboxChange,
-    Function changeType,
-    Function changeColor,
-    Function saveStack,
-    Function deleteStack,
-  ) {
-    return MyCard(
-      Column(
-        //mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          stackName,
-          // Center(
-          //   child: Text(
-          //     "Stack name: $stackName",
-          //     maxLines: 1,
-          //     overflow: TextOverflow.ellipsis,
-          //     style: const TextStyle(
-          //       fontSize: 16,
-          //       fontWeight: FontWeight.bold,
-          //     ),
-          //   ),
-          // ),
-          Row(
-            children: [
-              Column(
-                children: [
-                  const Text(
-                    "Cards in stack: ",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  MyCard(
-                    Column(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            cardNames,
-                            maxLines: 10,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            addCard();
-                          },
-                          child: const Icon(
-                            Icons.add,
-                            color: Colors.green,
-                            size: 22,
-                          ),
-                        )
-                      ],
-                    ),
-                    const Size(100, 270),
-                    margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                  ),
-                ],
-              ),
-              Container(
-                width: screenSize.width - 170,
-                height: 270,
-                alignment: Alignment.center,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text("Is Active: "),
-                            Checkbox(
-                                value: checkbox, //stacks[index].isActive,
-                                onChanged: (value) {
-                                  checkboxChange(value);
-                                }),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text("Stack Type: "),
-                            DropdownButton<String>(
-                              iconSize: 35,
-                              value: curentType, //typesList[index],
-                              items: stackTypes.map((String type) {
-                                return DropdownMenuItem<String>(
-                                  alignment: AlignmentDirectional.center,
-                                  value: type,
-                                  child: Text(type),
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                changeType(value);
-                              },
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text("Stack color: "),
-                            SizedBox(
-                              //width: 60,
-                              //height: 25,
-                              child: DropdownButton<Color>(
-                                iconSize: 35,
-                                value: curentColor, //colorsList[index],
-                                items: stackColors.map((Color type) {
-                                  return DropdownMenuItem<Color>(
-                                    alignment: AlignmentDirectional.center,
-                                    value: type, //type,
-                                    child: Container(
-                                        width: 70,
-                                        height: 25,
-                                        decoration: BoxDecoration(
-                                          color: type,
-                                          border: Border.all(
-                                            color: Colors.black,
-                                            width: 1,
-                                          ),
-                                        )),
-                                  );
-                                }).toList(),
-                                onChanged: (value) {
-                                  changeColor(value);
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const Expanded(child: SizedBox()),
-                    Container(
-                      alignment: Alignment.bottomRight,
-                      margin: const EdgeInsets.only(right: 5),
-                      child: Column(
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              saveStack();
-                            },
-                            child: const Text("Save"),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              deleteStack();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                            ),
-                            child: const Text("Delete stack"),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      Size(screenSize.width - 50, 320),
-    );
-  }*/
 
   stackWidget(int index) {
     String cardNames = "\n";
@@ -375,7 +181,9 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
 
     saveStack() {
       print("Save $curentName stack");
-      context.read<CRUDStackBloc>().add(CRUDStackUpdateStackEvent(stacks[index]));
+      context
+          .read<CRUDStackBloc>()
+          .add(CRUDStackUpdateStackEvent(stacks[index]));
     }
 
     deleteStack() {
@@ -383,7 +191,8 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
       context.read<CRUDStackBloc>().add(CRUDStackDeleteStackEvent(index));
     }
 
-    return StackWidget( //myStack(
+    return StackWidget(
+      //myStack(
       //curentName,
       nameStack,
       cardNames,
@@ -398,235 +207,9 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
       saveStack,
       deleteStack,
     );
-
-    // return MyCard(
-    //   Column(
-    //     //mainAxisAlignment: MainAxisAlignment.start,
-    //     crossAxisAlignment: CrossAxisAlignment.start,
-    //     children: [
-    //       Center(
-    //         child: Text(
-    //           "Stack name: ${stacks[index].name}",
-    //           maxLines: 1,
-    //           overflow: TextOverflow.ellipsis,
-    //           style: const TextStyle(
-    //             fontSize: 16,
-    //             fontWeight: FontWeight.bold,
-    //           ),
-    //         ),
-    //       ),
-    //       Row(
-    //         children: [
-    //           Column(
-    //             children: [
-    //               const Text(
-    //                 "Cards in stack: ",
-    //                 style: TextStyle(
-    //                   fontWeight: FontWeight.bold,
-    //                 ),
-    //               ),
-    //               MyCard(
-    //                 Column(
-    //                   children: [
-    //                     Expanded(
-    //                       child: Text(
-    //                         cardNames,
-    //                         maxLines: 10,
-    //                         textAlign: TextAlign.center,
-    //                       ),
-    //                     ),
-    //                     ElevatedButton(
-    //                       onPressed: () {
-    //                         print("UpdateDeleteStackPage add card to stack");
-    //                       },
-    //                       child: const Icon(
-    //                         Icons.add,
-    //                         color: Colors.green,
-    //                         size: 22,
-    //                       ),
-    //                     )
-    //                   ],
-    //                 ),
-    //                 const Size(100, 270),
-    //                 margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-    //               ),
-    //             ],
-    //           ),
-    //           Container(
-    //             width: screenSize.width - 170,
-    //             height: 270,
-    //             alignment: Alignment.center,
-    //             child: Column(
-    //               crossAxisAlignment: CrossAxisAlignment.center,
-    //               children: [
-    //                 Column(
-    //                   children: [
-    //                     Row(
-    //                       mainAxisAlignment: MainAxisAlignment.center,
-    //                       children: [
-    //                         const Text("Is Active: "),
-    //                         Checkbox(
-    //                             value: stacks[index].isActive,
-    //                             onChanged: (value) {
-    //                               var newStack = CardsStack(
-    //                                   id: stacks[index].id,
-    //                                   name: stacks[index].name,
-    //                                   isActive: !stacks[index].isActive,
-    //                                   stackType: stacks[index].stackType,
-    //                                   stackColor: stacks[index].stackColor,
-    //                                   cards: stacks[index].cards);
-    //                               // context.read<CRUDStackBloc>().add(
-    //                               //       CRUDStackUpdateStackEvent(newStack),
-    //                               //     );
-
-    //                               setState(() {
-    //                                 stacks.removeAt(index);
-    //                                 stacks.insert(index, newStack);
-    //                               });
-    //                             }),
-    //                       ],
-    //                     ),
-    //                     Row(
-    //                       mainAxisAlignment: MainAxisAlignment.center,
-    //                       children: [
-    //                         const Text("Stack Type: "),
-    //                         DropdownButton<String>(
-    //                           iconSize: 35,
-    //                           value: typesList[index],
-    //                           items: stackTypes.map((String type) {
-    //                             return DropdownMenuItem<String>(
-    //                               value: type,
-    //                               child: Text(type),
-    //                             );
-    //                           }).toList(),
-    //                           onChanged: (value) {
-    //                             if (value != typesList[index]) {
-    //                               print(
-    //                                   "${stacks[index].name} Stack type changed to $value");
-    //                               var newStackType = StackType.turnOrder;
-    //                               if (value == "Turn order") {
-    //                                 newStackType = StackType.turnOrder;
-    //                               } else if (value == "Friend / Foe") {
-    //                                 newStackType = StackType.friendFoe;
-    //                               } else if (value == "Gravehold") {
-    //                                 newStackType = StackType.gravehold;
-    //                               } else if (value == "Hero") {
-    //                                 newStackType = StackType.hero;
-    //                               } else if (value == "Nemesis") {
-    //                                 newStackType = StackType.nemesis;
-    //                               } else {
-    //                                 value = "Is empty";
-    //                               }
-    //                               var newStack = CardsStack(
-    //                                   id: stacks[index].id,
-    //                                   name: stacks[index].name,
-    //                                   isActive: stacks[index].isActive,
-    //                                   stackType: newStackType,
-    //                                   stackColor: stacks[index].stackColor,
-    //                                   cards: stacks[index].cards);
-    //                               setState(() {
-    //                                 stacks.removeAt(index);
-    //                                 stacks.insert(index, newStack);
-    //                                 typesList[index] = value!;
-    //                               });
-    //                             } else {
-    //                               print(
-    //                                   "${stacks[index].id} Stack type not changed");
-    //                             }
-    //                           },
-    //                         ),
-    //                       ],
-    //                     ),
-    //                     Row(
-    //                       mainAxisAlignment: MainAxisAlignment.center,
-    //                       children: [
-    //                         const Text("Stack color: "),
-    //                         SizedBox(
-    //                           //width: 60,
-    //                           //height: 25,
-    //                           child: DropdownButton<Color>(
-    //                             iconSize: 35,
-    //                             value: curentColor, //colorsList[index],
-    //                             items: stackColors.map((Color type) {
-    //                               return DropdownMenuItem<Color>(
-    //                                 value: type, //type,
-    //                                 child: Container(
-    //                                     width: 60,
-    //                                     height: 25,
-    //                                     decoration: BoxDecoration(
-    //                                       color: type,
-    //                                       border: Border.all(
-    //                                         color: Colors.black,
-    //                                         width: 2,
-    //                                       ),
-    //                                     )),
-    //                               );
-    //                             }).toList(),
-    //                             onChanged: (value) {
-    //                               if (value != colorsList[index]) {
-    //                                 print(
-    //                                     "${stacks[index].name} Stack color changed to $value");
-    //                                 //var newStackColor = const Color.fromARGB(255, 158, 158, 158);
-    //                                 var newStack = CardsStack(
-    //                                     id: stacks[index].id,
-    //                                     name: stacks[index].name,
-    //                                     isActive: stacks[index].isActive,
-    //                                     stackType: stacks[index].stackType,
-    //                                     stackColor: value!,
-    //                                     cards: stacks[index].cards);
-    //                                 setState(() {
-    //                                   stacks.removeAt(index);
-    //                                   stacks.insert(index, newStack);
-    //                                   colorsList[index] = value;
-    //                                 });
-    //                               } else {
-    //                                 print(
-    //                                     "${stacks[index].id} Stack color not changed");
-    //                               }
-    //                             },
-    //                           ),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                   ],
-    //                 ),
-    //                 const Expanded(child: SizedBox()),
-    //                 Container(
-    //                   alignment: Alignment.bottomRight,
-    //                   margin: const EdgeInsets.only(right: 5),
-    //                   child: Column(
-    //                     children: [
-    //                       ElevatedButton(
-    //                         onPressed: () {
-    //                           print("UpdateDeleteStackPage save stack updates");
-    //                           context.read<CRUDStackBloc>().add(
-    //                                 CRUDStackUpdateStackEvent(stacks[index]),
-    //                               );
-    //                         },
-    //                         child: const Text("Save"),
-    //                       ),
-    //                       ElevatedButton(
-    //                         onPressed: () {},
-    //                         style: ElevatedButton.styleFrom(
-    //                           backgroundColor: Colors.red,
-    //                         ),
-    //                         child: const Text("Delete stack"),
-    //                       ),
-    //                     ],
-    //                   ),
-    //                 ),
-    //               ],
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //     ],
-    //   ),
-    //   Size(screenSize.width - 50, 320),
-    // );
   }
 
-  box(String text, String buttonText, SizedBox sizedBox) {
+  box(String text, String buttonText, SizedBox sizedBox, Function create) {
     return SizedBox(
       child: Column(
         children: [
@@ -635,9 +218,12 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(margin: const EdgeInsets.fromLTRB(10, 0, 0, 0), child: Text(text, style: const TextStyle(fontSize: 20))),
+                Container(
+                    margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    child: Text(text, style: const TextStyle(fontSize: 20))),
                 ElevatedButton(
                   onPressed: () {
+                    create();
                     // Add your stack creation logic here
                   },
                   child: Text(buttonText, style: const TextStyle(fontSize: 20)),
@@ -649,6 +235,17 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
         ],
       ),
     );
+  }
+
+  void createCard(BuildContext context) {
+    print("UpdateDeleteStack createCard");
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => const CreateCardDialog());
+  }
+
+  void createStack() {
+    context.read<ProviderBloc>().add(CreateEvent());
   }
 
   @override
@@ -722,6 +319,7 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
                   itemBuilder: (_, index) => cardWidget(index),
                 ),
               ),
+              () => createCard(context),
             ),
 
             // Stacks
@@ -738,6 +336,7 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
                       stackWidget(index), // StackWidgetPage(index),
                 ),
               ),
+              () => createStack(),
             ),
           ],
         ),

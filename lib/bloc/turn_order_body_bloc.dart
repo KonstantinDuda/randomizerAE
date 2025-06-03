@@ -64,8 +64,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     );
 
 
-    print("TurnOrderBodyBloc _onNext stack.id != 0 stack == $stack \n "
-                                  "stack.cards == ${stack.cards} \n");
+    print("TurnOrderBodyBloc _onNext stack.id != 0 stack == $stack \n ");
     print("TurnOrderBodyBloc _onNext alreadyPlayed.cards == ${alreadyPlayed.cards} \n");
       
     emit(TurnOrderBodySuccessActionState(newStack, newAlreadyPlayed));
