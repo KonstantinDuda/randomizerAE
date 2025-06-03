@@ -66,34 +66,8 @@ class CardsStackDB {
   }
 
   @override
-  bool operator ==(Object other) {
-    if(identical(this, other)) return true;
-    //if(other is! CardsStackDB) return false;
-    if(other is CardsStackDB) {
-      if(id == other.id && 
-      name == other.name && 
-      isStandart == other.isStandart &&
-      stackType == other.stackType &&
-      stackColor == other.stackColor &&
-      cardsId == other.cardsId) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    return other is CardsStackDB && 
-      id == other.id && 
-      name == other.name && 
-      isStandart == other.isStandart &&
-      stackType == other.stackType &&
-      stackColor == other.stackColor &&
-      cardsId == other.cardsId;
-  }
-
-  @override
   String toString() {
-    // TODO: implement toString
     return "CardsStackDB{id: $id, name: $name, isStandart: $isStandart, \n stackType: $stackType, stackColor: $stackColor, cardsId: $cardsId}";
   }
+  
 }

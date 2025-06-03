@@ -1,73 +1,77 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc/event_state/create_stack_es.dart';
+import 'event_state/crud_stack_es.dart';
 import '../database/cards_stack.dart';
 import '../database/db_provider.dart';
 
 //import '../database/db_temporary.dart';
 
-class CreateStackBloc extends Bloc<CreateStackEvent, CreateStackState> {
+class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
   //final database = DbTemporary();
   final db = DBProvider();
 
   List<AECard> cards = [];
   List<CardsStack> stacks = [];
 
-  CreateStackBloc() : super(const CreateStackSuccessActionState()) {
-    on<CreateStackInitialEvent>(_onInit);
-    on<CreateStackNewCardEvent>(_onNewCard);
-    on<CreateStackUpdateCardEvent>(_onUpdateCard);
-    on<CreateStackDeleteCardEvent>(_onDeleteCard);
-    on<CreateStackNewStackEvent>(_onNewStack);
-    on<CreateStackUpdateStackEvent>(_onUpdateStack);
-    on<CreateStackDeleteStackEvent>(_onDeleteStack);
+  CRUDStackBloc() : super(const CRUDStackSuccessActionState()) {
+    on<CRUDStackInitialEvent>(_onInit);
+    on<CRUDStackNewCardEvent>(_onNewCard);
+    on<CRUDStackUpdateCardEvent>(_onUpdateCard);
+    on<CRUDStackDeleteCardEvent>(_onDeleteCard);
+    on<CRUDStackNewStackEvent>(_onNewStack);
+    on<CRUDStackUpdateStackEvent>(_onUpdateStack);
+    on<CRUDStackDeleteStackEvent>(_onDeleteStack);
   }
 
-  _onInit(CreateStackInitialEvent event, Emitter<CreateStackState> emit) async {
+  _onInit(CRUDStackInitialEvent event, Emitter<CRUDStackState> emit) async {
     cards = await db.getAllCards();
     stacks = await db.getAllStacks();
 
-    print("CreateStackBlock _onInit stacks.length == ${stacks.length}");
+    print("CRUDStackBlock _onInit stacks.length == ${stacks.length}");
 
-    emit(CreateStackSuccessActionState(cards, stacks));
+    emit(CRUDStackSuccessActionState(cards, stacks));
   }
 
-  _onNewCard(CreateStackNewCardEvent event, Emitter<CreateStackState> emit) {
-    emit(CreateStackSuccessActionState(cards, stacks));
+  _onNewCard(CRUDStackNewCardEvent event, Emitter<CRUDStackState> emit) {
+    emit(CRUDStackSuccessActionState(cards, stacks));
   }
 
   _onUpdateCard(
-      CreateStackUpdateCardEvent event, Emitter<CreateStackState> emit) {
-    print("CreateStackBloc _onUpdateCard event.card.id == ${event.card.id}");
+      CRUDStackUpdateCardEvent event, Emitter<CRUDStackState> emit) {
+    print("CRUDStackBloc _onUpdateCard event.card.id == ${event.card.id}");
 
-    emit(CreateStackSuccessActionState(cards, stacks));
+    emit(CRUDStackSuccessActionState(cards, stacks));
   }
 
   _onDeleteCard(
-      CreateStackDeleteCardEvent event, Emitter<CreateStackState> emit) {
-    emit(CreateStackSuccessActionState(cards, stacks));
+      CRUDStackDeleteCardEvent event, Emitter<CRUDStackState> emit) {
+    emit(CRUDStackSuccessActionState(cards, stacks));
   }
 
-  _onNewStack(CreateStackNewStackEvent event, Emitter<CreateStackState> emit) {
-    emit(CreateStackSuccessActionState(cards, stacks));
+  _onNewStack(CRUDStackNewStackEvent event, Emitter<CRUDStackState> emit) {
+    emit(CRUDStackSuccessActionState(cards, stacks));
   }
 
   _onUpdateStack(
-      CreateStackUpdateStackEvent event, Emitter<CreateStackState> emit) async {
-    print("CreateStackBloc _onUpdateStack event.stack == ${event.stack}");
+      CRUDStackUpdateStackEvent event, Emitter<CRUDStackState> emit) async {
+    print("CRUDStackBloc _onUpdateStack event.stack == ${event.stack}");
 
     var stackFromDB = await db.getStackById(event.stack.id);
     if(stackFromDB == event.stack) {
-      print("CreateStackBloc _onUpdateStack stackFromDB == event.stack");
+      print("CRUDStackBloc _onUpdateStack stackFromDB == event.stack");
     } else {
-      print("CreateStackBloc _onUpdateStack stackFromDB != event.stack");
+      print("CRUDStackBloc _onUpdateStack stackFromDB != event.stack");
     }
 
-    emit(CreateStackSuccessActionState(cards, stacks));
+    emit(CRUDStackSuccessActionState(cards, stacks));
   }
 
   _onDeleteStack(
-      CreateStackDeleteStackEvent event, Emitter<CreateStackState> emit) {
-    emit(CreateStackSuccessActionState(cards, stacks));
+      CRUDStackDeleteStackEvent event, Emitter<CRUDStackState> emit) async {
+
+var stackFromDB = await db.getStackById(event.id);
+print("CRUDStackBloc _onDeleteStack delete $stackFromDB?");
+
+    emit(CRUDStackSuccessActionState(cards, stacks));
   }
 }

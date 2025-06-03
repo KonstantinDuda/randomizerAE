@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'bloc/create_stack_bloc.dart';
-import 'bloc/event_state/create_stack_es.dart';
+import 'bloc/crud_stack_bloc.dart';
+import 'bloc/event_state/crud_stack_es.dart';
 import 'bloc/event_state/turn_order_body_es.dart';
 import 'bloc/turn_order_body_bloc.dart';
 import 'database/db_temporary.dart';
@@ -12,6 +12,7 @@ import 'bloc/friend_foe_body_bloc.dart';
 import 'bloc/observer.dart';
 import 'bloc/providers/provider_bloc.dart';
 import 'view/create/create_stack_page.dart';
+import 'view/create/update_delete_stack_page.dart';
 import 'view/loading_page.dart';
 import 'view/root/root_page.dart';
 
@@ -47,8 +48,8 @@ class MyApp extends StatelessWidget {
         BlocProvider<FriendFoeBodyBloc>(
           create: (_) => FriendFoeBodyBloc()..add(const FriendFoeBodyInitialEvent(0)),
         ),
-        BlocProvider<CreateStackBloc>(
-          create: (_) => CreateStackBloc()..add(CreateStackInitialEvent()),
+        BlocProvider<CRUDStackBloc>(
+          create: (_) => CRUDStackBloc()..add(CRUDStackInitialEvent()),
         ),
       ],
       child: 
@@ -57,10 +58,11 @@ class MyApp extends StatelessWidget {
           builder: (_, state) {
           if (state is RootState) {
             return const RootPage();
+          } else if(state is UpdateDeleteState) {
+            return const UpdateDeleteStackPage();
           } else if(state is CreateState) {
             return const CreateStackPage();
           } else {
-            
             return const LoadingPage();
           }
         })));

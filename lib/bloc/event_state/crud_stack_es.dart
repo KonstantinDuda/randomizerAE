@@ -4,77 +4,77 @@ import '../../database/cards_stack.dart';
 
 // Events
   // Cards
-class CreateStackEvent extends Equatable {
-  const CreateStackEvent();
+class CRUDStackEvent extends Equatable {
+  const CRUDStackEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class CreateStackInitialEvent extends CreateStackEvent {}
+class CRUDStackInitialEvent extends CRUDStackEvent {}
 
-class CreateStackNewCardEvent extends CreateStackEvent {
+class CRUDStackNewCardEvent extends CRUDStackEvent {
   final AECard card;
-  const CreateStackNewCardEvent(this.card);
+  const CRUDStackNewCardEvent(this.card);
 
   @override
   List<Object> get props => [card];
 }
 
-class CreateStackUpdateCardEvent extends CreateStackEvent {
+class CRUDStackUpdateCardEvent extends CRUDStackEvent {
   final AECard card;
-  const CreateStackUpdateCardEvent(this.card);
+  const CRUDStackUpdateCardEvent(this.card);
 
   @override
   List<Object> get props => [card];
 }
 
-class CreateStackDeleteCardEvent extends CreateStackEvent {
+class CRUDStackDeleteCardEvent extends CRUDStackEvent {
   final int id;
-  const CreateStackDeleteCardEvent(this.id);
+  const CRUDStackDeleteCardEvent(this.id);
 
   @override
   List<Object> get props => [id];
 }
 
   // Stacks
-class CreateStackNewStackEvent extends CreateStackEvent {
+class CRUDStackNewStackEvent extends CRUDStackEvent {
   final CardsStack stack;
-  const CreateStackNewStackEvent(this.stack);
+  const CRUDStackNewStackEvent(this.stack);
 
   @override
   List<Object> get props => [stack];
 }
 
-class CreateStackUpdateStackEvent extends CreateStackEvent {
+class CRUDStackUpdateStackEvent extends CRUDStackEvent {
   final CardsStack stack;
-  const CreateStackUpdateStackEvent(this.stack);
+  const CRUDStackUpdateStackEvent(this.stack);
 
   @override
   List<Object> get props => [stack];
 }
 
-class CreateStackDeleteStackEvent extends CreateStackEvent {
+class CRUDStackDeleteStackEvent extends CRUDStackEvent {
   final int id;
-  const CreateStackDeleteStackEvent(this.id);
+  const CRUDStackDeleteStackEvent(this.id);
 
   @override
   List<Object> get props => [id];
 }
 
 // States
-class CreateStackState extends Equatable {
-  const CreateStackState();
+class CRUDStackState extends Equatable {
+  const CRUDStackState();
 
   @override
   List<Object> get props => [];
 }
 
-class CreateStackSuccessActionState extends CreateStackState {
+class CRUDStackSuccessActionState extends CRUDStackState {
   final List<AECard> cards;
   final List<CardsStack> stacks;
 
-  const CreateStackSuccessActionState([
+  const CRUDStackSuccessActionState([
     this.cards = const [], 
     this.stacks = const []]);
 
@@ -82,6 +82,6 @@ class CreateStackSuccessActionState extends CreateStackState {
   List<Object> get props => [cards, stacks];
 }
 
-class CreateStackErrorActionState extends CreateStackState {
-  const CreateStackErrorActionState();
+class CRUDStackErrorActionState extends CRUDStackState {
+  const CRUDStackErrorActionState();
 }

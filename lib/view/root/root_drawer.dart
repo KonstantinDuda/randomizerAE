@@ -118,7 +118,7 @@ class _RootDrawerState extends State<RootDrawer> {
         const Divider(),
       TextButton(child: const Text('Update / Create  stack'),
         onPressed: () {
-          context.read<ProviderBloc>().add(CreateEvent());
+          context.read<ProviderBloc>().add(UpdateDeleteEvent());
         },
       ),],
     ),);  
