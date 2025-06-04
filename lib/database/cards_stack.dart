@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:randomizer_new/database/cards_stack_db.dart';
 
+enum CardType {
+  turnOrder,
+  friend,
+  foe,
+  nemesis,
+  gravehold,
+  suply,
+  hero,
+  other,
+}
+
 class AECard {
   int id = 0;
   String text = "";
@@ -32,11 +43,11 @@ class AECard {
 
   @override
   bool operator ==(Object other) {
-    if(other is AECard) {
-      print(id == other.id ? "true: AECard operator ==. id == other.id  ?" : "false: AECard operator ==. id == other.id ?");
-      print(text == other.text ? "true: AECard operator ==. text == other.text  ?" : "false: AECard operator ==. text == other.text ?");
-      print(imgPath == other.imgPath ? "true: AECard operator ==. imgPath == other.imgPath ?" : "false: AECard operator ==. imgPath == other.imgPath ?");
-    }
+    // if(other is AECard) {
+    //   print(id == other.id ? "true: AECard operator ==. id == other.id  ?" : "false: AECard operator ==. id == other.id ?");
+    //   print(text == other.text ? "true: AECard operator ==. text == other.text  ?" : "false: AECard operator ==. text == other.text ?");
+    //   print(imgPath == other.imgPath ? "true: AECard operator ==. imgPath == other.imgPath ?" : "false: AECard operator ==. imgPath == other.imgPath ?");
+    // }
     return other is AECard &&
         id == other.id &&
         text == other.text &&
@@ -48,7 +59,7 @@ class AECard {
 
   @override
   String toString() {
-    var result = 'AECard text: $text';
+    var result = 'AECard text: $text, imgPath: $imgPath';
     return result;
   }
   // TODO: add toJson and fromJson methods

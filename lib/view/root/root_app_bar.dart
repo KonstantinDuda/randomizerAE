@@ -42,7 +42,7 @@ class _RootAppBarState extends State<RootAppBar> {
       width: size.width,
       color: Colors.blue,
       child: Container(
-        //width: size.width - 140,
+        //width: size.width,
         margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,

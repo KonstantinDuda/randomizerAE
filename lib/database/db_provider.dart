@@ -77,6 +77,12 @@ class DBProvider {
       } else {
         print("DBProvider createCard() card was in the Database \n");
       }
+    } else {
+      await db.insert(
+          cardsTableName, card.toMap(),
+        );
+        var x = await getCardById(card.id);
+        print("DBProvider createCard() card.id < 1 card: $x was created");
     }
 
     // For debugging purposes
@@ -113,7 +119,7 @@ class DBProvider {
     print("DBProvider updste card, card before: $cardBefore");
 
     await db.update(cardsTableName, card.toMap(),
-        where: "card_id = ?",
+        where: "id = ?",
         whereArgs: [card.id]
       );
 
@@ -124,7 +130,7 @@ class DBProvider {
   void deleteCard(int id) async {
     final db = await getDatabase;
     await db.delete(cardsTableName,
-        where: "card_id = ?",
+        where: "id = ?",
         whereArgs: [id]
       );
   }

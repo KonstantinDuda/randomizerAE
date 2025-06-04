@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import '../../database/cards_stack.dart';
 
 // Events
-  // Cards
+// Cards
 class CRUDStackEvent extends Equatable {
   const CRUDStackEvent();
 
@@ -14,11 +14,18 @@ class CRUDStackEvent extends Equatable {
 class CRUDStackInitialEvent extends CRUDStackEvent {}
 
 class CRUDStackNewCardEvent extends CRUDStackEvent {
-  final AECard card;
-  const CRUDStackNewCardEvent(this.card);
+  //final AECard card;
+  final String name;
+  final bool isOptional;
+  final String textBeforeOr;
+  final String textAfterOr;
+  final String type;
+
+  const CRUDStackNewCardEvent(this.name, this.isOptional, this.textBeforeOr,
+      this.textAfterOr, this.type);
 
   @override
-  List<Object> get props => [card];
+  List<Object> get props => [name, isOptional, textBeforeOr, textAfterOr, type];
 }
 
 class CRUDStackUpdateCardEvent extends CRUDStackEvent {
@@ -37,7 +44,7 @@ class CRUDStackDeleteCardEvent extends CRUDStackEvent {
   List<Object> get props => [id];
 }
 
-  // Stacks
+// Stacks
 class CRUDStackNewStackEvent extends CRUDStackEvent {
   final CardsStack stack;
   const CRUDStackNewStackEvent(this.stack);
@@ -74,9 +81,8 @@ class CRUDStackSuccessActionState extends CRUDStackState {
   final List<AECard> cards;
   final List<CardsStack> stacks;
 
-  const CRUDStackSuccessActionState([
-    this.cards = const [], 
-    this.stacks = const []]);
+  const CRUDStackSuccessActionState(
+      [this.cards = const [], this.stacks = const []]);
 
   @override
   List<Object> get props => [cards, stacks];

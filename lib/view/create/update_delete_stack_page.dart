@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:randomizer_new/view/create/dialog_create_card.dart';
+import 'package:randomizer_new/view/create/dialog_delete.dart';
 import 'package:randomizer_new/view/create/stack_widget.dart';
 import 'package:randomizer_new/view/root/bodyes/my_card.dart';
 
@@ -57,7 +58,9 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
         ),
         ElevatedButton(
           onPressed: () {
-            context.read<CRUDStackBloc>().add(CRUDStackDeleteCardEvent(cards[index].id));
+            var text = cards[index].text.split(":")[0];
+            showDialog(context: context, builder: (BuildContext context) => DeleteDialog(text, true, false, cards[index].id));
+            //context.read<CRUDStackBloc>().add(CRUDStackDeleteCardEvent(cards[index].id));
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.red,
@@ -188,7 +191,8 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
 
     deleteStack() {
       print("Delete $curentName stack");
-      context.read<CRUDStackBloc>().add(CRUDStackDeleteStackEvent(index));
+      showDialog(context: context, builder: (BuildContext context) => DeleteDialog(stacks[index].name, false, true, stacks[index].id));
+      //context.read<CRUDStackBloc>().add(CRUDStackDeleteStackEvent(index));
     }
 
     return StackWidget(
@@ -239,9 +243,10 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
 
   void createCard(BuildContext context) {
     print("UpdateDeleteStack createCard");
+    AECard card = AECard(id: 0, text: "", imgPath: "");
     showDialog(
         context: context,
-        builder: (BuildContext context) => const CreateCardDialog());
+        builder: (BuildContext context) => CreateCardDialog(card));
   }
 
   void createStack() {
