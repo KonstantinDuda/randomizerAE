@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:randomizer_new/database/cards_stack.dart';
 import 'package:randomizer_new/database/db_temporary.dart';
 import 'package:randomizer_new/view/root/bodyes/my_card.dart';
@@ -30,7 +31,7 @@ class _FriendFoeBody extends State<FriendFoeBody> {
 
     return BlocBuilder<FriendFoeBodyBloc, FriendFoeBodyState>(
         builder: (context, state) {
-      var database = DbTemporary();
+      var database = DbTemporary(); // TODO create hero table in db. Delete this
       HeroStack hero = HeroStack.empty();
       var isHeroEmpty = hero.id == 0 ? true : false;
       var abilityName = "";
@@ -59,7 +60,8 @@ class _FriendFoeBody extends State<FriendFoeBody> {
             List<String> texts = nameText[1].split("OR");
             cardTextBeforeOr = texts[0];
             if (texts.length > 1) {
-              cardTextAfterOr = texts[1];
+              //cardTextAfterOr = texts[1];
+              cardTextAfterOr = texts.sublist(1, texts.length - 1).join(" \n OR \n ");
               isCardOptional = true;
             }
           }
@@ -73,7 +75,8 @@ class _FriendFoeBody extends State<FriendFoeBody> {
               List<String> alreadyTexts = alreadyNameText[1].split("OR");
               if (alreadyTexts.length > 1) {
                 alreadyTextsBeforOr.add(alreadyTexts[0]);
-                alreadyTextsAfterOr.add(alreadyTexts[1]);
+                //alreadyTextsAfterOr.add(alreadyTexts[1]);
+                alreadyTextsAfterOr.add(alreadyTexts.sublist(1, alreadyTexts.length -1).join(" \n OR \n"));
                 isAlreadyCardOptional.add(true);
               } else {
                 alreadyTextsBeforOr.add(alreadyNameText[1]);

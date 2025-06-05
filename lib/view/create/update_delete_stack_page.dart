@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:randomizer_new/view/create/dialog_add_card.dart';
 import 'package:randomizer_new/view/create/dialog_create_card.dart';
 import 'package:randomizer_new/view/create/dialog_delete.dart';
 import 'package:randomizer_new/view/create/stack_widget.dart';
@@ -52,14 +53,20 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
         ),
         ElevatedButton(
           onPressed: () {
-            // TODO Add functional
+            showDialog(
+                context: context,
+                builder: (BuildContext context) =>
+                    CreateCardDialog(cards[index]));
           },
           child: const Text("Update card"),
         ),
         ElevatedButton(
           onPressed: () {
             var text = cards[index].text.split(":")[0];
-            showDialog(context: context, builder: (BuildContext context) => DeleteDialog(text, true, false, cards[index].id));
+            showDialog(
+                context: context,
+                builder: (BuildContext context) =>
+                    DeleteDialog(text, true, false, cards[index].id));
             //context.read<CRUDStackBloc>().add(CRUDStackDeleteCardEvent(cards[index].id));
           },
           style: ElevatedButton.styleFrom(
@@ -101,10 +108,15 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
 
     void changeName() {
       print("ChangeName in $curentName stack");
+      
     }
 
     void addCard() {
       print("Add card in $curentName stack");
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => AddCardToStackDialog(stack: stacks[index])
+              );
     }
 
     void checkboxChange(bool value) {
@@ -191,7 +203,10 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
 
     deleteStack() {
       print("Delete $curentName stack");
-      showDialog(context: context, builder: (BuildContext context) => DeleteDialog(stacks[index].name, false, true, stacks[index].id));
+      showDialog(
+          context: context,
+          builder: (BuildContext context) =>
+              DeleteDialog(stacks[index].name, false, true, stacks[index].id));
       //context.read<CRUDStackBloc>().add(CRUDStackDeleteStackEvent(index));
     }
 

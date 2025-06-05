@@ -36,63 +36,98 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
     print(
         "CRUDStackBlock _onNewCard event.data == \n ${event.name}, ${event.isOptional}, ${event.textBeforeOr}, ${event.textAfterOr}, ${event.type} ");
     AECard newCard = AECard(id: 0, text: "", imgPath: "");
+    var cardName = event.name.isNotEmpty ? event.name : "";
+    var cardIsOptional = event.isOptional;
+    var cardTextBeforeOr = "";
+    var cardTextAfterOr = "";
+    var cardType = event.type;
+    if (event.textBeforeOr.isNotEmpty && event.textAfterOr.isNotEmpty) {
+      cardTextBeforeOr = event.textBeforeOr;
+      cardTextAfterOr = event.textAfterOr;
+    } else if (event.textBeforeOr.isEmpty && event.textAfterOr.isNotEmpty) {
+      cardTextBeforeOr = event.textAfterOr;
+    } else if (event.textBeforeOr.isNotEmpty && event.textAfterOr.isEmpty) {
+      cardTextBeforeOr = event.textBeforeOr;
+    }
 
     void isOptionalFunc(String type) {
       print("CRUDStackBlock _onNewCard isOptionalFunc type == $type");
-      
+
       var resultType = "";
-      if(type == "Friend" || type == "Foe") {
+      if (type == "Friend" || type == "Foe") {
         resultType = "friend foe/${type.toLowerCase()}/";
       } else {
         resultType = "${type.toLowerCase()}/";
       }
-      if (event.isOptional) {
-        print("CRUDStackBlock _onNewCard isOptionalFunc isOptional");
-          if (event.textAfterOr.isNotEmpty) {
+
+      if (cardIsOptional) {
+        print("CRUDStackBlock _onNewCard isOptionalFunc event.isOptional \n");
+        if (type == "Turn order") {
+          if (cardTextAfterOr.isNotEmpty) {
             newCard.imgPath =
-                "assets/images/${resultType.toLowerCase()}${event.textBeforeOr} or ${event.textAfterOr}";
-            newCard.text = "${event.textBeforeOr} OR ${event.textAfterOr}";
+                "assets/images/${resultType.toLowerCase()}$cardTextBeforeOr or $cardTextAfterOr";
+            newCard.text = "$cardTextBeforeOr OR $cardTextAfterOr";
+          } else {
+            newCard.imgPath =
+                "assets/images/${resultType.toLowerCase()}$cardTextBeforeOr";
+            newCard.text = cardTextBeforeOr;
           }
         } else {
-          print("CRUDStackBlock _onNewCard isOptionalFunc else");
-          if (event.textAfterOr.isNotEmpty) {
-            newCard.imgPath =
-                "assets/images/${resultType.toLowerCase()}${event.textBeforeOr} ${event.textAfterOr}";
-            newCard.text = "${event.textBeforeOr} ${event.textAfterOr}";
+          newCard.imgPath =
+              "assets/images/${resultType.toLowerCase()}$cardName";
+          if (cardTextAfterOr.isNotEmpty) {
+            newCard.text = "$cardName: $cardTextBeforeOr OR $cardTextAfterOr";
+          } else {
+            newCard.text = "$cardName: $cardTextBeforeOr";
           }
         }
-        //newCard.imgPath = "assets/images/${resultType.toLowerCase()}${event.textBeforeOr}";
-        //newCard.text = event.textBeforeOr;
+      } else {
+        print(
+            "CRUDStackBlock _onNewCard isOptionalFunc event.isOptional ELSE: \n");
+        if (type == "Turn order") {
+          if (cardTextAfterOr.isNotEmpty) {
+            newCard.imgPath =
+                "assets/images/${resultType.toLowerCase()}$cardTextBeforeOr $cardTextAfterOr";
+            newCard.text = "$cardTextBeforeOr $cardTextAfterOr";
+          } else {
+            newCard.imgPath =
+                "assets/images/${resultType.toLowerCase()}$cardTextBeforeOr";
+            newCard.text = cardTextBeforeOr;
+          }
+        } else {
+          newCard.imgPath =
+              "assets/images/${resultType.toLowerCase()}$cardName";
+          if (cardTextAfterOr.isNotEmpty) {
+            newCard.text = "$cardName: $cardTextBeforeOr $cardTextAfterOr";
+          } else {
+            newCard.text = "$cardName: $cardTextBeforeOr";
+          }
+        }
+      }
     }
 
-    if (event.textBeforeOr.isNotEmpty) {
+    if (cardTextBeforeOr.isNotEmpty) {
       print("CRUDStackBlock _onNewCard event.textBeforeOr.isNotEmpty");
-      if (event.type == "Turn order") {
+      if (cardType == "Turn order") {
         isOptionalFunc("Turn order");
-      } else
-      if (event.type == "Friend") {
+      } else if (cardType == "Friend") {
         isOptionalFunc("Friend");
-      } else
-      if (event.type == "Foe") {
-        isOptionalFunc("Friend");
-      } else
-      if (event.type == "Nemesis") {
-        isOptionalFunc("Friend");
-      } else
-      if (event.type == "Gravehold") {
-        isOptionalFunc("Friend");
-      } else
-      if (event.type == "Suply") {
-        isOptionalFunc("Friend");
-      } else
-      if (event.type == "Hero") {
-        isOptionalFunc("Friend");
+      } else if (cardType == "Foe") {
+        isOptionalFunc("Foe");
+      } else if (cardType == "Nemesis") {
+        isOptionalFunc("Nemesis");
+      } else if (cardType == "Gravehold") {
+        isOptionalFunc("Gravehold");
+      } else if (cardType == "Suply") {
+        isOptionalFunc("Suply");
+      } else if (cardType == "Hero") {
+        isOptionalFunc("Hero");
       } else {
         isOptionalFunc("Other");
       }
     }
 
-    if(newCard.text.isNotEmpty && newCard.imgPath.isNotEmpty) {
+    if (newCard.text.isNotEmpty && newCard.imgPath.isNotEmpty) {
       db.createCard(newCard);
     }
 
@@ -110,7 +145,8 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
     emit(CRUDStackSuccessActionState(cards, stacks));
   }
 
-  _onDeleteCard(CRUDStackDeleteCardEvent event, Emitter<CRUDStackState> emit) async {
+  _onDeleteCard(
+      CRUDStackDeleteCardEvent event, Emitter<CRUDStackState> emit) async {
     print("CRUDStackBloc _onDeleteCard card.id == ${event.id}");
 
     db.deleteCard(event.id);
@@ -129,34 +165,45 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
     print("CRUDStackBloc _onUpdateStack event.stack == ${event.stack}");
 
     var stackFromDB = await db.getStackById(event.stack.id);
-    if (stackFromDB.id == event.stack.id &&
-        stackFromDB.name == event.stack.name &&
-        stackFromDB.isActive == event.stack.isActive &&
-        stackFromDB.stackType == event.stack.stackType &&
-        stackFromDB.stackColor == event.stack.stackColor) {
-      var cardsIsEqual = true;
-      for (var i = 0; i < stackFromDB.cards.length; i++) {
-        stackFromDB.cards[i] == event.stack.cards[i]
-            ? cardsIsEqual = true
-            : cardsIsEqual = false;
-      }
-      if (cardsIsEqual) {
-        print("CRUDStackBloc _onUpdateStack stackFromDB == event.stack");
+    if (stackFromDB.id == event.stack.id) {
+    print("CRUDStackBloc _onUpdateStack stackFromDB.id == event.stack.id");
+      if (stackFromDB.name == event.stack.name &&
+          stackFromDB.isActive == event.stack.isActive &&
+          stackFromDB.stackType == event.stack.stackType &&
+          stackFromDB.stackColor == event.stack.stackColor &&
+          stackFromDB.cards.length == event.stack.cards.length) {
+        var cardsIsEqual = true;
+        for (var i = 0; i < stackFromDB.cards.length; i++) {
+          stackFromDB.cards[i] == event.stack.cards[i]
+              ? cardsIsEqual = true
+              : cardsIsEqual = false;
+        }
+        if (cardsIsEqual) {
+          print("CRUDStackBloc _onUpdateStack stackFromDB == event.stack");
+        } else {
+          db.updateStack(event.stack);
+          print("CRUDStackBloc _onUpdateStack cardsIsEqual == $cardsIsEqual");
+        }
       } else {
-        print("CRUDStackBloc _onUpdateStack cardsIsEqual == $cardsIsEqual");
+        print("CRUDStackBloc _onUpdateStack stackFromDB.id == event.stack.id, stackFromDB != event.stack");
+        db.updateStack(event.stack);
       }
-    } else {
-      print("CRUDStackBloc _onUpdateStack stackFromDB.id != event.stack.id");
     }
+    var newStacks = await db.getAllStacks();
+    stacks = newStacks;
 
-    emit(CRUDStackSuccessActionState(cards, stacks));
+    emit(CRUDStackSuccessActionState(cards, newStacks));
   }
 
   _onDeleteStack(
       CRUDStackDeleteStackEvent event, Emitter<CRUDStackState> emit) async {
-    var stackFromDB = await db.getStackById(event.id);
-    print("CRUDStackBloc _onDeleteStack delete $stackFromDB?");
+    //var stackFromDB = await db.getStackById(event.id);
+    print("CRUDStackBloc _onDeleteStack delete ${event.id}?");
+    db.deleteStack(event.id);
 
-    emit(CRUDStackSuccessActionState(cards, stacks));
+    var newStacks = await db.getAllStacks();
+    stacks = newStacks;
+
+    emit(CRUDStackSuccessActionState(cards, newStacks));
   }
 }

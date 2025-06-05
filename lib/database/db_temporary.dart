@@ -37,53 +37,53 @@ class DbTemporary {
     var cardOne = AECard(
       id: 1,
       text: '1',
-      imgPath: 'assets/images/card1.png',
+      imgPath: 'assets/images/turn order/card1.png',
     );
     var cardTwo = AECard(
       id: 2,
       text: '2',
-      imgPath: 'assets/images/card2.png',
+      imgPath: 'assets/images/turn order/card2.png',
     );
     var cardThree = AECard(
       id: 3,
       text: '3',
-      imgPath: 'assets/images/card3.png',
+      imgPath: 'assets/images/turn order/card3.png',
     );
     var cardFour = AECard(
       id: 4,
       text: '4',
-      imgPath: 'assets/images/card4.png',
+      imgPath: 'assets/images/turn order/card4.png',
     );
     var cardWild = AECard(
       id: 5,
       text: 'Wild',
-      imgPath: 'assets/images/wild.png',
+      imgPath: 'assets/images/turn order/wild.png',
     );
     var cardNemesis = AECard(
       id: 6,
       text: 'Nemesis',
-      imgPath: 'assets/images/nemesis.png',
+      imgPath: 'assets/images/turn order/nemesis.png',
     );
     var cardFoe = AECard(
       id: 7,
       text: 'Foe',
-      imgPath: 'assets/images/foe.png',
+      imgPath: 'assets/images/turn order/foe.png',
     );
     var cardFriend = AECard(
       id: 8,
       text: 'Friend',
-      imgPath: 'assets/images/friend.png',
+      imgPath: 'assets/images/turn order/friend.png',
     );
     var cardBliz = AECard(
       id: 9,
       text: 'Blitz',
-      imgPath: 'assets/images/blitz.png',
+      imgPath: 'assets/images/turn order/blitz.png',
     );
     
     var cardNemesisSpecific = AECard(
       id: 49,
       text: 'Nemesis specific card',
-      imgPath: 'assets/images/nemesis specific.png',
+      imgPath: 'assets/images/turn order/nemesis specific.png',
     );
 
     db.createCard(cardOne);
@@ -139,8 +139,8 @@ class DbTemporary {
 
     List<AECard> turnOrderTwoList = [
       cardOne,
-      cardTwo,
       cardOne,
+      cardTwo,
       cardTwo,
       cardNemesis,
       cardNemesis,
@@ -159,8 +159,8 @@ class DbTemporary {
 
     List<AECard> turnOrderTwoBlizList = [
       cardOne,
-      cardTwo,
       cardOne,
+      cardTwo,
       cardTwo,
       cardNemesis,
       cardBliz,
@@ -281,54 +281,54 @@ class DbTemporary {
       id: 10,
       text:
           'Energize: \n Dalana, the Healer gains 2 charges. OR Any player gains 1 charge',
-      imgPath: 'assets/images/dalana energize.png',
+      imgPath: 'assets/images/friend/dalana energize.png',
     );
     var cardDS = AECard(
       id: 11,
       text:
           'Soothing Aura: \n Any player draws a card. OR Any player gains 2 money tokens',
-      imgPath: 'assets/images/dalana soothing aura.png',
+      imgPath: 'assets/images/friend/dalana soothing aura.png',
     );
     var cardDEn = AECard(
       id: 12,
       text:
           'Enhance: \n Any player focuses a breach. OR Any player discards a prepped spell. '
           'If they do. Dalana, the Healer gains 3 charges',
-      imgPath: 'assets/images/dalana enhance.png',
+      imgPath: 'assets/images/friend/dalana enhance.png',
     );
     var cardDR = AECard(
       id: 13,
       text:
           'Restore: \n Dalana, the Healer gains 2 charges. OR Any player returns a card '
           'from their discard pile to their hand',
-      imgPath: 'assets/images/dalana restore.png',
+      imgPath: 'assets/images/friend/dalana restore.png',
     );
     var cardSCC = AECard(
       id: 14,
       text:
           'Carrion Claw: \n The Scavenger gains 2 charges. OR Any player loses 2 charges',
-      imgPath: 'assets/images/scavenger carrion claw.png',
+      imgPath: 'assets/images/foe/scavenger carrion claw.png',
     );
     var cardSSW = AECard(
       id: 15,
       text:
           'Screeching Wail: \n The Scavenger gains 1 charge. Any player may discard a prepped spell '
           'that costs 3 money or more. If they dont, the Scavenger gains an additional 2 charges',
-      imgPath: 'assets/images/scavenger screeching wail.png',
+      imgPath: 'assets/images/foe/scavenger screeching wail.png',
     );
     var cardSR = AECard(
       id: 16,
       text:
           'Reclaim: \n Any player discards their two most expensive cards in hand and then '
           'draws a card. OR Gravehold suffers 3 damage',
-      imgPath: 'assets/images/scavenger reclaim.png',
+      imgPath: 'assets/images/foe/scavenger reclaim.png',
     );
     var cardSSS = AECard(
       id: 17,
       text:
           'Shadow Slash: \n Gravehold suffers 3 damage. OR The Scavenger gains 3 charges and the '
           'friend gains 1 charge',
-      imgPath: 'assets/images/scavenger shadow slash.png',
+      imgPath: 'assets/images/foe/scavenger shadow slash.png',
     );
   //   var cardAA = AECard(
   //     id: 18,

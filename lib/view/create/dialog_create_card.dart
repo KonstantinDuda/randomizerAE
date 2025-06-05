@@ -39,18 +39,6 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
   Widget build(BuildContext context) {
     if (widget.card.id > 0) {
       print("DialogCreatecard widget.card.id > 0");
-      if (widget.card.text.length > 3) {
-        var nameAndText = widget.card.text.split(":");
-        var beforeOrAndAfter = [];
-        cardName = nameAndText[0];
-        if (nameAndText.length > 1) {
-          beforeOrAndAfter = nameAndText[1].split("OR");
-          cardTextBeforeOr = beforeOrAndAfter[0];
-          beforeOrAndAfter.length > 1
-              ? cardTextAfterOr = beforeOrAndAfter[1]
-              : cardTextAfterOr = "";
-        }
-      }
       if (widget.card.imgPath.isNotEmpty) {
         var pathAndName = widget.card.imgPath.split("/");
         if (pathAndName.length > 3) {
@@ -59,6 +47,32 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
                 ? cardType = element
                 : cardType = "Other";
           }
+        }
+      }
+      if (cardType != "Turn order") {
+        if (widget.card.text.isNotEmpty) {
+          var nameAndText = widget.card.text.split(":");
+          var beforeOrAndAfter = [];
+          cardName = nameAndText[0];
+          if (nameAndText.length > 1) {
+            beforeOrAndAfter = nameAndText[1].split("OR");
+            cardTextBeforeOr = beforeOrAndAfter[0];
+            beforeOrAndAfter.length > 1
+                ? cardTextAfterOr = beforeOrAndAfter
+                    .sublist(1, beforeOrAndAfter.length - 1)
+                    .join(" ")
+                : cardTextAfterOr = "";
+          }
+        }
+      } else {
+        cardName = "";
+        var beforeOrAndAfter = widget.card.text.split("OR");
+        if (beforeOrAndAfter.length > 1) {
+          isOptional = true;
+          cardTextBeforeOr = beforeOrAndAfter[0];
+          cardTextAfterOr = beforeOrAndAfter
+              .sublist(1, beforeOrAndAfter.length - 1)
+              .join(" ");
         }
       }
     }
@@ -76,23 +90,24 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
                 readOnly: typeIsTO,
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(), labelText: "Card name"),
-                    onChanged: (value) {
-                      cardName = value;
-                    },
+                onChanged: (value) {
+                  cardName = value;
+                },
                 controller: TextEditingController(text: cardName),
               ),
             ),
             Container(
-                  width: 300,
-                  margin: const EdgeInsets.only(top: 10),
-                  child: TextField(
-                    decoration: const InputDecoration(
-                    border: OutlineInputBorder(), labelText: "Card text before Or"),
-                    onChanged: (value) {
-                      cardTextBeforeOr = value;
-                    },
+              width: 300,
+              margin: const EdgeInsets.only(top: 10),
+              child: TextField(
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Card text before Or"),
+                onChanged: (value) {
+                  cardTextBeforeOr = value;
+                },
                 controller: TextEditingController(text: cardTextBeforeOr),
-                  ),
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -107,16 +122,17 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
                     }),
               ],
             ),
-                SizedBox(
-                  width: 300,
-                  child: TextField(
-                    decoration: const InputDecoration(
-                    border: OutlineInputBorder(), labelText: "Card text after Or"),
-                    onChanged: (value) {
-                      cardTextAfterOr = value;
-                    },
+            SizedBox(
+              width: 300,
+              child: TextField(
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Card text after Or"),
+                onChanged: (value) {
+                  cardTextAfterOr = value;
+                },
                 controller: TextEditingController(text: cardTextAfterOr),
-                  ),
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -135,7 +151,9 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
                   onChanged: (value) {
                     setState(() {
                       cardType = value!;
-                      cardType == "Turn order" ? typeIsTO = true : typeIsTO = false;
+                      cardType == "Turn order"
+                          ? typeIsTO = true
+                          : typeIsTO = false;
                     });
                   },
                 ),
@@ -156,11 +174,10 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
             backgroundColor: WidgetStateProperty.all(Colors.green),
           ),
           onPressed: () {
-            if(cardType == "Turn order") cardName = "";
+            if (cardType == "Turn order") cardName = "";
             print("DialogCreateCard create card");
-            context
-          .read<CRUDStackBloc>()
-          .add(CRUDStackNewCardEvent(cardName, isOptional, cardTextBeforeOr, cardTextAfterOr, cardType));
+            context.read<CRUDStackBloc>().add(CRUDStackNewCardEvent(cardName,
+                isOptional, cardTextBeforeOr, cardTextAfterOr, cardType));
             Navigator.of(context).pop();
           },
           child: const Text("Save"),

@@ -26,7 +26,22 @@ class TurnOrderData {
   }
 
   Future<List<AECard>> _getCardsFromDB() async {
-    List<AECard> list = await db.getTurnOrderCards(); //db.getAllCards();
+    //List<AECard> list = await db.getTurnOrderCards(); //db.getAllCards();
+    List<AECard> list = await db.getAllCards();
+
+    List<AECard> result = [];
+
+    for (var i in list) {
+      if (i.imgPath.isNotEmpty) {
+        var pathList = i.imgPath.split("/");
+        if (pathList.length > 3) {
+          if (pathList[2] == "turn order") {
+            result.add(i);
+          }
+        }
+      }
+    }
+
     return list;
   }
 
