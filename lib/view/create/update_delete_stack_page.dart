@@ -265,7 +265,7 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
   }
 
   void createStack() {
-    context.read<ProviderBloc>().add(CreateEvent());
+    context.read<ProviderBloc>().add(const CreateEvent(0));
   }
 
   @override
@@ -300,7 +300,7 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
           }
         }
         print("UpdateDeleteStackPage build typesList == $typesList");
-        print("UpdateDeleteStackPage build colorsList == ${colorsList.length}");
+        print("UpdateDeleteStackPage build colorsList.length == ${colorsList.length}");
       } else {
         print(
             "UpdateDeleteStackPage build state is not CRUDStackSuccessActionState \n");

@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
           } else if(state is UpdateDeleteState) {
             return const UpdateDeleteStackPage();
           } else if(state is CreateState) {
-            return const CreateStackPage();
+            return CreateStackPage(state.id);
           } else {
             return const LoadingPage();
           }

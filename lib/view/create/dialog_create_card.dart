@@ -38,7 +38,7 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
   @override
   Widget build(BuildContext context) {
     if (widget.card.id > 0) {
-      print("DialogCreatecard widget.card.id > 0");
+      print("DialogCreateCard widget.card.id > 0");
       if (widget.card.imgPath.isNotEmpty) {
         var pathAndName = widget.card.imgPath.split("/");
         if (pathAndName.length > 3) {
@@ -176,9 +176,16 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
           onPressed: () {
             if (cardType == "Turn order") cardName = "";
             print("DialogCreateCard create card");
-            context.read<CRUDStackBloc>().add(CRUDStackNewCardEvent(cardName,
+            //if(widget.card.id == 0) {
+            //  print("DialogCreateCard create card widget.card.id == 0");
+            context.read<CRUDStackBloc>().add(CRUDStackNewCardEvent(widget.card.id, cardName,
                 isOptional, cardTextBeforeOr, cardTextAfterOr, cardType));
             Navigator.of(context).pop();
+           // } else {
+            //   print("DialogCreateCard create card widget.card.id != 0");
+            //   context.read<CRUDStackBloc>().add(CRUDStackUpdateCardEvent(widget.card.id, cardName,
+            //     isOptional, cardTextBeforeOr, cardTextAfterOr, cardType));
+            // }
           },
           child: const Text("Save"),
         ),
