@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
     //BlocProvider(create: (_) => TurnOrderBodyBloc()..add(const TurnOrderBodyNextEvent()),
       MultiBlocProvider(providers: [
         BlocProvider<TurnOrderBodyBloc>(
-          create: (_) => TurnOrderBodyBloc()..add(const TurnOrderBodyNextEvent()),
+          create: (_) => TurnOrderBodyBloc()..add(TurnOrderInitialEvent()),
         ),
         BlocProvider<FriendFoeBodyBloc>(
           create: (_) => FriendFoeBodyBloc()..add(const FriendFoeBodyInitialEvent(0)),

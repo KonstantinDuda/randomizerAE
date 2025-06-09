@@ -154,7 +154,7 @@ class CardsStack {
 
   @override
   String toString() {
-    var result = 'CardsStack{id: $id, name: $name, cards: $cards';
+    var result = 'CardsStack{id: $id, name: $name, isActive: $isActive}';//cards: $cards';
     return result;
   }
 }

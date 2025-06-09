@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:randomizer_new/bloc/event_state/friend_foe_body_es.dart';
 
+import '../../bloc/crud_stack_bloc.dart';
+import '../../bloc/event_state/crud_stack_es.dart';
 import '../../bloc/event_state/turn_order_body_es.dart';
 import '../../bloc/friend_foe_body_bloc.dart';
 import '../../bloc/providers/root_body_provider.dart';
 import '../../bloc/turn_order_body_bloc.dart';
 import '../../database/cards_stack.dart';
-import '../../database/db_temporary.dart';
+//import '../../database/db_temporary.dart';
 
 class RootAppBar extends StatefulWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey;
@@ -19,26 +21,45 @@ class RootAppBar extends StatefulWidget {
 }
 
 class _RootAppBarState extends State<RootAppBar> {
-  DbTemporary dbObj = DbTemporary();
-  /*late */ List<CardsStack> db = [];
+  // DbTemporary dbObj = DbTemporary();
+  // /*late */ List<CardsStack> db = [];
+  List<CardsStack> stacks = [];
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    //db = dbObj.getAvialableStacks();
-    getData();
-  }
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   //db = dbObj.getAvialableStacks();
+  //   getData();
+  // }
 
-  getData() async {
-    db = await dbObj.getAvialableStacks();
-    setState(() {});
-  }
+  // getData() async {
+  //   db = await dbObj.getAvialableStacks();
+  //   setState(() {});
+  // }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return Container(
+    return BlocBuilder<CRUDStackBloc, CRUDStackState>(
+        builder: (context, state) {
+      if (state is CRUDStackSuccessActionState) {
+          stacks.clear();
+        var allStacks = state.stacks;
+        if(allStacks.isNotEmpty) {
+          for (var element in allStacks) {
+          if(element.isActive) {
+              stacks.add(element);
+            }
+          }
+        }
+        print("RootAppBar stacks == $stacks \n");
+      } else {
+        print("RootAppBar state is NOT CRUDStackSuccessActionState");
+      }
+    return 
+
+    Container(
       width: size.width,
       color: Colors.blue,
       child: Container(
@@ -97,7 +118,8 @@ class _RootAppBarState extends State<RootAppBar> {
                   height: 40,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: db.length,
+                    //itemCount: db.length,
+                    itemCount: stacks.isEmpty ? 0 : stacks.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         child: Container(
@@ -105,7 +127,8 @@ class _RootAppBarState extends State<RootAppBar> {
                           width: 30,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: db[index].stackColor,
+                            //color: db[index].stackColor,
+                            color: stacks[index].stackColor,
                             borderRadius: BorderRadius.circular(5),
                             border: Border.all(
                               color: Colors.black,
@@ -114,29 +137,30 @@ class _RootAppBarState extends State<RootAppBar> {
                           ),
                         ),
                         onTap: () {
-                          if (db[index].stackType == StackType.turnOrder) {
+                          //if (db[index].stackType == StackType.turnOrder) {
+                            if (stacks[index].stackType == StackType.turnOrder) {
                             context.read<TurnOrderBodyBloc>().add(
                                 TurnOrderBodyChangeActiveStackEvent(
-                                    db[index].id));
+                                    // db[index].id));
+                                    stacks[index].id));
                             context.read<RootBodyProviderBloc>().add(
                                 const RootBodyTurnOrderEvent(
                                     ));
-                                    //CardsStack.empty()));
-                          } else if (db[index].stackType == StackType.friendFoe) {
+                          //} else if (db[index].stackType == StackType.friendFoe) {
+                            } else if (stacks[index].stackType == StackType.friendFoe) {
                             var heroStack =
-                                dbObj.getHeroStackByStackId(db[index].id);
+                                // dbObj.getHeroStackByStackId(db[index].id);
+                                  stacks[index];
                                 print("RootAppBar heroStack == $heroStack \n");
                             context.read<FriendFoeBodyBloc>().add(FriendFoeBodyInitialEvent(heroStack.id));
                             context
                                 .read<RootBodyProviderBloc>()
-                                .add(RootBodyFriendFoeEvent(/*heroStack*/));
+                                .add(RootBodyFriendFoeEvent());
                           } else {
                             context
                                 .read<RootBodyProviderBloc>()
                                 .add(RootBodyLoadingEvent());
                           }
-
-                          //context.read<RootBodyProviderBloc>().add(RootBodyLoadingEvent());
                         },
                       );
                     },
@@ -149,4 +173,6 @@ class _RootAppBarState extends State<RootAppBar> {
       ),
     );
   }
+    );
+    }
 }

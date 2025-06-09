@@ -257,16 +257,16 @@ class DbTemporary {
       stackColor: Colors.green,
       cards: turnOrderFourBlizList,
     );
-    _dbStacks.add(turnOrderOne);
-    _dbStacks.add(turnOrderOneBliz);
-    _dbStacks.add(turnOrderTwo);
-    _dbStacks.add(turnOrderTwoBliz);
+    // _dbStacks.add(turnOrderOne);
+    // _dbStacks.add(turnOrderOneBliz);
+    // _dbStacks.add(turnOrderTwo);
+    // _dbStacks.add(turnOrderTwoBliz);
     _dbStacks.add(turnOrderThree);
     _dbStacks.add(turnOrderThreeBliz);
-    _dbStacks.add(turnOrderFour);
-    _dbStacks.add(turnOrderFourBliz);
+    // _dbStacks.add(turnOrderFour);
+    // _dbStacks.add(turnOrderFourBliz);
     //setAvilableStacs();
-    _activeStack = _dbStacks[4];
+    _activeStack = _dbStacks[0];
 
     for (var element in _dbStacks) {
       //print("DBTemporary db.createStack($element)");

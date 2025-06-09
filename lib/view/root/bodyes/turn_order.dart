@@ -47,7 +47,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
 
 
       gridObj(String text, bool newObj) {
-        print("root_body.dart gridObj()");
+        //print("root_body.dart gridObj()");
         return GestureDetector(
           child:
           MyCard(
@@ -127,7 +127,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
 
       gridList() {
         // Функція повертає список віджетів що потім відобразиться на екрані     
-        print("root_body.dart gridList()");
+          //print("root_body.dart gridList()");
         // alreadyPlayed ініціалізується empty обьєктом або тим що приходить з
         // блоку, тому перевірка саме по ідентифікатору.
         // пустий обьєкт завжди має id == 0. 
@@ -138,7 +138,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
             // одному віджеті. 
             if(i % 2 == 0) {
               even.add(alreadyPlayed.cards[i]);
-              print("turn_order gridList() $i % 2 == 0");
+                //print("turn_order gridList() $i % 2 == 0");
               
               if(varGridList.isNotEmpty) {
                 if(varGridList.last == gridListLastObj) {
@@ -168,7 +168,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
               
             } else {
               odd.add(alreadyPlayed.cards[i]);
-              print("turn_order gridList() i % 2 != 0");
+                //print("turn_order gridList() i % 2 != 0");
               
               // Щоразу після того як я додав до непарного списку хоч один елемент
               // в умові з парними я починаю створювати по 2 віджета. Правильний та

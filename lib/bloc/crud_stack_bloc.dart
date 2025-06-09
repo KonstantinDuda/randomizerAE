@@ -20,6 +20,7 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
     on<CRUDStackDeleteCardEvent>(_onDeleteCard);
     on<CRUDStackNewStackEvent>(_onNewStack);
     on<CRUDStackUpdateStackEvent>(_onUpdateStack);
+    on<CRUDStackUpdateAvailableListEvent>(_onUpdateAvailableList);
     on<CRUDStackDeleteStackEvent>(_onDeleteStack);
   }
 
@@ -127,15 +128,17 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
       }
     }
 
-  if(newCard.id == 0) {
-    if (newCard.text.isNotEmpty && newCard.imgPath.isNotEmpty) {
-      print("CRUDStackBlock _onNewCard newCard.id == 0 \n newCard == $newCard");
-      db.createCard(newCard);
+    if (newCard.id == 0) {
+      if (newCard.text.isNotEmpty && newCard.imgPath.isNotEmpty) {
+        print(
+            "CRUDStackBlock _onNewCard newCard.id == 0 \n newCard == $newCard");
+        db.createCard(newCard);
+      }
+    } else if (newCard.text.isNotEmpty && newCard.imgPath.isNotEmpty) {
+      print(
+          "CRUDStackBlock _onNewCard newCard.id != 0 \n update newCard == $newCard");
+      db.updateCard(newCard);
     }
-  } else if (newCard.text.isNotEmpty && newCard.imgPath.isNotEmpty) {
-    print("CRUDStackBlock _onNewCard newCard.id != 0 \n update newCard == $newCard");
-    db.updateCard(newCard);
-  }
 
     print("CRUDStackBlock _onNewCard newCard == $newCard");
 
@@ -147,8 +150,6 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
 
   // _onUpdateCard(CRUDStackUpdateCardEvent event, Emitter<CRUDStackState> emit) {
   //   print("CRUDStackBloc _onUpdateCard event.card.id == ${event.id}");
-
-
 
   //   emit(CRUDStackSuccessActionState(cards, stacks));
   // }
@@ -174,7 +175,7 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
 
     var stackFromDB = await db.getStackById(event.stack.id);
     if (stackFromDB.id == event.stack.id) {
-    print("CRUDStackBloc _onUpdateStack stackFromDB.id == event.stack.id");
+      print("CRUDStackBloc _onUpdateStack stackFromDB.id == event.stack.id");
       if (stackFromDB.name == event.stack.name &&
           stackFromDB.isActive == event.stack.isActive &&
           stackFromDB.stackType == event.stack.stackType &&
@@ -193,7 +194,8 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
           print("CRUDStackBloc _onUpdateStack cardsIsEqual == $cardsIsEqual");
         }
       } else {
-        print("CRUDStackBloc _onUpdateStack stackFromDB.id == event.stack.id, stackFromDB != event.stack");
+        print(
+            "CRUDStackBloc _onUpdateStack stackFromDB.id == event.stack.id, stackFromDB != event.stack");
         db.updateStack(event.stack);
       }
     } else {
@@ -203,6 +205,40 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
     stacks = newStacks;
 
     emit(CRUDStackSuccessActionState(cards, newStacks));
+  }
+
+  _onUpdateAvailableList(CRUDStackUpdateAvailableListEvent event,
+      Emitter<CRUDStackState> emit) async {
+    print("CRUDStackBloc _onUpdateAvailableList event.List<id> == ${event.id}");
+
+    if (event.id.isNotEmpty) {
+      for (var i = 0; i < stacks.length; i++) {
+        for (var j = 0; j < event.id.length; j++) {
+          if (stacks[i].id == event.id[j]) {
+            print(
+                "CRUDStackBloc _onUpdateAvailableList element.id == ${event.id[j]}");
+            var newIsActive = !stacks[i].isActive;
+            var newStack = CardsStack(
+              id: stacks[i].id,
+              name: stacks[i].name,
+              isActive: newIsActive,
+              stackType: stacks[i].stackType,
+              stackColor: stacks[i].stackColor,
+              cards: stacks[i].cards,
+            );
+            stacks.removeAt(i);
+            stacks.insert(i, newStack);
+            print(
+                "CRUDStackBloc _onUpdateAvailableList stacks[i] == ${stacks[i]}");
+            db.updateStack(stacks[i]);
+          }
+        }
+      }
+    } else {
+      print("CRUDStackBloc _onUpdateAvailableList event.id.isEmpty");
+    }
+
+    emit(CRUDStackSuccessActionState(cards, stacks));
   }
 
   _onDeleteStack(

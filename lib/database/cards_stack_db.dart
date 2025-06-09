@@ -67,7 +67,7 @@ class CardsStackDB {
 
   @override
   String toString() {
-    return "CardsStackDB{id: $id, name: $name, isStandart: $isStandart, \n stackType: $stackType, stackColor: $stackColor, cardsId: $cardsId}";
+    return "CardsStackDB{id: $id, name: $name, isStandart: $isStandart, \n stackType: $stackType, cardsId: $cardsId} \n"; //stackColor: $stackColor, cardsId: $cardsId}";
   }
   
 }

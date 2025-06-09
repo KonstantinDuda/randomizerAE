@@ -1,35 +1,58 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:randomizer_new/database/db_provider.dart';
 
 import 'event_state/turn_order_body_es.dart';
 import '../database/cards_stack.dart';
-import '../database/db_temporary.dart';
+//import '../database/db_temporary.dart';
 
 class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
   late CardsStack stack = const CardsStack.empty();
   late CardsStack alreadyPlayed = const CardsStack.empty();
-  final database = DbTemporary();
+  //final database = DbTemporary();
+  final db = DBProvider();
   
   TurnOrderBodyBloc() : super(const TurnOrderBodySuccessActionState()) {
+    on<TurnOrderInitialEvent>(_onInit);
     on<TurnOrderBodyNextEvent>(_onNext);
     on<TurnOrderBodyDelWildEvent>(_onDelWild);
     on<TurnOrderBodyShuffleEvent>(_onShuffle);
     on<TurnOrderBodyShuffleInStackEvent>(_onShuffleIn);
     on<TurnOrderBodyChangeSequenceEvent>(_onChangeSequence);
     on<TurnOrderBodyChangeActiveStackEvent>(_onChangeActiveStack);
-    on<TurnOrderBodyChangeAvailableStackListEvent>(_onChangeAvailableList);
+    //on<TurnOrderBodyChangeAvailableStackListEvent>(_onChangeAvailableList);
   }
 
-  void _onNext(TurnOrderBodyNextEvent event, Emitter<TurnOrderBodyState> emit) {
-    // Handle the next event
+   void _onInit(TurnOrderInitialEvent event, Emitter<TurnOrderBodyState> emit) async {
+    if(stack.id == 0) {
+      //stack = database.getActiveStack();
+      var stackList = await db.getAvailableStacks();
+      for (var element in stackList) {
+        if(element.stackType == StackType.turnOrder) {
+          stack = element;
+          break;
+        }
+      }
+      //stack = stackList.isNotEmpty ? stackList.first : const CardsStack.empty();
+      print("TurnOrderBodyBloc _onNext stack.id == 0 stack == $stack \n");
+    } else {
+      print("TurnOrderBodyBloc _onNext stack.id != 0 stack.cards == ${stack.cards} \n");
+    }
 
+    emit(TurnOrderBodySuccessActionState(stack, alreadyPlayed));
+   }
+
+  void _onNext(TurnOrderBodyNextEvent event, Emitter<TurnOrderBodyState> emit) async {
+    // Handle the next event
+    
+print("TurnOrderBodyBloc _onNext stack.id == ${stack.id} \n");
     if(stack.id == 0 || stack.cards.isEmpty) {
-      stack = database.getActiveStack();
-      //if(alreadyPlayed.id != 0) {
-        alreadyPlayed = const CardsStack.empty();
-      //}
+      //stack = database.getActiveStack();
+
+stack = await db.getStackById(stack.id);
+
+      alreadyPlayed = const CardsStack.empty();
       stack.cards.shuffle();
       print("TurnOrderBodyBloc _onNext stack.id == 0 stack.cards == ${stack.cards} \n");
-      //emit(TurnOrderBodySuccessActionState(stack, alreadyPlayed));
     } else {
       if(alreadyPlayed.id == 0) {
         alreadyPlayed = CardsStack(
@@ -45,6 +68,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
       stack.cards.removeLast();
     }
     
+
     var newStack = CardsStack(
       id: -1,
       name: stack.name,
@@ -119,21 +143,23 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     emit(TurnOrderBodySuccessActionState(newStack, newAlreadyPlayed));
   }
 
-  void _onShuffle(TurnOrderBodyShuffleEvent event, Emitter<TurnOrderBodyState> emit) {
+  void _onShuffle(TurnOrderBodyShuffleEvent event, Emitter<TurnOrderBodyState> emit) async {
     // Handle the shuffle event
   print("TurnOrderBodyBlock _onShuffle stack.cards.length == ${stack.cards.length} \n");
-    stack = database.getActiveStack();
+    //stack = database.getActiveStack();
+    stack = await db.getStackById(stack.id);
     stack.cards.shuffle();
     alreadyPlayed = const CardsStack.empty();
-    var newStack = CardsStack(
-      id: -1, //stack.id,
-      name: stack.name,
-      isActive: stack.isActive,
-      stackType: StackType.turnOrder,
-      stackColor: stack.stackColor,
-      cards: stack.cards,
-    );
-    emit(TurnOrderBodySuccessActionState(newStack, alreadyPlayed));
+    // var newStack = CardsStack(
+    //   id: -1, //stack.id,
+    //   name: stack.name,
+    //   isActive: stack.isActive,
+    //   stackType: StackType.turnOrder,
+    //   stackColor: stack.stackColor,
+    //   cards: stack.cards,
+    // );
+    //emit(TurnOrderBodySuccessActionState(newStack, alreadyPlayed));
+    emit(TurnOrderBodySuccessActionState(stack, alreadyPlayed));
   }
 
   void _onShuffleIn(TurnOrderBodyShuffleInStackEvent event, Emitter<TurnOrderBodyState> emit) {
@@ -191,39 +217,63 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
   }
 
   void _onChangeActiveStack(TurnOrderBodyChangeActiveStackEvent  event, 
-                                      Emitter<TurnOrderBodyState> emit) {
+                                      Emitter<TurnOrderBodyState> emit) async {
     //emit(const TurnOrderBodyClearScreenState());
-    CardsStack newAlreadyPlayed = const CardsStack.empty();
-    CardsStack newStack = const CardsStack.empty();
-    for (var i in database.friendfoeList) {
-      for (var j in i.heroStacks) {
-        if(j.id != event.id) {
-          newAlreadyPlayed = const CardsStack.empty();
-          database.setActiveStack(event.id);
-          newStack = database.getActiveStack();
-          stack = newStack;
-          alreadyPlayed = newAlreadyPlayed;
-        } else {
-          print("TurnOrderBodyBlock. _onChangeActiveStack. else");
-          newAlreadyPlayed = alreadyPlayed;
-          newStack = stack;
-        }
-      }
-    }
+    print("TurnOrderBodyBlock. _onChangeActiveStack. event.id == ${event.id} \n");
+    var dbStack = await db.getStackById(event.id);
+    stack = dbStack;
+    alreadyPlayed = const CardsStack.empty();
+
+
+
+    // CardsStack newAlreadyPlayed = const CardsStack.empty();
+    // CardsStack newStack = const CardsStack.empty();
+    // for (var i in database.friendfoeList) {
+    //   for (var j in i.heroStacks) {
+    //     if(j.id != event.id) {
+    //       newAlreadyPlayed = const CardsStack.empty();
+    //       database.setActiveStack(event.id);
+    //       newStack = database.getActiveStack();
+    //       stack = newStack;
+    //       alreadyPlayed = newAlreadyPlayed;
+    //     } else {
+    //       print("TurnOrderBodyBlock. _onChangeActiveStack. else");
+    //       newAlreadyPlayed = alreadyPlayed;
+    //       newStack = stack;
+    //     }
+    //   }
+    // }
 
     
-    print("TurnOrderBodyBlock. _onChangeActiveStack. $newStack \n"
-          "newAlreadyPlayed.cards == ${newAlreadyPlayed.cards} \n "
-          "newStack.cards == ${newStack.cards}");
+    // print("TurnOrderBodyBlock. _onChangeActiveStack. $newStack \n"
+    //       "newAlreadyPlayed.cards == ${newAlreadyPlayed.cards} \n "
+    //       "newStack.cards == ${newStack.cards}");
     
-    emit(TurnOrderBodySuccessActionState(newStack, newAlreadyPlayed));
+    emit(TurnOrderBodySuccessActionState(dbStack, const CardsStack.empty()));
+//    emit(TurnOrderBodySuccessActionState(newStack, newAlreadyPlayed));
   }
 
-  void _onChangeAvailableList(TurnOrderBodyChangeAvailableStackListEvent event, 
-                                              Emitter<TurnOrderBodyState> emit) {
-    database.updateAvialableStack(event.id);
+  // void _onChangeAvailableList(TurnOrderBodyChangeAvailableStackListEvent event, 
+  //                                             Emitter<TurnOrderBodyState> emit) async {
+  //   //database.updateAvialableStack(event.id);
+  //   for (var element in event.id) {
+  //    var dbStack = await db.getStackById(element);
+  //    //print("TurnOrderBodyBloc _onChangeAvailableList dbStack.id == ${dbStack.id} isActive = ${dbStack.isActive} \n");
+  //      if(dbStack.id != 0) {
+  //       var newIsActiveState = !dbStack.isActive;
+  //       //print("TurnOrderBodyBloc _onChangeAvailableList dbStack.id == ${dbStack.id} newIsActiveState = $newIsActiveState \n");
+  //         var newStack = CardsStack(
+  //           id: dbStack.id,
+  //           name: dbStack.name,
+  //           isActive: newIsActiveState,
+  //           stackType: dbStack.stackType,
+  //           stackColor: dbStack.stackColor,
+  //           cards: dbStack.cards,
+  //         );
+  //         await db.updateStack(newStack);
+  //       }    
+  //   }
 
-
-    emit(const TurnOrderBodySuccessActionState());
-  }
+  //   emit(TurnOrderBodySuccessActionState(stack, alreadyPlayed));
+  // }
 }

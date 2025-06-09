@@ -322,7 +322,7 @@ class DBProvider {
     return availableList;
   }
 
-  void updateStack(CardsStack stack) async {
+  Future<void> updateStack(CardsStack stack) async {
     final db = await getDatabase;
     CardsStackDB stackDB = CardsStackDB(
         id: stack.id,
@@ -334,16 +334,16 @@ class DBProvider {
 
     var stackBefore = await getStackById(stack.id);
     print(
-        "DBProvider update stack, stack before: $stackBefore \n stackDB == $stackDB");
+        "DBProvider update stack, stack before: $stackBefore  stackBefore.color == ${stackBefore.stackColor} \n"); // stackDB == $stackDB
 
     await db.update(cardsStackTableName, stackDB.toMap(),
         where: "id = ?", whereArgs: [stack.id]);
 
     var stackAfter = await getStackById(stack.id);
-    print("DBProvider update stack, stack after: $stackAfter");
+    print("DBProvider update stack, stack after: $stackAfter stackAfter.color == ${stackAfter.stackColor} \n");
   }
 
-  void deleteStack(int id) async {
+  Future<void> deleteStack(int id) async {
     final db = await getDatabase;
     await db.delete(cardsStackTableName, where: "id = ?", whereArgs: [id]);
   }
