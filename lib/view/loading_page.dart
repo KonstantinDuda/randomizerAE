@@ -20,9 +20,9 @@ class _LoadingPage extends State<LoadingPage> with SingleTickerProviderStateMixi
     controller = AnimationController(duration: const Duration(seconds: 2) ,vsync: this);
     animation = Tween<double>(begin: 0, end: 10).animate(controller)
       ..addListener(() {
-        setState(() {
+        // setState(() {
           
-        });
+        // });
       });
     controller.forward();
   }

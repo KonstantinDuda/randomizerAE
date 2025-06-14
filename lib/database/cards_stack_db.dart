@@ -47,11 +47,11 @@ class CardsStackDB {
 
   static StackType _parseStackType(String type) {
     switch (type) {
-      case 'turnOrder': return StackType.turnOrder;
-      case 'friendFoe': return StackType.friendFoe;
-      case 'gravehold': return StackType.gravehold;
-      case 'hero': return StackType.hero;
-      case 'nemesis': return StackType.nemesis;
+      case 'StackType.turnOrder': return StackType.turnOrder; // StackType.turnOrder
+      case 'StackType.friendFoe': return StackType.friendFoe;
+      case 'StackType.gravehold': return StackType.gravehold;
+      case 'StackType.hero': return StackType.hero;
+      case 'StackType.nemesis': return StackType.nemesis;
       default: 
         return StackType.turnOrder;
     }
@@ -62,6 +62,14 @@ class CardsStackDB {
     for (var element in list) {
       listInt.add(element.id);
     }
+
+      //print("CardsStackDB fromAECardToListInt listId == $listInt");
     return listInt;
   }
+
+  @override
+  String toString() {
+    return "CardsStackDB{id: $id, name: $name, isStandart: $isStandart, \n stackType: $stackType, cardsId: $cardsId} \n"; //stackColor: $stackColor, cardsId: $cardsId}";
+  }
+  
 }

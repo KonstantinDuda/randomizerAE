@@ -4,6 +4,7 @@ import 'package:randomizer_new/bloc/event_state/turn_order_body_es.dart';
 import 'package:randomizer_new/bloc/turn_order_body_bloc.dart';
 import 'package:randomizer_new/database/cards_stack.dart';
 import 'package:randomizer_new/view/root/bodyes/dialog_top_card.dart';
+import 'package:randomizer_new/view/root/bodyes/my_card.dart';
 
 import 'dialog_ch_seq.dart';
 
@@ -15,6 +16,7 @@ class TurnOrderBody extends StatefulWidget {
 }
 
 class _TurnOrderBodyState extends State<TurnOrderBody> {
+  ScrollController myController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
       contentContainerSize.width - 10,
       contentContainerSize.height - mainObjSize.height - 5,
     );
-    ScrollController myController = ScrollController();
+    
 
     return BlocBuilder<TurnOrderBodyBloc, TurnOrderBodyState>(builder: (context, state) {
 
@@ -44,40 +46,23 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
       late Widget gridListSecondObj;
 
 
-      if(state is TurnOrderBodySuccessActionState) {
-        stackColor = state.stack.stackColor;
-        stack = state.stack;
-        alreadyPlayed = state.alreadyPlayed;
-      } else {
-        print("TurnOrderBody Page state is NOT TurnOrderBodySuccessActionState");
-        stackColor = Colors.white;
-        stack = const CardsStack.empty();
-        alreadyPlayed =  const CardsStack.empty();
-        setState(() {
-        //   stackColor = Colors.white;
-        //   stack = const CardsStack.empty();
-        //   alrereadyPlayed =  const CardsStack.empty();
-        });
-      }
-
       gridObj(String text, bool newObj) {
-        print("root_body.dart gridObj()");
-        return Container(
-          height: contetnBodySize.height / 2 -10,
-          width: contetnBodySize.height / 3 - 10,
-          margin: const EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            border: Border.all(
-              color: newObj ? Colors.lightGreen : Colors.black,
-              width: newObj ? 4 : 2,
-            ),
+        //print("root_body.dart gridObj()");
+        return GestureDetector(
+          child:
+          MyCard(
+            Center(
+              child: Text(text,
+                style: const TextStyle(fontSize: 23),
+              ),
+            ), Size(contetnBodySize.height / 3 - 10, contetnBodySize.height / 2 -10),
+            borderWidth:  newObj ? 4 : 2, 
+            borderColor: newObj ? Colors.lightGreen : Colors.black
           ),
-          child: Center(
-            child: Text(text,
-              style: const TextStyle(fontSize: 25),
-            ),
-          ),
+          onLongPress: () {
+            context.read<TurnOrderBodyBloc>().add(TurnOrderBodyShuffleInStackEvent(text));
+            setState(() {});
+          },
         );
       }
 
@@ -142,7 +127,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
 
       gridList() {
         // Функція повертає список віджетів що потім відобразиться на екрані     
-        print("root_body.dart gridList()");
+          //print("root_body.dart gridList()");
         // alreadyPlayed ініціалізується empty обьєктом або тим що приходить з
         // блоку, тому перевірка саме по ідентифікатору.
         // пустий обьєкт завжди має id == 0. 
@@ -153,7 +138,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
             // одному віджеті. 
             if(i % 2 == 0) {
               even.add(alreadyPlayed.cards[i]);
-              print("turn_order gridList() $i % 2 == 0");
+                //print("turn_order gridList() $i % 2 == 0");
               
               if(varGridList.isNotEmpty) {
                 if(varGridList.last == gridListLastObj) {
@@ -183,7 +168,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
               
             } else {
               odd.add(alreadyPlayed.cards[i]);
-              print("turn_order gridList() i % 2 != 0");
+                //print("turn_order gridList() i % 2 != 0");
               
               // Щоразу після того як я додав до непарного списку хоч один елемент
               // в умові з парними я починаю створювати по 2 віджета. Правильний та
@@ -208,11 +193,32 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
               gridListSecondObj = gridColumnObj(
                 alreadyPlayed.cards[i].id, false, false);        
             }
-            myController.jumpTo(myController.position.maxScrollExtent);
+            if (myController.hasClients) {
+              myController.jumpTo(myController.position.maxScrollExtent);  
+            }
+            
             
            }
         }
         return varGridList;
+      }
+
+      if(state is TurnOrderBodySuccessActionState) {
+        print("TurnOrderBody Page state IS TurnOrderBodySuccessActionState");
+        stackColor = state.stack.stackColor;
+        stack = state.stack;
+        alreadyPlayed = state.alreadyPlayed;
+        
+      } else {
+        print("TurnOrderBody Page state is NOT TurnOrderBodySuccessActionState");
+        stackColor = Colors.white;
+        stack = const CardsStack.empty();
+        alreadyPlayed =  const CardsStack.empty();
+        setState(() {
+        //   stackColor = Colors.white;
+        //   stack = const CardsStack.empty();
+        //   alrereadyPlayed =  const CardsStack.empty();
+        });
       }
 
 
@@ -277,13 +283,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                 height: contetnBodySize.height,
                 width: contetnBodySize.width,
                 alignment: Alignment.center,
-                // child: GridView.count(
-                //   crossAxisCount: 4, 
-                //   children: <Widget>[
-                //     ...gridList(),
-                //   ]),
                 child: ListView(
-                  //reverse: true,
                   //shrinkWrap: true,
                   controller: myController,
                   scrollDirection: Axis.horizontal,
@@ -337,31 +337,24 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: GestureDetector(
-                          child: Container(
-                            width: mainObjSize.width,
-                            height: mainObjSize.height,
-                            decoration: BoxDecoration(
-                              color: stack.stackColor, //stackColor,
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Center(child: Text(
+                          child:
+                          MyCard( 
+                            Center(
+                              child: Text(
                               textAlign: TextAlign.center,
                               stack.cards.isNotEmpty ? stack.name : "X", 
                               style: TextStyle(
                                 fontSize: 30,
                                 color: stackColor == Colors.black ? Colors.white : Colors.black),
-                            )),
-                          ),
+                              )
+                            ), Size(mainObjSize.width, mainObjSize.height), 
+                            bodyColor: stack.stackColor, margin: const EdgeInsets.all(0),),
                           onTap: () {
                             print("Main object tapped");
                             if(stack.cards.isEmpty) {
                               context.read<TurnOrderBodyBloc>().add(const TurnOrderBodyShuffleEvent());
                             } else {
-                            context.read<TurnOrderBodyBloc>().add(const TurnOrderBodyNextEvent());
+                              context.read<TurnOrderBodyBloc>().add(const TurnOrderBodyNextEvent());
                             }
                           },
                           onLongPress: () {
