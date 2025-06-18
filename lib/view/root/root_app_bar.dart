@@ -40,7 +40,7 @@ class _RootAppBarState extends State<RootAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    //var size = MediaQuery.of(context).size;
     return BlocBuilder<CRUDStackBloc, CRUDStackState>(
         builder: (context, state) {
       if (state is CRUDStackSuccessActionState) {
@@ -111,12 +111,17 @@ class _RootAppBarState extends State<RootAppBar> {
                   ),
                   onTap: () {
                     //widget._scaffoldKey.currentState?.openDrawer();
-                     context.read<ProviderBloc>()
-                                 .add(DrawerEvent());
+                    if(mounted) {
+                      Scaffold.of(context).openDrawer();
+                    //  context.read<ProviderBloc>()
+                    //              .add(DrawerEvent());
+                    } else {
+                      print("RootAppBar widget is not mounted");
+                    }
                   },
                 ),
                 SizedBox(
-                  width: size.width - 80,
+                  width: 300, // size.width - 80,
                   height: 40,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,

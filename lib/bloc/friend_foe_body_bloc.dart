@@ -8,13 +8,10 @@ import '../database/cards_stack.dart';
 //import '../database/db_temporary.dart';
 
 class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
-  //late CardsStack foeStack = const CardsStack.empty();
   late CardsStack foeAlreadyPlayed = const CardsStack.empty();
-  //late CardsStack friendStack = const CardsStack.empty();
   late CardsStack friendAlreadyPlayed = const CardsStack.empty();
   var defaultData = DefaultData();
-  //final database = DbTemporary();
-  final db = DBProvider();
+  //final db = DBProvider();
 
   late HeroStack friend = const HeroStack.empty();
   late HeroStack foe = const HeroStack.empty();
@@ -29,11 +26,8 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
       FriendFoeBodyInitialEvent event, Emitter<FriendFoeBodyState> emit) async {
     // Friend Initialisation
     print("FriendFoeBodyBloc _onInit event.stackId == ${event.stackId} \n");
-    // var stack = const CardsStack.empty();
-    // var alreadyPlayed = const CardsStack.empty();
-
+/*
   var heroToReturn = const HeroStack.empty();
-
 
     if(friend.id == 0 || foe.id == 0) {
       var stackList = await db.getAvailableStacks();
@@ -109,7 +103,7 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
     }
 
     emit(FriendFoeBodySuccessActionState(heroToReturn, friendAlreadyPlayed));
-
+*/
 
 
 

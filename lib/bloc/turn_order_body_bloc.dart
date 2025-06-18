@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:randomizer_new/database/db_provider.dart';
 
+import '../database/db_provider.dart';
+import '../database/default_data.dart';
 import 'event_state/turn_order_body_es.dart';
 import '../database/cards_stack.dart';
 //import '../database/db_temporary.dart';
@@ -8,8 +9,8 @@ import '../database/cards_stack.dart';
 class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
   late CardsStack stack = const CardsStack.empty();
   late CardsStack alreadyPlayed = const CardsStack.empty();
-  //final database = DbTemporary();
   final db = DBProvider();
+  final data = DefaultData();
 
   TurnOrderBodyBloc() : super(const TurnOrderBodySuccessActionState()) {
     on<TurnOrderInitialEvent>(_onInit);
@@ -25,13 +26,16 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
   void _onInit(
       TurnOrderInitialEvent event, Emitter<TurnOrderBodyState> emit) async {
     if (stack.id == 0) {
-      //stack = database.getActiveStack();
+
       var stackList = await db.getAvailableStacks();
+      //var stackList = await data.getStacks();
+      if(stackList.isNotEmpty) {
       for (var element in stackList) {
         if (element.stackType == StackType.turnOrder) {
           stack = element;
           break;
         }
+      }
       }
 
       // var turnNF = 0;
@@ -132,8 +136,9 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
       //stack = stackList.isNotEmpty ? stackList.first : const CardsStack.empty();
       //print("TurnOrderBodyBloc _onInit stack.id == 0 stack == $stack \n");
     } else {
-      // print(
-      //     "TurnOrderBodyBloc _onInit stack.id != 0 stack.cards == ${stack.cards} \n");
+
+      print(
+          "TurnOrderBodyBloc _onInit stack.id != 0 \n stack.cards == ${stack.cards} \n alreadyPlayed.cards == ${alreadyPlayed.cards}");
       
     }
 

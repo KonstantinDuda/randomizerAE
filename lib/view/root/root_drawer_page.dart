@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:randomizer_new/bloc/crud_stack_bloc.dart';
-import 'package:randomizer_new/bloc/event_state/crud_stack_es.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:randomizer_new/bloc/crud_stack_bloc.dart';
+// import 'package:randomizer_new/bloc/event_state/crud_stack_es.dart';
 
-import '../../bloc/providers/provider_bloc.dart';
-//import '../../database/cards_stack.dart';
+// import '../../bloc/providers/provider_bloc.dart';
 
+class RootDrawerPage extends StatelessWidget {
+  const RootDrawerPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Text("Root Drawer Page");
+  }
+  
+}
+
+/*
 class RootDrawerPage extends StatefulWidget {
   const RootDrawerPage({super.key});
 
@@ -168,3 +178,4 @@ class _RootDrawerPageState extends State<RootDrawerPage> {
   }
     );}
 }*/
+*/

@@ -61,7 +61,9 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
           ),
           onLongPress: () {
             context.read<TurnOrderBodyBloc>().add(TurnOrderBodyShuffleInStackEvent(text));
-            setState(() {});
+            if(mounted) {
+              setState(() {});
+            }
           },
         );
       }
@@ -214,11 +216,9 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
         stackColor = Colors.white;
         stack = const CardsStack.empty();
         alreadyPlayed =  const CardsStack.empty();
-        setState(() {
-        //   stackColor = Colors.white;
-        //   stack = const CardsStack.empty();
-        //   alrereadyPlayed =  const CardsStack.empty();
-        });
+        if(mounted) {
+          setState(() { });
+        }
       }
 
 

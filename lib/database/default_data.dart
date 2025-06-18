@@ -6,7 +6,7 @@ import 'db_provider.dart';
 class DefaultData {
   final _db = DBProvider();
   List<AECard> _cards = [];
-//  List<CardsStack> _stacks = [];
+  List<CardsStack> _stacks = [];
   List<HeroStack> friendFoeList = [];
 
 
@@ -16,10 +16,51 @@ static final DefaultData _dbProvider = DefaultData._();
     return _dbProvider;
   }
 
- createDefaultData() {
-    checkTurnOrderData();
-    checkCards();
-    //createFriendFoeHeroes();
+  Future<List<AECard>> getCards() async {
+    if(_cards.isNotEmpty) {
+      return _cards;
+    } else {
+      return await _db.getAllCards();
+    }
+  }
+
+  Future<List<CardsStack>> getStacks() async {
+    if(_stacks.isNotEmpty) {
+      return _stacks;
+    } else {
+      return await _db.getAllStacks();
+    }
+  }
+
+  Future<List<HeroStack>> getHeroes() async {
+    if(friendFoeList.isNotEmpty) {
+      return friendFoeList;
+    } else {
+      return [];
+    }
+  }
+
+
+ createDefaultData() async {
+    var firstRunCards = await _db.getAllCards();
+    if (firstRunCards.isEmpty) {
+      print("DefaultData createDefaultData firstRun = true");
+      checkTurnOrderData();
+      checkCards();
+    } else {
+      _cards = firstRunCards;
+      print("DefaultData createDefaultData firstRun.length == ${firstRunCards.length}");
+    }
+   
+    createFriendFoeHeroes();
+    
+    var firstRunStacks = await _db.getAllStacks();
+    if(firstRunStacks.isEmpty) {
+      checkStacks();
+    } else {
+      _stacks = firstRunStacks;
+    }
+
     //checkStacks();
     print("\n DefaultData createDefaultData is called \n");
  }
@@ -130,6 +171,10 @@ static final DefaultData _dbProvider = DefaultData._();
 
     _db.createStack(turnOrderThree);
     _db.createStack(turnOrderThreeBliz);
+    _stacks.add(turnOrderThree);
+    _stacks.add(turnOrderThreeBliz);
+    
+    
   }
 
   createFriendFoeHeroes() async {
@@ -308,11 +353,12 @@ static final DefaultData _dbProvider = DefaultData._();
     //   }
     // }
 
-    for (var element in _cards) {
-      _db.createCard(element);
-    }
-    var allCards = await _db.getAllCards();
-    print("FriendFoeData addCardsToDB allCards.length == ${allCards.length}");
+    // for (var element in _cards) {
+    //   _db.createCard(element);
+    // }
+    //var allCards = await _db.getAllCards();
+    // print("FriendFoeData addCardsToDB allCards.length == ${allCards.length}");
+    print("FriendFoeData addCardsToDB in comment now");
   }
 
   createCards() {
@@ -695,7 +741,7 @@ static final DefaultData _dbProvider = DefaultData._();
   // }
 
   createStacks() {
-    checkCards();
+    //checkCards();
 
     List<AECard> dalanaList = [_cards[0], _cards[1], _cards[2], _cards[3]];
     CardsStack dalanaTheHealerStack = CardsStack(
@@ -705,8 +751,8 @@ static final DefaultData _dbProvider = DefaultData._();
         stackType: StackType.friendFoe,
         stackColor: Colors.blue,
         cards: dalanaList);
-    //dalanaTheHealer.heroStacks.add(dalanaTheHealerStack);
     friendFoeList[0].heroStacks.add(dalanaTheHealerStack);
+    _stacks.add(dalanaTheHealerStack);
     _db.createStack(dalanaTheHealerStack);
     print("FriendFoeData createStacks dalanaTheHealerStack.name == ${dalanaTheHealerStack.name}");
 
@@ -725,6 +771,7 @@ static final DefaultData _dbProvider = DefaultData._();
         cards: theScavengerList);
 //    theScavenger.heroStacks.add(theScavengerStack);
   friendFoeList[1].heroStacks.add(theScavengerStack);
+  _stacks.add(theScavengerStack);
     _db.createStack(theScavengerStack);
     print("FriendFoeData createStacks theScavengerStack.name == ${theScavengerStack.name}");
 
@@ -759,6 +806,8 @@ static final DefaultData _dbProvider = DefaultData._();
     // adelheimTheBlacksmith.heroStacks.add(adelheimTheBlacksmithSuportStack);
    friendFoeList[2].heroStacks.add(adelheimTheBlacksmithStack);
    friendFoeList[2].heroStacks.add(adelheimTheBlacksmithSuportStack);
+   _stacks.add(adelheimTheBlacksmithStack);
+   _stacks.add(adelheimTheBlacksmithSuportStack);
     _db.createStack(adelheimTheBlacksmithStack);
     _db.createStack(adelheimTheBlacksmithSuportStack);
 
@@ -774,6 +823,7 @@ static final DefaultData _dbProvider = DefaultData._();
         cards: myrnaList);
     //myrnaTheScholar.heroStacks.add(myrnaTheScholarStack);
     friendFoeList[3].heroStacks.add(myrnaTheScholarStack);
+    _stacks.add(myrnaTheScholarStack);
     _db.createStack(myrnaTheScholarStack);
     print("FriendFoeData createStacks myrnaTheScholarStack.name == ${myrnaTheScholarStack.name}");
 
@@ -804,6 +854,8 @@ static final DefaultData _dbProvider = DefaultData._();
     // fawnTheAlchemist.heroStacks.add(fawnTheAlchemistSupportStack);
     friendFoeList[4].heroStacks.add(fawnTheAlchemistStack);
     friendFoeList[4].heroStacks.add(fawnTheAlchemistSupportStack);
+    _stacks.add(fawnTheAlchemistStack);
+    _stacks.add(fawnTheAlchemistSupportStack);
     _db.createStack(fawnTheAlchemistStack);
     _db.createStack(fawnTheAlchemistSupportStack);
     print("FriendFoeData createStacks fawnTheAlchemistStack.name == ${fawnTheAlchemistStack.name}");
@@ -833,6 +885,8 @@ static final DefaultData _dbProvider = DefaultData._();
     // theCorrosion.heroStacks.add(theCorrosionSupportStack);
     friendFoeList[5].heroStacks.add(theCorrosionStack);
     friendFoeList[5].heroStacks.add(theCorrosionSupportStack);
+    _stacks.add(theCorrosionStack);
+    _stacks.add(theCorrosionSupportStack);
     _db.createStack(theCorrosionStack);
     _db.createStack(theCorrosionSupportStack);
     print("FriendFoeData createStacks theCorrosionStack.name == ${theCorrosionStack.name}");
@@ -862,6 +916,8 @@ static final DefaultData _dbProvider = DefaultData._();
     // theSwarm.heroStacks.add(theSwarmSupportStack);
     friendFoeList[6].heroStacks.add(theSwarmStack);
     friendFoeList[6].heroStacks.add(theSwarmSupportStack);
+    _stacks.add(theSwarmStack);
+    _stacks.add(theSwarmSupportStack);
     _db.createStack(theSwarmStack);
     _db.createStack(theSwarmSupportStack);
     print("FriendFoeData createStacks theSwarmStack.name == ${theSwarmStack.name}");
@@ -886,6 +942,8 @@ static final DefaultData _dbProvider = DefaultData._();
     // theCultist.heroStacks.add(theCultistSupportStack);
     friendFoeList[7].heroStacks.add(theCultistStack);
     friendFoeList[7].heroStacks.add(theCultistSupportStack);
+    _stacks.add(theCultistStack);
+    _stacks.add(theCultistSupportStack);
     _db.createStack(theCultistStack);
     _db.createStack(theCultistSupportStack);
     print("FriendFoeData createStacks theCultistStack.name == ${theCultistStack.name}");
