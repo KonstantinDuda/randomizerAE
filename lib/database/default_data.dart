@@ -45,8 +45,9 @@ static final DefaultData _dbProvider = DefaultData._();
     var firstRunCards = await _db.getAllCards();
     if (firstRunCards.isEmpty) {
       print("DefaultData createDefaultData firstRun = true");
-      checkTurnOrderData();
-      checkCards();
+      createTurnOrderData();
+      //checkCards();
+      createCards();
     } else {
       _cards = firstRunCards;
       print("DefaultData createDefaultData firstRun.length == ${firstRunCards.length}");
@@ -65,7 +66,7 @@ static final DefaultData _dbProvider = DefaultData._();
     print("\n DefaultData createDefaultData is called \n");
  }
 
-  checkTurnOrderData() {
+  createTurnOrderData() {
     var cardOne = AECard(
       id: 1,
       text: '1',
@@ -128,6 +129,8 @@ static final DefaultData _dbProvider = DefaultData._();
     _db.createCard(cardFriend);
     _db.createCard(cardBliz);
     _db.createCard(cardNemesisSpecific);
+
+    _cards.addAll([cardOne, cardTwo, cardThree, cardFour, cardWild, cardNemesis, cardFoe, cardFriend, cardBliz, cardNemesisSpecific]);
 
     List<AECard> turnOrderThreeList = [
       cardOne,
@@ -301,35 +304,35 @@ static final DefaultData _dbProvider = DefaultData._();
   }
 
 // Friend Foe Cards
-  void checkCards() async {
-    var listFDB = await _getCardsFromDB();
-    if (listFDB.length <= 38) {
-      print("FriendFoeData checkCards listFDB.length <= 38");
-      createCards();
-    } else {
-      print("FriendFoeData checkCards listFDB.length > 39");
-      _cards = listFDB;
-    }
-  }
+  // void checkCards() async {
+  //   var listFDB = await _getCardsFromDB();
+  //   if (listFDB.length <= 38) {
+  //     print("FriendFoeData checkCards listFDB.length <= 38");
+  //     createCards();
+  //   } else {
+  //     print("FriendFoeData checkCards listFDB.length > 39");
+  //     _cards = listFDB;
+  //   }
+  // }
 
-  Future<List<AECard>> _getCardsFromDB() async {
-    List<AECard> list = await _db.getAllCards();
+  // Future<List<AECard>> _getCardsFromDB() async {
+  //   List<AECard> list = await _db.getAllCards();
 
-    List<AECard> result = [];
+  //   List<AECard> result = [];
 
-    for (var i in list) {
-      if (i.imgPath.isNotEmpty) {
-        var pathList = i.imgPath.split("/");
-        if (pathList.length > 3) {
-          if (pathList[2] == "friend foe") {
-            result.add(i);
-          }
-        }
-      }
-    }
-    print("FriendFoeData _getCardsFromDB result.length == ${result.length}");
-    return list;
-  }
+  //   for (var i in list) {
+  //     if (i.imgPath.isNotEmpty) {
+  //       var pathList = i.imgPath.split("/");
+  //       if (pathList.length > 3) {
+  //         if (pathList[2] == "friend foe") {
+  //           result.add(i);
+  //         }
+  //       }
+  //     }
+  //   }
+  //   print("FriendFoeData _getCardsFromDB result.length == ${result.length}");
+  //   return list;
+  // }
 
   void addCardsToDB() async {
     //var listFDB = await _getCardsFromDB();
@@ -353,9 +356,9 @@ static final DefaultData _dbProvider = DefaultData._();
     //   }
     // }
 
-    // for (var element in _cards) {
-    //   _db.createCard(element);
-    // }
+    for (var element in _cards) {
+      _db.createCard(element);
+    }
     //var allCards = await _db.getAllCards();
     // print("FriendFoeData addCardsToDB allCards.length == ${allCards.length}");
     print("FriendFoeData addCardsToDB in comment now");

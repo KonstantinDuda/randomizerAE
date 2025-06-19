@@ -29,16 +29,19 @@ class _RootAppBarState extends State<RootAppBar> {
     return BlocBuilder<CRUDStackBloc, CRUDStackState>(
         builder: (context, state) {
       if (state is CRUDStackSuccessActionState) {
-          stacks.clear();
+          //stacks.clear();
+          List<CardsStack> localStacks = [];
         var allStacks = state.stacks;
         if(allStacks.isNotEmpty) {
           for (var element in allStacks) {
           if(element.isActive) {
-              stacks.add(element);
+            localStacks.add(element);
+              // stacks.add(element);
             }
           }
         }
-        //print("RootAppBar stacks == $stacks \n");
+        stacks = localStacks;
+        print("RootAppBar stacks == $stacks \n");
       } else {
         print("RootAppBar state is NOT CRUDStackSuccessActionState");
       }

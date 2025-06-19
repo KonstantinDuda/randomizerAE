@@ -73,3 +73,67 @@ class CardsStackDB {
   }
   
 }
+
+class HeroStackDB {
+  final int id;
+  final String name;
+  final bool isFriend;
+  final int energyClosetCount;
+  final String ability;
+  final String feature;
+  final List<int> stacksId;
+
+  HeroStackDB({
+    required this.id,
+    required this.name,
+    required this.isFriend,
+    required this.energyClosetCount,
+    required this.ability,
+    required this.feature,
+    required this.stacksId,
+});
+
+  factory HeroStackDB.fromMap(Map<String, dynamic> map) {
+    return HeroStackDB(
+      id: map['id'] as int,
+      name: map['name'] as String,
+      isFriend: map['is_friend'] == 1 ? true : false,
+      energyClosetCount: map['ec_count'] as int,
+      ability: map['ability'] as String,
+      feature: map['feature'] as String,
+      stacksId: (map['stacks'] as String?)?.split(',').map((e) => int.parse(e)).toList() ?? [],
+    );
+  }
+
+  Map<String, Object?> toMap() {
+    var map = <String, Object?>{
+      'name': name,
+      'is_friend': isFriend ? 1 : 0,
+      'ec_count': energyClosetCount,
+      'ability': ability,
+      'feature': feature,
+      'stacks': stacksId.join(','),
+    };
+    if (id != 0) {
+      map['id'] = id;
+    }
+
+    return map;
+  }
+
+  List<int> fromCardsStackToListInt(List<CardsStack> list) {
+    List<int> listInt = [];
+    for (var element in list) {
+      listInt.add(element.id);
+    }
+
+      //print("HeroStackDB fromCardsStackToListInt listId == $listInt");
+    return listInt;
+  }
+
+  @override
+  String toString() {
+    return "HeroStackDB{id: $id, name: $name, stacksId: $stacksId} \n";
+  }
+  
+}

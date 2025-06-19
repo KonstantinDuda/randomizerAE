@@ -19,25 +19,6 @@ class _RootDrawerState extends State<RootDrawer> {
   List<bool> boolList = [];
   List<CardsStack> stacks = [];
   
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   if(db.isEmpty) {
-  //     getData();
-  //   }
-  // }
-
-  // getData() async {
-  //   db = await dbObj.getStacks(); //getAvialableStacks();
-  //   for (var i in db) {
-  //     boolList.add(i.isActive);
-  //     // if(i.isActive) {
-  //     //   newAvList.add(i);
-  //     // }
-  //   }
-    
-  //   setState(() {});
-  // }
     
   @override
   Widget build(BuildContext context) {
@@ -141,7 +122,8 @@ class _RootDrawerState extends State<RootDrawer> {
             //       .add(CRUDStackInitialEvent());
               context.read<CRUDStackBloc>()
                   .add(CRUDStackUpdateAvailableListEvent(idList));
-            context.read<ProviderBloc>().add(LoadingEvent());
+            //context.read<ProviderBloc>().add(LoadingEvent());
+            Navigator.pop(context);
           },
         ),
         const Divider(),
