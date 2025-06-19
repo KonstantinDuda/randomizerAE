@@ -4,11 +4,10 @@ import 'event_state/crud_stack_es.dart';
 import '../database/cards_stack.dart';
 import '../database/db_provider.dart';
 
-//import '../database/db_temporary.dart';
 
 class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
   //final database = DbTemporary();
-  final db = DBProvider();
+  //final db = DBProvider();
 
   List<AECard> cards = [];
   List<CardsStack> stacks = [];
@@ -25,9 +24,12 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
   }
 
   _onInit(CRUDStackInitialEvent event, Emitter<CRUDStackState> emit) async {
-    cards = await db.getAllCards();
-    stacks = await db.getAllStacks();
+    print("CRUDStackBlock _onInit event == $event");
 
+    // cards = await db.getAllCards();
+    // stacks = await db.getAllStacks();
+
+    print("CRUDStackBlock _onInit carts.length == ${cards.length}");
     print("CRUDStackBlock _onInit stacks.length == ${stacks.length}");
 
     emit(CRUDStackSuccessActionState(cards, stacks));
@@ -132,20 +134,20 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
       if (newCard.text.isNotEmpty && newCard.imgPath.isNotEmpty) {
         print(
             "CRUDStackBlock _onNewCard newCard.id == 0 \n newCard == $newCard");
-        db.createCard(newCard);
+        //db.createCard(newCard);
       }
     } else if (newCard.text.isNotEmpty && newCard.imgPath.isNotEmpty) {
       print(
           "CRUDStackBlock _onNewCard newCard.id != 0 \n update newCard == $newCard");
-      db.updateCard(newCard);
+      //db.updateCard(newCard);
     }
 
     print("CRUDStackBlock _onNewCard newCard == $newCard");
 
-    List<AECard> newCardsList = await db.getAllCards();
-    cards = newCardsList;
+    //List<AECard> newCardsList = await db.getAllCards();
+    //cards = newCardsList;
 
-    emit(CRUDStackSuccessActionState(newCardsList, stacks));
+    //emit(CRUDStackSuccessActionState(newCardsList, stacks));
   }
 
   // _onUpdateCard(CRUDStackUpdateCardEvent event, Emitter<CRUDStackState> emit) {
@@ -158,9 +160,9 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
       CRUDStackDeleteCardEvent event, Emitter<CRUDStackState> emit) async {
     print("CRUDStackBloc _onDeleteCard card.id == ${event.id}");
 
-    db.deleteCard(event.id);
+    //db.deleteCard(event.id);
 
-    cards = await db.getAllCards();
+    //cards = await db.getAllCards();
 
     emit(CRUDStackSuccessActionState(cards, stacks));
   }
@@ -173,7 +175,7 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
       CRUDStackUpdateStackEvent event, Emitter<CRUDStackState> emit) async {
     print("CRUDStackBloc _onUpdateStack event.stack == ${event.stack}");
 
-    var stackFromDB = await db.getStackById(event.stack.id);
+    /*var stackFromDB = await db.getStackById(event.stack.id);
     if (stackFromDB.id == event.stack.id) {
       print("CRUDStackBloc _onUpdateStack stackFromDB.id == event.stack.id");
       if (stackFromDB.name == event.stack.name &&
@@ -204,7 +206,8 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
     var newStacks = await db.getAllStacks();
     stacks = newStacks;
 
-    emit(CRUDStackSuccessActionState(cards, newStacks));
+    emit(CRUDStackSuccessActionState(cards, newStacks));*/
+    print("CRUDStackBloc _onUpdateStack event.stack.id == ${event.stack.id}");
   }
 
   _onUpdateAvailableList(CRUDStackUpdateAvailableListEvent event,
@@ -230,7 +233,7 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
             stacks.insert(i, newStack);
             print(
                 "CRUDStackBloc _onUpdateAvailableList stacks[i] == ${stacks[i]}");
-            db.updateStack(stacks[i]);
+            //db.updateStack(stacks[i]);
           }
         }
       }
@@ -245,11 +248,11 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
       CRUDStackDeleteStackEvent event, Emitter<CRUDStackState> emit) async {
     //var stackFromDB = await db.getStackById(event.id);
     print("CRUDStackBloc _onDeleteStack delete ${event.id}?");
-    db.deleteStack(event.id);
+    // db.deleteStack(event.id);
 
-    var newStacks = await db.getAllStacks();
-    stacks = newStacks;
+    // var newStacks = await db.getAllStacks();
+    // stacks = newStacks;
 
-    emit(CRUDStackSuccessActionState(cards, newStacks));
+    // emit(CRUDStackSuccessActionState(cards, newStacks));
   }
 }

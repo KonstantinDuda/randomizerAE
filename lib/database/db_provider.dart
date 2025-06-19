@@ -4,18 +4,19 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:randomizer_new/database/cards_stack_db.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'cards_stack.dart';
+import 'cards_stack_db.dart';
 
 class DBProvider {
   late Database _aeonsEndDatabase;
 
   static const String cardsTableName = "Cards_Table";
-  static const String cardsStackTableName =
-      "Stack_Table"; // TODO rename on stackTableName
+  static const String stackTableName =
+      "Stack_Table";
   static const String heroTableName = "Hero_Table";
+
 
   DBProvider() {
     initDatabase();
@@ -41,24 +42,20 @@ class DBProvider {
             "id INTEGER PRIMARY KEY, "
             "text TEXT, "
             "img_path TEXT)");
-        await db.execute("CREATE TABLE IF NOT EXISTS $cardsStackTableName ("
+        await db.execute("CREATE TABLE IF NOT EXISTS $stackTableName ("
             "id INTEGER PRIMARY KEY, "
             "name TEXT, "
             "is_standart INTEGER, "
             "stack_type TEXT, "
             "stack_color INTEGER, "
             "cards TEXT)");
-
-        /*"CREATE TABLE IF NOT EXISTS $heroStackTableName ("
-            "id INTEGER PRIMARY KEY,"
-            "hero_stack TEXT,"
-            "energy_closet_count INTEGER,"
-            "ability TEXT,"
-            "feature TEXT,"
-            "stack_id INTEGER,"
-              "FOREIGN KEY (stack_id) REFERENCES $cardsStackTableName (id)"
-              "ON DELETE CASCADE"
-              "ON UPDATE CASCADE)"*/
+await db.execute("CREATE TABLE IF NOT EXISTS $heroTableName ("
+            "id INTEGER PRIMARY KEY, "
+            "hero_stack TEXT, "
+            "energy_closet_count INTEGER, "
+            "ability TEXT, "
+            "feature TEXT, "
+            "stack_id INTEGER)");
       },
     );
   }
@@ -74,9 +71,9 @@ class DBProvider {
           cardsTableName, card.toMap(),
           //conflictAlgorithm: ConflictAlgorithm.abort);
         );
-        // print("DBProvider createCard() db.insert $card \n");
+         print("DBProvider createCard() db.insert $card \n");
       } else {
-        print("DBProvider createCard() card was in the Database \n");
+        print("DBProvider createCard() card ${card.id} was in the Database \n");
       }
     } else {
       await db.insert(
@@ -186,7 +183,7 @@ class DBProvider {
 // Create, Read, Update, Delete (CRUD) operations for CardsStack
   void createStack(CardsStack stack) async {
     final db = await getDatabase;
-    //await db.insert(cardsStackTableName, stack.toMap());
+    //await db.insert(stackTableName, stack.toMap());
 
     CardsStackDB stackToDB = CardsStackDB(
         id: stack.id,
@@ -198,12 +195,12 @@ class DBProvider {
     var ids = stackToDB.fromAECardToListInt(stack.cards);
     stackToDB.cardsId.addAll(ids);
     //fromCardsStackToCardsStackDB(stack);
-    //print("DBProvider createStack() stackToDB == $stackToDB \n");
+    print("DBProvider createStack() stackToDB == $stackToDB \n");
 
     // For debugging purposes
     // Change to using getStackById
     List<CardsStackDB> dbList = [];
-    List<Map<String, dynamic>> maps = await db.query(cardsStackTableName);
+    List<Map<String, dynamic>> maps = await db.query(stackTableName);
     //print("DBProvider createStack() maps.length == ${maps.length} \n");
     if (maps.isNotEmpty) {
       for (var element in maps) {
@@ -215,19 +212,19 @@ class DBProvider {
         //    "DBProvider createStack() stackFromDB == ${stackFromDB.toString()} \n");
       }
       if (dbList.isEmpty) {
-        print("DBProvider createStack db.insert ${stackToDB.stackColor}");
-        await db.insert(cardsStackTableName, stackToDB.toMap());
+        print("DBProvider createStack db.insert $stackToDB");
+        await db.insert(stackTableName, stackToDB.toMap());
       }
     } else {
       print("DBProvider createStack() maps.isEmpty \n");
-      await db.insert(cardsStackTableName, stackToDB.toMap());
+      await db.insert(stackTableName, stackToDB.toMap());
     }
   }
 
   Future<CardsStack> getStackById(int id) async {
     final db = await getDatabase;
     List<Map<String, dynamic>> maps =
-        await db.query(cardsStackTableName, where: "id = ?", whereArgs: [id]);
+        await db.query(stackTableName, where: "id = ?", whereArgs: [id]);
     if (maps.isNotEmpty) {
       var csDB = CardsStackDB.fromMap(maps.first);
       List<AECard> list = [];
@@ -252,7 +249,7 @@ class DBProvider {
 
   Future<List<CardsStack>> getAllStacks() async {
     final db = await getDatabase;
-    List<Map<String, dynamic>> maps = await db.query(cardsStackTableName);
+    List<Map<String, dynamic>> maps = await db.query(stackTableName);
 
     List<CardsStack> stacks = [];
     stacks = await _pullCardsToStack(maps);
@@ -264,7 +261,7 @@ class DBProvider {
   Future<List<CardsStack>> getAvailableStacks() async {
     final db = await getDatabase;
     List<Map<String, dynamic>> maps = await db
-        .query(cardsStackTableName, where: "is_standart = ?", whereArgs: [1]);
+        .query(stackTableName, where: "is_standart = ?", whereArgs: [1]);
 
     List<CardsStack> availableList = [];
     availableList = await _pullCardsToStack(maps);
@@ -274,7 +271,7 @@ class DBProvider {
 
   Future<List<CardsStack>> getTurnOrderStacks() async {
     final db = await getDatabase;
-    List<Map<String, dynamic>> maps = await db.query(cardsStackTableName,
+    List<Map<String, dynamic>> maps = await db.query(stackTableName,
         where: "stack_type = ?", whereArgs: ["StackType.turnOrder"]);
 
     print("DBProvider getTurnOrderStacks() maps == $maps");
@@ -286,7 +283,7 @@ class DBProvider {
 
   Future<List<CardsStack>> getFriendFoeStacks() async {
     final db = await getDatabase;
-    List<Map<String, dynamic>> maps = await db.query(cardsStackTableName,
+    List<Map<String, dynamic>> maps = await db.query(stackTableName,
         where: "stack_type = ?", whereArgs: ["StackType.friendFoe"]);
 
     List<CardsStack> availableList = await _pullCardsToStack(maps);
@@ -336,7 +333,7 @@ class DBProvider {
     print(
         "DBProvider update stack, stack before: $stackBefore  stackBefore.color == ${stackBefore.stackColor} \n"); // stackDB == $stackDB
 
-    await db.update(cardsStackTableName, stackDB.toMap(),
+    await db.update(stackTableName, stackDB.toMap(),
         where: "id = ?", whereArgs: [stack.id]);
 
     var stackAfter = await getStackById(stack.id);
@@ -345,6 +342,6 @@ class DBProvider {
 
   Future<void> deleteStack(int id) async {
     final db = await getDatabase;
-    await db.delete(cardsStackTableName, where: "id = ?", whereArgs: [id]);
+    await db.delete(stackTableName, where: "id = ?", whereArgs: [id]);
   }
 }

@@ -62,6 +62,8 @@ class CardsStackDB {
     for (var element in list) {
       listInt.add(element.id);
     }
+
+      //print("CardsStackDB fromAECardToListInt listId == $listInt");
     return listInt;
   }
 

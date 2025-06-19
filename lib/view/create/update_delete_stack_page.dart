@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:randomizer_new/view/create/dialog_add_card.dart';
-import 'package:randomizer_new/view/create/dialog_create_card.dart';
-import 'package:randomizer_new/view/create/dialog_delete.dart';
-import 'package:randomizer_new/view/create/stack_widget.dart';
-import 'package:randomizer_new/view/root/bodyes/my_card.dart';
 
+import '../root/bodyes/my_card.dart';
 import '/bloc/providers/provider_bloc.dart';
 import '../../bloc/crud_stack_bloc.dart';
 import '../../bloc/event_state/crud_stack_es.dart';
 import '/database/cards_stack.dart';
+import 'dialog_add_card.dart';
+import 'dialog_create_card.dart';
+import 'dialog_delete.dart';
+import 'stack_widget.dart';
 
 class UpdateDeleteStackPage extends StatefulWidget {
   const UpdateDeleteStackPage({super.key});
@@ -22,7 +22,7 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
   List<AECard> cards = [];
   List<CardsStack> stacks = [];
   List<HeroStack> heroStacks = [];
-  Size screenSize = Size(0, 0);
+  Size screenSize = const Size(0, 0);
 
   List<String> typesList = [];
   List<Color> colorsList = [];
@@ -130,11 +130,13 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
       // context.read<CRUDStackBloc>().add(
       //       CRUDStackUpdateStackEvent(newStack),
       //     );
+      if(mounted) {
       setState(() {
         stacks.removeAt(index);
         stacks.insert(index, newStack);
         checkboxState = !checkboxState;
       });
+      }
       print(
           "UpdateDeleteStackPage stackWidget checkboxChange $value, ${stacks[index].isActive}");
     }
@@ -163,11 +165,12 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
             stackType: newStackType,
             stackColor: stacks[index].stackColor,
             cards: stacks[index].cards);
+            if(mounted) {
         setState(() {
           stacks.removeAt(index);
           stacks.insert(index, newStack);
           typesList[index] = value;
-        });
+        });}
       } else {
         print("${stacks[index].id} Stack type not changed");
       }
@@ -184,11 +187,12 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
             stackType: stacks[index].stackType,
             stackColor: value,
             cards: stacks[index].cards);
+            if(mounted) {
         setState(() {
           stacks.removeAt(index);
           stacks.insert(index, newStack);
           colorsList[index] = value;
-        });
+        });}
       } else {
         print("${stacks[index].id} Stack color not changed");
       }

@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-//import 'package:randomizer_new/bloc/event_state/turn_order_body_es.dart';
-//import 'package:randomizer_new/bloc/providers/provider_bloc.dart';
-//import 'package:randomizer_new/bloc/turn_order_body_bloc.dart';
 
 import '../../bloc/crud_stack_bloc.dart';
 import '../../bloc/event_state/crud_stack_es.dart';
 import '../../bloc/providers/provider_bloc.dart';
 import '../../database/cards_stack.dart';
-//import '../../database/db_temporary.dart';
 
 class RootDrawer extends StatefulWidget {
 
@@ -20,8 +16,6 @@ class RootDrawer extends StatefulWidget {
 }
 
 class _RootDrawerState extends State<RootDrawer> {
-  // DbTemporary dbObj = DbTemporary();
-  // List<CardsStack> db = [];
   List<bool> boolList = [];
   List<CardsStack> stacks = [];
   
@@ -153,6 +147,8 @@ class _RootDrawerState extends State<RootDrawer> {
         const Divider(),
       TextButton(child: const Text('Update / Create  stack'),
         onPressed: () {
+          Navigator.pop(context);
+
           context.read<ProviderBloc>().add(UpdateDeleteEvent());
         },
       ),],

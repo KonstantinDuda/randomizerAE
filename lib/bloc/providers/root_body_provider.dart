@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-//import 'package:randomizer_new/database/cards_stack.dart';
 
 // Events
 class RootBodyProviderEvent extends Equatable {

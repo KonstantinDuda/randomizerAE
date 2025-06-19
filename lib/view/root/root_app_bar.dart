@@ -1,46 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:randomizer_new/bloc/event_state/friend_foe_body_es.dart';
 
 import '../../bloc/crud_stack_bloc.dart';
 import '../../bloc/event_state/crud_stack_es.dart';
+import '../../bloc/event_state/friend_foe_body_es.dart';
 import '../../bloc/event_state/turn_order_body_es.dart';
 import '../../bloc/friend_foe_body_bloc.dart';
+import '../../bloc/providers/provider_bloc.dart';
 import '../../bloc/providers/root_body_provider.dart';
 import '../../bloc/turn_order_body_bloc.dart';
 import '../../database/cards_stack.dart';
-//import '../../database/db_temporary.dart';
 
 class RootAppBar extends StatefulWidget {
-  final GlobalKey<ScaffoldState> _scaffoldKey;
 
-  const RootAppBar(this._scaffoldKey, {super.key});
+  const RootAppBar({super.key});
 
   @override
   State<RootAppBar> createState() => _RootAppBarState();
 }
 
 class _RootAppBarState extends State<RootAppBar> {
-  // DbTemporary dbObj = DbTemporary();
   // /*late */ List<CardsStack> db = [];
   List<CardsStack> stacks = [];
 
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   //db = dbObj.getAvialableStacks();
-  //   getData();
-  // }
-
-  // getData() async {
-  //   db = await dbObj.getAvialableStacks();
-  //   setState(() {});
-  // }
-
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    //var size = MediaQuery.of(context).size;
     return BlocBuilder<CRUDStackBloc, CRUDStackState>(
         builder: (context, state) {
       if (state is CRUDStackSuccessActionState) {
@@ -53,17 +38,17 @@ class _RootAppBarState extends State<RootAppBar> {
             }
           }
         }
-        print("RootAppBar stacks == $stacks \n");
+        //print("RootAppBar stacks == $stacks \n");
       } else {
         print("RootAppBar state is NOT CRUDStackSuccessActionState");
       }
     return 
 
     Container(
-      width: size.width,
+     //width: size.width,
       color: Colors.blue,
       child: Container(
-        //width: size.width,
+       //width: size.width,
         margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -110,11 +95,18 @@ class _RootAppBarState extends State<RootAppBar> {
                     ],
                   ),
                   onTap: () {
-                    widget._scaffoldKey.currentState?.openDrawer();
+                    //widget._scaffoldKey.currentState?.openDrawer();
+                    if(mounted) {
+                      Scaffold.of(context).openDrawer();
+                    //  context.read<ProviderBloc>()
+                    //              .add(DrawerEvent());
+                    } else {
+                      print("RootAppBar widget is not mounted");
+                    }
                   },
                 ),
                 SizedBox(
-                  width: size.width - 80,
+                  width: 300, // size.width - 80,
                   height: 40,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -148,11 +140,11 @@ class _RootAppBarState extends State<RootAppBar> {
                                     ));
                           //} else if (db[index].stackType == StackType.friendFoe) {
                             } else if (stacks[index].stackType == StackType.friendFoe) {
-                            var heroStack =
+                            var stack =
                                 // dbObj.getHeroStackByStackId(db[index].id);
                                   stacks[index];
-                                print("RootAppBar heroStack == $heroStack \n");
-                            context.read<FriendFoeBodyBloc>().add(FriendFoeBodyInitialEvent(heroStack.id));
+                                print("RootAppBar heroStack == $stack \n");
+                            context.read<FriendFoeBodyBloc>().add(FriendFoeBodyInitialEvent(stack.id));
                             context
                                 .read<RootBodyProviderBloc>()
                                 .add(RootBodyFriendFoeEvent());

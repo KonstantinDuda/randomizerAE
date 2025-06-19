@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:randomizer_new/view/root/root_app_bar.dart';
-import 'package:randomizer_new/view/root/bodyes/turn_order.dart';
 
 import '../../bloc/providers/root_body_provider.dart';
 import 'bodyes/friend_foe_body.dart';
 import 'bodyes/loading_root_body_page.dart';
+import 'bodyes/turn_order.dart';
+import 'root_app_bar.dart';
 import 'root_drawer.dart';
 
 class RootPage extends StatefulWidget {
@@ -16,27 +16,29 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPage extends State<RootPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  //final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      key: _scaffoldKey,
+      //key: _scaffoldKey,
       drawer: const RootDrawer(),
       body: BlocProvider(
-        create: (context) => RootBodyProviderBloc(), 
+        create: (context) => RootBodyProviderBloc(),
         child:  
       Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             //myAppBar(size),
-            RootAppBar(_scaffoldKey),
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: const RootAppBar(/*_scaffoldKey*/)),
             BlocBuilder<RootBodyProviderBloc, RootBodyProviderState>(
               builder: (_, state) {
               if (state is RootBodyLoadingState) {

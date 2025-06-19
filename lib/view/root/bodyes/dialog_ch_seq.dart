@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:randomizer_new/bloc/turn_order_body_bloc.dart';
-import 'package:randomizer_new/database/cards_stack.dart';
 
 import '../../../bloc/event_state/turn_order_body_es.dart';
+import '../../../bloc/turn_order_body_bloc.dart';
+import '../../../database/cards_stack.dart';
 
 class ChangeSequanceDialog extends StatefulWidget {
   final List<AECard> list;

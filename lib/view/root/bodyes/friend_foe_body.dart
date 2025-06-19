@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:randomizer_new/database/cards_stack.dart';
-import 'package:randomizer_new/database/db_temporary.dart';
-import 'package:randomizer_new/view/root/bodyes/my_card.dart';
-
 import '../../../bloc/event_state/friend_foe_body_es.dart';
 import '../../../bloc/friend_foe_body_bloc.dart';
 import '../../../bloc/providers/root_body_provider.dart';
+import '../../../database/cards_stack.dart';
+import 'my_card.dart';
 
 class FriendFoeBody extends StatefulWidget {
   const FriendFoeBody({super.key});
@@ -31,8 +29,8 @@ class _FriendFoeBody extends State<FriendFoeBody> {
 
     return BlocBuilder<FriendFoeBodyBloc, FriendFoeBodyState>(
         builder: (context, state) {
-      var database = DbTemporary(); // TODO create hero table in db. Delete this
-      HeroStack hero = HeroStack.empty();
+          
+      HeroStack hero = const HeroStack.empty();
       var isHeroEmpty = hero.id == 0 ? true : false;
       var abilityName = "";
       var abilityDescription = "";
@@ -94,11 +92,23 @@ class _FriendFoeBody extends State<FriendFoeBody> {
       }
 
       if (state is FriendFoeBodySuccessActionState) {
-        stack = state.stack;
+        //stack = state.stack;
+        stack = state.hero.heroStacks.isNotEmpty ? state.hero.heroStacks[0] : const CardsStack.empty();
         alreadyPlayed = state.alreadyPlayed;
 
+        print("FriendFoeBody stack == $stack \n");
+        print("FriendFoeBody alreadyPlayed == $alreadyPlayed \n");
+
+        if(state.hero.id != 0) {
+          hero = state.hero;
+          print("FriendFoeBody hero == $hero \n");
+        } else {
+          print("FriendFoeBody hero is empty");
+          hero = const HeroStack.empty();
+        }
+
         if(hero.id == 0) {
-          hero = database.getHeroStackByStackId(stack.id);
+          //hero = database.getHeroStackByStackId(stack.id);
         } else {
           
         }
@@ -193,7 +203,11 @@ class _FriendFoeBody extends State<FriendFoeBody> {
         }
         if(stack.cards.isEmpty) {
           widgetList.clear();
-          context.read<FriendFoeBodyBloc>().add(FriendFoeBodyInitialEvent(hero.id));
+          if(hero.id != 0) {
+             context.read<FriendFoeBodyBloc>().add(FriendFoeBodyInitialEvent(hero.heroStacks[0].id));
+          }
+          context.read<FriendFoeBodyBloc>().add(FriendFoeBodyInitialEvent(/*hero.heroStacks[0].id*/0));
+          //context.read<FriendFoeBodyBloc>().add(FriendFoeBodyInitialEvent(hero.id));
         }
         return widgetList;
       }
@@ -306,7 +320,7 @@ class _FriendFoeBody extends State<FriendFoeBody> {
                                           //     ? "X"
                                           //     : cardTextsBeforeOr.last, //stack.cards.last.text.split(":")[0].split("OR")[0],
                                           stack.cards.isNotEmpty ?
-                                          cardTextBeforeOr : "X",
+                                            cardTextBeforeOr : "X",
                                           stack.cards.isNotEmpty ? 16 : 35),
 //                                          16),
                                       myTextWidget(
@@ -335,7 +349,9 @@ class _FriendFoeBody extends State<FriendFoeBody> {
                                       
                                     print(
                                       "FriendFoeBody onTap stack.cards.isEmpty hero.id == ${hero.id} ");
-                                        context.read<FriendFoeBodyBloc>().add(FriendFoeBodyInitialEvent(hero.id));
+                                        //context.read<FriendFoeBodyBloc>().add(FriendFoeBodyInitialEvent(hero.id));
+
+          context.read<FriendFoeBodyBloc>().add(FriendFoeBodyInitialEvent(hero.heroStacks[0].id));
                                       }
                                   setState(() {});
                                 },

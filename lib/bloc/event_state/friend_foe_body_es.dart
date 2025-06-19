@@ -11,11 +11,11 @@ class FriendFoeBodyEvent extends Equatable {
 }
 
 class FriendFoeBodyInitialEvent extends FriendFoeBodyEvent {
-  final int heroId;
-  const FriendFoeBodyInitialEvent(this.heroId);
+  final int stackId;
+  const FriendFoeBodyInitialEvent(this.stackId);
 
   @override
-  List<Object> get props => [heroId];
+  List<Object> get props => [stackId];
 }
 
 class FriendFoeBodyNextEvent extends FriendFoeBodyEvent {
@@ -43,15 +43,17 @@ class FriendFoeBodyState extends Equatable {
 }
 
 class FriendFoeBodySuccessActionState extends FriendFoeBodyState {
-  final CardsStack stack;
+  //final CardsStack stack;
+  final HeroStack hero;
   final CardsStack alreadyPlayed;
 
   const FriendFoeBodySuccessActionState([
-    this.stack = const CardsStack.empty(), 
+    //this.stack = const CardsStack.empty(), 
+ this.hero = const HeroStack.empty(), 
     this.alreadyPlayed = const CardsStack.empty()]);
 
   @override
-  List<Object> get props => [stack, alreadyPlayed];
+  List<Object> get props => [/*stack*/ hero, alreadyPlayed];
 }
 
 // class FriendFoeBodyClearScreenState extends FriendFoeBodyState {
