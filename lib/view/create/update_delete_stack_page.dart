@@ -303,8 +303,8 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
             colorsList.add(element.stackColor);
           }
         }
-        print("UpdateDeleteStackPage build typesList == $typesList");
-        print("UpdateDeleteStackPage build colorsList.length == ${colorsList.length}");
+        // print("UpdateDeleteStackPage build typesList == $typesList");
+        // print("UpdateDeleteStackPage build colorsList.length == ${colorsList.length}");
       } else {
         print(
             "UpdateDeleteStackPage build state is not CRUDStackSuccessActionState \n");

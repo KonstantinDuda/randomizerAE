@@ -116,13 +116,11 @@ class _RootDrawerState extends State<RootDrawer> {
                 idList.add(stacks[i].id);
               }
             }
-            // context.read<TurnOrderBodyBloc>()
-            //       .add(TurnOrderBodyChangeAvailableStackListEvent(idList));
-            // context.read<CRUDStackBloc>()
-            //       .add(CRUDStackInitialEvent());
+            context.read<CRUDStackBloc>()
+                  .add(CRUDStackInitialEvent());
               context.read<CRUDStackBloc>()
                   .add(CRUDStackUpdateAvailableListEvent(idList));
-            //context.read<ProviderBloc>().add(LoadingEvent());
+
             Navigator.pop(context);
           },
         ),

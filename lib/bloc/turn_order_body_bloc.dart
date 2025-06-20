@@ -269,9 +269,9 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
   void _onShuffleIn(TurnOrderBodyShuffleInStackEvent event,
       Emitter<TurnOrderBodyState> emit) {
     // Handle the shuffle in stack event
-    print("TurnOrderBodyBlock _onShuffleIn text == ${event.text} \n");
-    print(
-        "TurnOrderBodyBloc _onShuffleIn alreadyPlayed.cards == ${alreadyPlayed.cards} \n");
+    // print("TurnOrderBodyBlock _onShuffleIn text == ${event.text} \n");
+    // print(
+    //     "TurnOrderBodyBloc _onShuffleIn alreadyPlayed.cards == ${alreadyPlayed.cards} \n");
 
     AECard card = AECard(id: 0, text: "", imgPath: "");
     for (var i = 0; i < alreadyPlayed.cards.length; i++) {
@@ -296,9 +296,9 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     }
     //stack = newStack;
 
-    print("TurnOrderBodyBloc _onShuffleIn stack == $stack \n ");
-    print(
-        "TurnOrderBodyBloc _onShuffleIn alreadyPlayed.cards == ${alreadyPlayed.cards} \n");
+    // print("TurnOrderBodyBloc _onShuffleIn stack == $stack \n ");
+    // print(
+    //     "TurnOrderBodyBloc _onShuffleIn alreadyPlayed.cards == ${alreadyPlayed.cards} \n");
 
     emit(TurnOrderBodySuccessActionState(/*newStack*/ stack, alreadyPlayed));
   }

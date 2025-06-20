@@ -179,7 +179,8 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
       CRUDStackUpdateStackEvent event, Emitter<CRUDStackState> emit) async {
     print("CRUDStackBloc _onUpdateStack event.stack == ${event.stack}");
 
-    /*var stackFromDB = await db.getStackById(event.stack.id);
+// This was commented
+    var stackFromDB = await db.getStackById(event.stack.id);
     if (stackFromDB.id == event.stack.id) {
       print("CRUDStackBloc _onUpdateStack stackFromDB.id == event.stack.id");
       if (stackFromDB.name == event.stack.name &&
@@ -210,7 +211,9 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
     var newStacks = await db.getAllStacks();
     stacks = newStacks;
 
-    emit(CRUDStackSuccessActionState(cards, newStacks));*/
+    emit(CRUDStackSuccessActionState(cards, newStacks));
+// This was commented
+
     print("CRUDStackBloc _onUpdateStack event.stack.id == ${event.stack.id}");
   }
 

@@ -1,16 +1,16 @@
-import 'package:flutter/material.dart';
+//import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../database/db_provider.dart';
 import '../database/default_data.dart';
 import 'event_state/friend_foe_body_es.dart';
 import '../database/cards_stack.dart';
-//import '../database/db_temporary.dart';
 
 class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
   late CardsStack foeAlreadyPlayed = const CardsStack.empty();
   late CardsStack friendAlreadyPlayed = const CardsStack.empty();
   var defaultData = DefaultData();
-  //final db = DBProvider();
+  final db = DBProvider();
 
   late HeroStack friend = const HeroStack.empty();
   late HeroStack foe = const HeroStack.empty();
@@ -25,6 +25,159 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
       FriendFoeBodyInitialEvent event, Emitter<FriendFoeBodyState> emit) async {
     // Friend Initialisation
     print("FriendFoeBodyBloc _onInit event.stackId == ${event.stackId} \n");
+
+
+    var heroToReturn = const HeroStack.empty();
+    var stackToReturn = const CardsStack.empty();
+
+    var allHeroes = await defaultData.getHeroes();
+
+    // Friend and foe ids == 0
+    if (friend.id == 0 && foe.id == 0) {
+      for (var element in allHeroes) {
+        if (element.heroStacks.isNotEmpty) {
+          if (element.heroStacks[0].cards.isNotEmpty &&
+              element.heroStacks[0].isActive) {
+            if (element.isFriend) {
+              friend = element;
+            } else {
+              foe = element;
+            }
+          } else if (element.heroStacks[0].isActive) {
+            if (element.isFriend) {
+              var stack = await db.getStackById(element.heroStacks[0].id);
+              friend = HeroStack(
+                  id: element.id,
+                  name: element.name,
+                  isFriend: element.isFriend,
+                  heroStacks: [stack],
+                  energyClosetCount: element.energyClosetCount,
+                  ability: element.ability);
+            } else {
+              var stack = await db.getStackById(element.heroStacks[0].id);
+              foe = HeroStack(
+                  id: element.id,
+                  name: element.name,
+                  isFriend: element.isFriend,
+                  heroStacks: [stack],
+                  energyClosetCount: element.energyClosetCount,
+                  ability: element.ability);
+            }
+          }
+        }
+      }
+    } else if (friend.id == 0) {
+      for (var element in allHeroes) {
+        if (element.heroStacks.isNotEmpty) {
+          if (element.heroStacks[0].cards.isNotEmpty) {
+            if (element.heroStacks[0].isActive && element.isFriend) {
+              friend = element;
+            }
+          } else {
+            if (element.heroStacks[0].isActive && element.isFriend) {
+              var stack = await db.getStackById(element.heroStacks[0].id);
+              friend = HeroStack(
+                  id: element.id,
+                  name: element.name,
+                  isFriend: element.isFriend,
+                  heroStacks: [stack],
+                  energyClosetCount: element.energyClosetCount,
+                  ability: element.ability);
+            }
+          }
+        }
+      }
+    } else if (foe.id == 0) {
+      for (var element in allHeroes) {
+        if (element.heroStacks.isNotEmpty) {
+          if (element.heroStacks[0].cards.isNotEmpty) {
+            if (element.heroStacks[0].isActive && !element.isFriend) {
+              foe = element;
+            }
+          } else {
+            if (element.heroStacks[0].isActive && !element.isFriend) {
+              var stack = await db.getStackById(element.heroStacks[0].id);
+              foe = HeroStack(
+                  id: element.id,
+                  name: element.name,
+                  isFriend: element.isFriend,
+                  heroStacks: [stack],
+                  energyClosetCount: element.energyClosetCount,
+                  ability: element.ability);
+            }
+          }
+        }
+      }
+    }
+
+
+    // Friend and Foe ids != 0 
+    if (friend.heroStacks.isNotEmpty) {
+      if (friend.heroStacks[0].id == event.stackId &&
+          friend.heroStacks[0].cards.isNotEmpty) {
+        heroToReturn = friend;
+        stackToReturn = friendAlreadyPlayed;
+      }
+      if (friend.heroStacks[0].id == event.stackId) {
+        var stack = await db.getStackById(friend.heroStacks[0].id);
+        var supportStack = const CardsStack.empty();
+        if (friend.heroStacks.length > 1) {
+          supportStack = friend.heroStacks[1];
+          heroToReturn = HeroStack(
+              id: friend.id,
+              name: friend.name,
+              isFriend: true,
+              heroStacks: [stack, supportStack],
+              energyClosetCount: friend.energyClosetCount,
+              ability: friend.ability);
+        } else {
+          heroToReturn = HeroStack(
+              id: friend.id,
+              name: friend.name,
+              isFriend: true,
+              heroStacks: [stack],
+              energyClosetCount: friend.energyClosetCount,
+              ability: friend.ability);
+        }
+        friend = heroToReturn;
+      }
+    }
+
+    if (foe.heroStacks.isNotEmpty) {
+      if (foe.heroStacks[0].id == event.stackId &&
+          foe.heroStacks[0].cards.isNotEmpty) {
+        heroToReturn = foe;
+        stackToReturn = foeAlreadyPlayed;
+      }
+      if (foe.heroStacks[0].id == event.stackId) {
+        var stack = await db.getStackById(foe.heroStacks[0].id);
+        var supportStack = const CardsStack.empty();
+        if (foe.heroStacks.length > 1) {
+          supportStack = foe.heroStacks[1];
+          heroToReturn = HeroStack(
+              id: foe.id,
+              name: foe.name,
+              isFriend: true,
+              heroStacks: [stack, supportStack],
+              energyClosetCount: foe.energyClosetCount,
+              ability: foe.ability);
+        } else {
+          heroToReturn = HeroStack(
+              id: foe.id,
+              name: foe.name,
+              isFriend: true,
+              heroStacks: [stack],
+              energyClosetCount: foe.energyClosetCount,
+              ability: foe.ability);
+        }
+        foe = heroToReturn;
+      }
+    }
+
+print("FriendFoeBodyBloc heroToReturn == $heroToReturn \n stackToReturn == $stackToReturn");
+
+    emit(FriendFoeBodySuccessActionState(heroToReturn, stackToReturn));
+
 /*
   var heroToReturn = const HeroStack.empty();
 
@@ -103,8 +256,6 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
 
     emit(FriendFoeBodySuccessActionState(heroToReturn, friendAlreadyPlayed));
 */
-
-
 
 /*
 
@@ -267,17 +418,16 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
       FriendFoeBodyNextEvent event, Emitter<FriendFoeBodyState> emit) async {
     // Handle the next event
 
-  if(event.heroId == friend.id) {
-    friendAlreadyPlayed.cards.add(friend.heroStacks[0].cards.last);
-    friend.heroStacks[0].cards.removeLast();
-    emit(FriendFoeBodySuccessActionState(friend, friendAlreadyPlayed));
-  }
-  if(event.heroId == foe.id) {
-    foeAlreadyPlayed.cards.add(foe.heroStacks[0].cards.last);
-    foe.heroStacks[0].cards.removeLast();
-    emit(FriendFoeBodySuccessActionState(foe, foeAlreadyPlayed));
-  }
-
+    if (event.heroId == friend.id) {
+      friendAlreadyPlayed.cards.add(friend.heroStacks[0].cards.last);
+      friend.heroStacks[0].cards.removeLast();
+      emit(FriendFoeBodySuccessActionState(friend, friendAlreadyPlayed));
+    }
+    if (event.heroId == foe.id) {
+      foeAlreadyPlayed.cards.add(foe.heroStacks[0].cards.last);
+      foe.heroStacks[0].cards.removeLast();
+      emit(FriendFoeBodySuccessActionState(foe, foeAlreadyPlayed));
+    }
 
     // var newStack = CardsStack.empty();
     // var newAlreadyPlayed = CardsStack.empty();
@@ -359,6 +509,7 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
     print("FriendFoeBodyBloc _onChangeActiveStack event.id == ${event.id} \n");
     //var stack = const CardsStack.empty();
     var alreadyPlayed = const CardsStack.empty();
-    emit(FriendFoeBodySuccessActionState(const HeroStack.empty(), alreadyPlayed));
+    emit(FriendFoeBodySuccessActionState(
+        const HeroStack.empty(), alreadyPlayed));
   }
 }

@@ -70,7 +70,7 @@ class DBProvider {
           cardsTableName, card.toMap(),
           //conflictAlgorithm: ConflictAlgorithm.abort);
         );
-        print("DBProvider createCard() db.insert $card \n");
+        //print("DBProvider createCard() db.insert $card \n");
       } else {
         print("DBProvider createCard() card ${card.id} was in the Database \n");
       }
@@ -194,7 +194,7 @@ class DBProvider {
     var ids = stackToDB.fromAECardToListInt(stack.cards);
     stackToDB.cardsId.addAll(ids);
     //fromCardsStackToCardsStackDB(stack);
-    print("DBProvider createStack() stackToDB == $stackToDB \n");
+    //print("DBProvider createStack() stackToDB == $stackToDB \n");
 
     // For debugging purposes
     // Change to using getStackById
@@ -211,11 +211,11 @@ class DBProvider {
         //    "DBProvider createStack() stackFromDB == ${stackFromDB.toString()} \n");
       }
       if (dbList.isEmpty) {
-        print("DBProvider createStack db.insert $stackToDB");
+        //print("DBProvider createStack db.insert $stackToDB");
         await db.insert(stackTableName, stackToDB.toMap());
       }
     } else {
-      print("DBProvider createStack() maps.isEmpty \n");
+      //print("DBProvider createStack() maps.isEmpty \n");
       await db.insert(stackTableName, stackToDB.toMap());
     }
   }

@@ -206,13 +206,13 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
       }
 
       if(state is TurnOrderBodySuccessActionState) {
-        print("TurnOrderBody Page state IS TurnOrderBodySuccessActionState");
+        //print("TurnOrderBody Page state IS TurnOrderBodySuccessActionState");
         stackColor = state.stack.stackColor;
         stack = state.stack;
         alreadyPlayed = state.alreadyPlayed;
         
       } else {
-        print("TurnOrderBody Page state is NOT TurnOrderBodySuccessActionState");
+        //print("TurnOrderBody Page state is NOT TurnOrderBodySuccessActionState");
         stackColor = Colors.white;
         stack = const CardsStack.empty();
         alreadyPlayed =  const CardsStack.empty();
@@ -349,7 +349,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                                 ), Size(mainObjSize.width, mainObjSize.height), 
                                 bodyColor: stack.stackColor, margin: const EdgeInsets.all(0),),
                               onTap: () {
-                                print("Main object tapped");
+                                //print("Main object tapped");
                                 if(stack.cards.isEmpty) {
                                   context.read<TurnOrderBodyBloc>().add(const TurnOrderBodyShuffleEvent());
                                 } else {
@@ -357,7 +357,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                                 }
                               },
                               onLongPress: () {
-                                print("Main object long pressed");
+                                //print("Main object long pressed");
                                 if(stack.cards.isNotEmpty) {
                                 showDialog(
                                   context: context,
