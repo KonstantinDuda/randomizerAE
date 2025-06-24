@@ -204,7 +204,7 @@ class HeroStack {
 
   @override
   String toString() {
-    var result = 'HeroStack name: $name, id: $id \n';
+    var result = 'HeroStack id: $id, name: $name , isFriend: $isFriend';
     return result;
   }
 }

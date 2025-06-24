@@ -59,7 +59,7 @@ class _FriendFoeBody extends State<FriendFoeBody> {
             cardTextBeforeOr = texts[0];
             if (texts.length > 1) {
               //cardTextAfterOr = texts[1];
-              cardTextAfterOr = texts.sublist(1, texts.length - 1).join(" \n OR \n ");
+              cardTextAfterOr = texts.sublist(1).join("\n OR"); //, texts.length - 1).join(" \n OR \n ");
               isCardOptional = true;
             }
           }

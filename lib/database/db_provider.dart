@@ -50,7 +50,7 @@ class DBProvider {
         await db.execute("CREATE TABLE IF NOT EXISTS $heroTableName ("
             "id INTEGER PRIMARY KEY, "
             "name TEXT, "
-            "is_friend TEXT, "
+            "is_friend INTEGER, "
             "ec_count INTEGER, "
             "ability TEXT, "
             "feature TEXT, "
@@ -366,7 +366,7 @@ class DBProvider {
 
     var isHeroEmpty = await getHeroById(hero.id);
     if (isHeroEmpty.id != 0) {
-      print("DBProvider createHero() HeroStack was in DB. Is it update?");
+      print("DBProvider createHero() HeroStack was in DB. Is it need to update?");
     } else {
       db.insert(heroTableName, heroToDB.toMap());
       print("DBProvider createHero() $heroToDB insert to DB");

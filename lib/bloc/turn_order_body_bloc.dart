@@ -38,103 +38,103 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
       }
       }
 
-      // var turnNF = 0;
-      // var turnNN = 0;
-      // var turnNNF = 0;
-      // var NF = 0;
-      // var NN = 0;
-      // var NNF = 0;
-      // var NNN = 0;
-      // var NNFF = 0;
-      // var NNNF = 0;
-      // var NNNN = 0;
-      // var NNNFF = 0;
-      // var NNNNF = 0;
-      // var NNNNFF = 0;
-      // var allShuffles = [];
+      /*var turnNF = 0;
+      var turnNN = 0;
+      var turnNNF = 0;
+      var NF = 0;
+      var NN = 0;
+      var NNF = 0;
+      var NNN = 0;
+      var NNFF = 0;
+      var NNNF = 0;
+      var NNNN = 0;
+      var NNNFF = 0;
+      var NNNNF = 0;
+      var NNNNFF = 0;
+      var allShuffles = [];
 
-      // for (var i = 0; i < 100; i++) {
-      //   var localStack = await db.getStackById(1);
-      //   localStack.cards.shuffle();
-      //   //var oneStack = [];
-      //   var nemes = 0;
-      //   var fo = 0;
-      //   for (var j = 0; j < localStack.cards.length; j++) {
-      //     allShuffles.add(localStack.cards[j].id);
-      //     if (localStack.cards[j].id == 6) {
-      //       nemes++;
-      //     } else if (localStack.cards[j].id == 7) {
-      //       fo++;
-      //     } else {
-      //       if (nemes > 1) {
-      //         if (fo > 0) {
-      //           turnNNF++;
-      //         } else {
-      //           turnNN++;
-      //         }
-      //       } else if (nemes > 0) {
-      //         if (fo > 0) {
-      //           turnNF++;
-      //         }
-      //       }
-      //       nemes = 0;
-      //       fo = 0;
-      //     }
-      //   }
-      // }
+      for (var i = 0; i < 100; i++) {
+        var localStack = await db.getStackById(1);
+        localStack.cards.shuffle();
+        //var oneStack = [];
+        var nemes = 0;
+        var fo = 0;
+        for (var j = 0; j < localStack.cards.length; j++) {
+          allShuffles.add(localStack.cards[j].id);
+          if (localStack.cards[j].id == 6) {
+            nemes++;
+          } else if (localStack.cards[j].id == 7) {
+            fo++;
+          } else {
+            if (nemes > 1) {
+              if (fo > 0) {
+                turnNNF++;
+              } else {
+                turnNN++;
+              }
+            } else if (nemes > 0) {
+              if (fo > 0) {
+                turnNF++;
+              }
+            }
+            nemes = 0;
+            fo = 0;
+          }
+        }
+      }
 
-      // var nemesis = 0;
-      // var foe = 0;
-      // for (var i = 0; i < allShuffles.length; i++) {
-      //   if (allShuffles[i] == 6) {
-      //     nemesis++;
-      //   } else if (allShuffles[i] == 7) {
-      //     foe++;
-      //   } else {
-      //     if (nemesis > 0) {
-      //       if (nemesis == 1 && foe == 1) {
-      //         NF++;
-      //       } else if (nemesis == 2 && foe == 0) {
-      //         NN++;
-      //       } else if (nemesis == 2 && foe == 1) {
-      //         NNF++;
-      //       } else if (nemesis == 2 && foe == 2) {
-      //         NNFF++;
-      //       } else if (nemesis == 3 && foe == 1) {
-      //         NNNF++;
-      //       } else if (nemesis == 3 && foe == 2) {
-      //         NNNFF++;
-      //       } else if (nemesis == 4 && foe == 1) {
-      //         NNNNF++;
-      //       } else if (nemesis == 4 && foe == 2) {
-      //         NNNNFF++;
-      //       }
-      //     }
-      //     nemesis = 0;
-      //     foe = 0;
-      //   }
-      // }
-      // print(
-      //     "\n \t \t За 100 повторень: \n \t По турам: \n Послідовних кроків Nemesis Foe або Foe Nemesis = $turnNF");
-      // print("Немезіс ходить підряд по 2 рази = $turnNN");
-      // print(
-      //     "В різних комбінаціях послідовних кроків Nemesis Nemesis Foe = $turnNNF ");
-      // print(
-      //     "\t Якщо вистроїти всі тури підряд (для перевірки 3 кроків немезіса підряд і т.і.): ");
-      // print("Nemesis Foe = $NF");
-      // print("Nemesis Nemesis = $NN");
-      // print("Nemesis Nemesis Foe різні комбінації: $NNF");
-      // print("Nemesis Nemesis Foe Foe в різних комбінаціях: $NNFF");
-      // print("Nemesis Nemesis Nemesis: $NNN");
-      // print("Nemesis Nemesis Nemesis Foe в різних комбінаціях: $NNNF");
-      // print("Nemesis Nemesis Nemesis Foe Foe в різних комбінаціях: $NNNFF");
-      // print("Nemesis Nemesis Nemesis Nemesis: $NNNN");
-      // print("Nemesis Nemesis Nemesis Nemesis Foe в різних комбінаціях: $NNNNF");
-      // print(
-      //     "Nemesis Nemesis Nemesis Nemesis Foe Foe в різних комбінаціях: $NNNNFF");
+      var nemesis = 0;
+      var foe = 0;
+      for (var i = 0; i < allShuffles.length; i++) {
+        if (allShuffles[i] == 6) {
+          nemesis++;
+        } else if (allShuffles[i] == 7) {
+          foe++;
+        } else {
+          if (nemesis > 0) {
+            if (nemesis == 1 && foe == 1) {
+              NF++;
+            } else if (nemesis == 2 && foe == 0) {
+              NN++;
+            } else if (nemesis == 2 && foe == 1) {
+              NNF++;
+            } else if (nemesis == 2 && foe == 2) {
+              NNFF++;
+            } else if (nemesis == 3 && foe == 1) {
+              NNNF++;
+            } else if (nemesis == 3 && foe == 2) {
+              NNNFF++;
+            } else if (nemesis == 4 && foe == 1) {
+              NNNNF++;
+            } else if (nemesis == 4 && foe == 2) {
+              NNNNFF++;
+            }
+          }
+          nemesis = 0;
+          foe = 0;
+        }
+      }
+      print(
+          "\n \t \t За 100 повторень: \n \t По турам: \n Послідовних кроків Nemesis Foe або Foe Nemesis = $turnNF");
+      print("Немезис ходить підряд по 2 рази = $turnNN");
+      print(
+          "В різних комбінаціях послідовних кроків Nemesis Nemesis Foe = $turnNNF ");
+      print(
+          "\t Якщо вистроїти всі тури підряд (для перевірки 3 кроків немезіса підряд і т.і.): ");
+      print("Nemesis Foe = $NF");
+      print("Nemesis Nemesis = $NN");
+      print("Nemesis Nemesis Foe різні комбінації: $NNF");
+      print("Nemesis Nemesis Foe Foe в різних комбінаціях: $NNFF");
+      print("Nemesis Nemesis Nemesis: $NNN");
+      print("Nemesis Nemesis Nemesis Foe в різних комбінаціях: $NNNF");
+      print("Nemesis Nemesis Nemesis Foe Foe в різних комбінаціях: $NNNFF");
+      print("Nemesis Nemesis Nemesis Nemesis: $NNNN");
+      print("Nemesis Nemesis Nemesis Nemesis Foe в різних комбінаціях: $NNNNF");
+      print(
+          "Nemesis Nemesis Nemesis Nemesis Foe Foe в різних комбінаціях: $NNNNFF");*/
 
-      //stack = stackList.isNotEmpty ? stackList.first : const CardsStack.empty();
-      //print("TurnOrderBodyBloc _onInit stack.id == 0 stack == $stack \n");
+      stack = stackList.isNotEmpty ? stackList.first : const CardsStack.empty();
+      print("TurnOrderBodyBloc _onInit stack.id == 0 stack == $stack \n");
     } else {
 
       print(
@@ -328,11 +328,17 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     //emit(const TurnOrderBodyClearScreenState());
     print(
         "TurnOrderBodyBlock. _onChangeActiveStack. event.id == ${event.id} \n");
+
+    if(event.id == stack.id) {
+      emit(TurnOrderBodySuccessActionState(stack, alreadyPlayed));
+    } else {
+
     var dbStack = await db.getStackById(event.id);
     stack = dbStack;
     alreadyPlayed = const CardsStack.empty();
 
     emit(TurnOrderBodySuccessActionState(dbStack, const CardsStack.empty()));
+    }
 //    emit(TurnOrderBodySuccessActionState(newStack, newAlreadyPlayed));
   }
 }
