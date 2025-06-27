@@ -282,14 +282,6 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
       }
     }
 
-    // var newStack = CardsStack(
-    //   id: -1, //stack.id,
-    //   name: stack.name,
-    //   isActive: stack.isActive,
-    //   stackType: StackType.turnOrder,
-    //   stackColor: stack.stackColor,
-    //   cards: stack.cards,
-    // );
     if (card.id > 0) {
       stack.cards.add(card);
       stack.cards.shuffle();

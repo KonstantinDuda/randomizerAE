@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:randomizer_new/view/create/add_cards_list_view.dart';
 
 import '../../bloc/crud_stack_bloc.dart';
 import '../../bloc/event_state/crud_stack_es.dart';
 import '../../bloc/providers/provider_bloc.dart';
 import '../../database/cards_stack.dart';
-import 'dialog_add_card.dart';
+// import 'dialog_add_card.dart';
 
 class CreateStackPage extends StatefulWidget {
   final int id;
@@ -16,6 +17,11 @@ class CreateStackPage extends StatefulWidget {
 }
 
 class _CreateStackPageState extends State<CreateStackPage> {
+  List<AECard> allCards = [];
+  // List<String> allCardsNames = [];
+  List<int> cardCounters = [];
+  List<AECard> cards = [];
+
   CardsStack stack = CardsStack(
       id: 0,
       name: "",
@@ -26,8 +32,7 @@ class _CreateStackPageState extends State<CreateStackPage> {
   String stackName = "";
   bool isActive = false;
   String curentType = "Turn order";
-  Color curentColor = Colors.white;
-  List<AECard> cards = [];
+  Color curentColor = const Color.fromARGB(255, 255, 255, 255); //Colors.white;
 
   List<String> stackTypes = const [
     "Turn order",
@@ -68,9 +73,28 @@ class _CreateStackPageState extends State<CreateStackPage> {
         isActive: isActive,
         stackType: stackType,
         stackColor: curentColor,
-        cards: stack.cards);
+        cards: cards);
     stack = newStack;
     print("CreateStackPage createNewStack stack == $stack");
+  }
+
+  addCard(int index) {
+    print("CreateStackPage addCard id: $index");
+    cards.add(allCards[index]);
+    print("CreateStackPage addCard cards: $cards");
+  }
+
+  minusCard(int id) {
+    print("CreateStackPage minusCard id: $id");
+    for (var i = 0; i < cards.length; i++) {
+      if(cards.isNotEmpty) {
+        if (cards[i].id == id) {
+          cards.removeAt(i);
+          break;
+        }
+      }
+    }
+    print("CreateStackPage minusCard cards: $cards");
   }
 
   @override
@@ -83,7 +107,8 @@ class _CreateStackPageState extends State<CreateStackPage> {
             stack = element;
           }
         }
-        print("CreateStackPage state is CRUDStackSuccessActionState newStack == $stack");
+        allCards = state.cards;
+        print("CreateStackPage state is CRUDStackSuccessActionState newStack == $stack allCards.length == ${allCards.length}");
       }
 
       return Scaffold(
@@ -106,6 +131,7 @@ class _CreateStackPageState extends State<CreateStackPage> {
         ),
         body: Column(
           children: [
+            // Stack name
             Row(
               children: [
                 Container(
@@ -127,6 +153,7 @@ class _CreateStackPageState extends State<CreateStackPage> {
                 ),
               ],
             ),
+            // Is stack active?
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -145,6 +172,7 @@ class _CreateStackPageState extends State<CreateStackPage> {
                     }),
               ],
             ),
+            // Set stack Type
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -170,6 +198,7 @@ class _CreateStackPageState extends State<CreateStackPage> {
                 ),
               ],
             ),
+            // Set stack Color
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -206,9 +235,11 @@ class _CreateStackPageState extends State<CreateStackPage> {
                 ),
               ],
             ),
+            // Cards in stack
             Expanded(
               child: Container(
-                width: MediaQuery.of(context).size.width - 100,
+                margin: const EdgeInsets.fromLTRB(20, 0, 15, 57) ,
+                //width: MediaQuery.of(context).size.width - 80,
                 decoration: BoxDecoration(
                   //stackColor,
                   border: Border.all(
@@ -221,32 +252,33 @@ class _CreateStackPageState extends State<CreateStackPage> {
                   children: [
                     const Text(
                       "Cards: ",
-                      style: TextStyle(fontSize: 18),
+                      style: TextStyle(fontSize: 20),
                     ),
                     Expanded(
                         child: SizedBox(
-                      child: ListView.builder(
-                        itemCount: cards.isEmpty ? 0 : cards.length,
-                        itemBuilder: (_, index) =>
-                            Text(cards[index].text.split(":")[0]),
-                      ),
-                    )),
-                    ElevatedButton(
-                        onPressed: () {
-                          createNewStack();
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) =>
-                                AddCardToStackDialog(stack: stack),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                        ),
-                        child: const Text(
-                          "Add card",
-                          style: TextStyle(fontSize: 16, color: Colors.black),
-                        )),
+                          child: AddCardsListView(stack, cards, cardCounters, addCard, minusCard),
+                      // child: ListView.builder(
+                      //   itemCount: cards.isEmpty ? 0 : cards.length,
+                      //   itemBuilder: (_, index) =>
+                      //       Text(cards[index].text.split(":")[0]),
+                      // ),
+                    ),),
+                    // ElevatedButton(
+                    //     onPressed: () {
+                    //       createNewStack();
+                    //       showDialog(
+                    //         context: context,
+                    //         builder: (BuildContext context) =>
+                    //             AddCardToStackDialog(stack: stack),
+                    //       );
+                    //     },
+                    //     style: ElevatedButton.styleFrom(
+                    //       backgroundColor: Colors.green,
+                    //     ),
+                    //     child: const Text(
+                    //       "Add card",
+                    //       style: TextStyle(fontSize: 16, color: Colors.black),
+                    //     )),
                   ],
                 ),
               ),
@@ -259,6 +291,9 @@ class _CreateStackPageState extends State<CreateStackPage> {
               context
                   .read<CRUDStackBloc>()
                   .add(CRUDStackUpdateStackEvent(stack));
+              context
+                  .read<ProviderBloc>()
+                  .add(RootEvent());
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,

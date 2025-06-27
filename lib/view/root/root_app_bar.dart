@@ -40,7 +40,7 @@ class _RootAppBarState extends State<RootAppBar> {
           }
         }
         stacks = localStacks;
-        print("RootAppBar stacks == $stacks \n");
+        //print("RootAppBar stacks == $stacks \n");
       } else {
         print("RootAppBar state is NOT CRUDStackSuccessActionState");
       }

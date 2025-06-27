@@ -115,47 +115,9 @@ class CardsStack {
     );
   }
 
-  /*@override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    //if(other is! CardsStackDB) return false;
-    if (other is CardsStack) {
-      print(id == other.id ? "true : CardsStack operator ==. id == other.id ?" : "false : CardsStack operator ==. id == other.id ?" );
-      print(name == other.name ? "true : CardsStack operator ==. name == other.name &&" : "false : CardsStack operator ==. name == other.name && ?");
-      print(isActive == other.isActive ? "true : CardsStack operator ==. isActive == other.isActive &&" : "false : CardsStack operator ==. isActive == other.isActive && ?");
-      print(stackType == other.stackType ? "true : CardsStack operator ==. stackType == other.stackType &&" : "false : CardsStack operator ==. stackType == other.stackType && ?");
-      print(stackColor == other.stackColor ? "true : CardsStack operator ==. stackColor == other.stackColor &&" : "false : CardsStack operator ==. stackColor == other.stackColor && ?");
-      var cardsIsEqual = true;
-      for (var i = 0; i < cards.length; i++) {
-        if(cards[i] != other.cards[i]) {
-          cardsIsEqual = false;
-        }
-      }
-      print(cardsIsEqual ? "true : CardsStack operator ==. cards == other.cards ?" : "false : CardsStack operator ==. cards == other.cards ?");
-      if (id == other.id &&
-          name == other.name &&
-          isActive == other.isActive &&
-          stackType == other.stackType &&
-          stackColor == other.stackColor &&
-          cardsIsEqual) {
-        print("CardsStack operator == true");
-        return true;
-      } else {
-        print("CardsStack operator == false");
-        return false;
-      }
-    }
-
-    return false;
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(id, name, isActive, stackType, stackColor, cards);*/
-
   @override
   String toString() {
-    var result = 'CardsStack{id: $id, name: $name, isActive: $isActive}';//cards: $cards';
+    var result = 'CardsStack{id: $id, name: $name, isActive: $isActive, stackType: $stackType,  \n cards: $cards}';//cards: $cards';
     return result;
   }
 }
@@ -204,7 +166,7 @@ class HeroStack {
 
   @override
   String toString() {
-    var result = 'HeroStack id: $id, name: $name , isFriend: $isFriend';
+    var result = 'HeroStack id: $id, name: $name, isFriend: $isFriend';
     return result;
   }
 }

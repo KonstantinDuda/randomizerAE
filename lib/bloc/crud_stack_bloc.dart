@@ -5,7 +5,6 @@ import 'event_state/crud_stack_es.dart';
 import '../database/cards_stack.dart';
 import '../database/db_provider.dart';
 
-
 class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
   final defaultData = DefaultData();
   final db = DBProvider();
@@ -27,8 +26,8 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
   _onInit(CRUDStackInitialEvent event, Emitter<CRUDStackState> emit) async {
     print("CRUDStackBlock _onInit event == $event");
 
- cards = await defaultData.getCards();
- stacks = await defaultData.getStacks();
+    cards = await defaultData.getCards();
+    stacks = await defaultData.getStacks();
 
     // cards = await db.getAllCards();
     // stacks = await db.getAllStacks();
@@ -178,11 +177,15 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
   _onUpdateStack(
       CRUDStackUpdateStackEvent event, Emitter<CRUDStackState> emit) async {
     print("CRUDStackBloc _onUpdateStack event.stack == ${event.stack}");
+var stacksFromDB = await db.getAllStacks();
 
 // This was commented
     var stackFromDB = await db.getStackById(event.stack.id);
-    if (stackFromDB.id == event.stack.id) {
-      print("CRUDStackBloc _onUpdateStack stackFromDB.id == event.stack.id");
+    if (stackFromDB.id == 0) {
+      print("CRUDStackBloc _onUpdateStack stackFromDB.id == 0");
+      db.createStack(event.stack);
+    } else {
+      print("CRUDStackBloc _onUpdateStack stackFromDB.id != 0");
       if (stackFromDB.name == event.stack.name &&
           stackFromDB.isActive == event.stack.isActive &&
           stackFromDB.stackType == event.stack.stackType &&
@@ -205,16 +208,15 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
             "CRUDStackBloc _onUpdateStack stackFromDB.id == event.stack.id, stackFromDB != event.stack");
         db.updateStack(event.stack);
       }
-    } else {
-      print("CRUDStackBloc _onUpdateStack stackFromDB.id != event.stack.id");
     }
+
     var newStacks = await db.getAllStacks();
     stacks = newStacks;
 
     emit(CRUDStackSuccessActionState(cards, newStacks));
 // This was commented
 
-    print("CRUDStackBloc _onUpdateStack event.stack.id == ${event.stack.id}");
+    print("CRUDStackBloc _onUpdateStack stacks.length == ${stacksFromDB.length}, newStacks.length == ${newStacks.length}");
   }
 
   _onUpdateAvailableList(CRUDStackUpdateAvailableListEvent event,
@@ -254,8 +256,10 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
       for (var element in stacks) {
         stacksIDs.add(element.id);
       }
-      print("CRUDStackBloc _onUpdateAvailableList event.id.isEmpty cardsIDs == $cardsIDs");
-      print("CRUDStackBloc _onUpdateAvailableList event.id.isEmpty stacksIDs == $stacksIDs");
+      print(
+          "CRUDStackBloc _onUpdateAvailableList event.id.isEmpty cardsIDs == $cardsIDs");
+      print(
+          "CRUDStackBloc _onUpdateAvailableList event.id.isEmpty stacksIDs == $stacksIDs");
     }
 
     emit(CRUDStackSuccessActionState(cards, stacks));

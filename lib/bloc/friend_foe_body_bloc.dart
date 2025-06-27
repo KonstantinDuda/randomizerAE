@@ -31,47 +31,6 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
 
     var allHeroes = await defaultData.getHeroes();
 
-    // Friend and foe ids == 0
-    /*if (friend.id == 0 && foe.id == 0) {
-      print("FriendFoeBodyBloc _onInit friend.id == 0 && foe.id == 0 \n");
-      for (var element in allHeroes) {
-        if (element.heroStacks.isNotEmpty) {
-          if (element.heroStacks[0].cards.isNotEmpty &&
-              element.heroStacks[0].isActive) {
-                print("FriendFoeBodyBloc _onInit element.heroStacks.isNotEmpty element.heroStacks[0].cards.isNotEmpty "
-                "&& element.heroStacks[0].isActive element == $element");
-            if (element.isFriend) {
-              friend = element;
-            } else {
-              foe = element;
-            }
-          } else if (element.heroStacks[0].isActive) {
-            print("FriendFoeBodyBloc _onInit "
-                "&& element.heroStacks[0].isActive element == $element");
-            var stack = await db.getStackById(element.heroStacks[0].id);
-              stack.cards.shuffle();
-            if (element.isFriend) {
-              friend = HeroStack(
-                  id: element.id,
-                  name: element.name,
-                  isFriend: element.isFriend,
-                  heroStacks: [stack],
-                  energyClosetCount: element.energyClosetCount,
-                  ability: element.ability);
-            } else {
-              foe = HeroStack(
-                  id: element.id,
-                  name: element.name,
-                  isFriend: element.isFriend,
-                  heroStacks: [stack],
-                  energyClosetCount: element.energyClosetCount,
-                  ability: element.ability);
-            }
-          }
-        }
-      }
-    }*/
-
     if (friend.id == 0) {
       print("FriendFoeBodyBloc _onInit friend.id == 0 \n");
       for (var element in allHeroes) {
@@ -321,88 +280,6 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
       }
     }
 
-    // if (event.heroId == friend.id) {
-    //   friendAlreadyPlayed.cards.add(friend.heroStacks[0].cards.last);
-    //   friend.heroStacks[0].cards.removeLast();
-    //   emit(FriendFoeBodySuccessActionState(friend, friendAlreadyPlayed));
-    // }
-    // if (event.heroId == foe.id) {
-    //   foeAlreadyPlayed.cards.add(foe.heroStacks[0].cards.last);
-    //   foe.heroStacks[0].cards.removeLast();
-    //   emit(FriendFoeBodySuccessActionState(foe, foeAlreadyPlayed));
-    // }
-
-    // var newStack = CardsStack.empty();
-    // var newAlreadyPlayed = CardsStack.empty();
-
-    // if (friendStack.cards.isEmpty) {
-    //   friendStack = await db.getStackById(friendStack.id);
-    //   friendAlreadyPlayed = CardsStack(
-    //     id: friendStack.id,
-    //     name: friendStack.name,
-    //     isActive: true,
-    //     stackType: StackType.friendFoe,
-    //     stackColor: friendStack.stackColor,
-    //     cards: [],
-    //   );
-    //   friendStack.cards.shuffle();
-    // }
-    // if (foeStack.cards.isEmpty) {
-    //   foeStack = await db.getStackById(foeStack.id);
-    //   foeAlreadyPlayed = CardsStack(
-    //     id: foeStack.id,
-    //     name: foeStack.name,
-    //     isActive: true,
-    //     stackType: StackType.friendFoe,
-    //     stackColor: foeStack.stackColor,
-    //     cards: [],
-    //   );
-    //   foeStack.cards.shuffle();
-    // }
-
-    // print("FriendFoeBodyBloc _onNext event.heroId == ${event.heroId} \n");
-    // var hero = HeroStack(
-    //     id: 0,
-    //     name: "",
-    //     isFriend: true,
-    //     heroStacks: [],
-    //     energyClosetCount: 0,
-    //     ability: "");
-    // if (defaultData.friendFoeList.isNotEmpty) {
-    //   for (var element in defaultData.friendFoeList) {
-    //     if (event.heroId == element.id) {
-    //       hero = element;
-    //       print(
-    //           "FriendFoeBodyBloc _onNext event.heroId == ${event.heroId} hero == $hero \n");
-    //     }
-    //   }
-    // }
-    // print("FriendFoeBodyBloc _onNext hero == $hero \n");
-    // if (hero.id != 0) {
-    //   if (hero.heroStacks[0].id == friendStack.id) {
-    //     print("FriendFoeBodyBloc _onNext event.heroId == friendStack.id \n");
-    //     friendAlreadyPlayed.cards.add(friendStack.cards.last);
-    //     friendStack.cards.removeLast();
-    //     newStack = friendStack;
-    //     newAlreadyPlayed = friendAlreadyPlayed;
-    //   } else if (hero.heroStacks[0].id == foeStack.id) {
-    //     print("FriendFoeBodyBloc _onNext event.heroId == foeStack.id \n");
-    //     foeAlreadyPlayed.cards.add(foeStack.cards.last);
-    //     foeStack.cards.removeLast();
-    //     newStack = foeStack;
-    //     newAlreadyPlayed = foeAlreadyPlayed;
-    //   } else {
-    //     print(
-    //         "FriendFoeBodyBloc _onNext event.heroId != 0 != friendStack.id != foeStack.id \n");
-    //   }
-    // } else {
-    //   print("FriendFoeBodyBloc _onNext localHero.id == 0 \n");
-    // }
-
-    // print("FriendFoeBodyBloc _onNext event.heroId == ${event.heroId} \n"
-    //     "newStack == $newStack \n alreadyPlayed == $newAlreadyPlayed \n");
-
-    // emit(FriendFoeBodySuccessActionState(newStack, newAlreadyPlayed));
   }
 
   _onChangeActiveStack(FriendFoeChangeActiveStackEvent event,
