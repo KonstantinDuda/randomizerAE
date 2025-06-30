@@ -147,9 +147,10 @@ class _RootAppBarState extends State<RootAppBar> {
                                   // dbObj.getHeroStackByStackId(db[index].id);
                                   stacks[index];
                               print("RootAppBar heroStack == $stack \n");
-                              context
-                                  .read<FriendFoeBodyBloc>()
-                                  .add(FriendFoeBodyInitialEvent(stack.id));
+                              // context
+                              //     .read<FriendFoeBodyBloc>()
+                              //     .add(FriendFoeBodyInitialEvent(stack.id));
+                              context.read<FriendFoeBodyBloc>().add(FriendFoeChangeActiveStackEvent(stack.id));
                               context
                                   .read<RootBodyProviderBloc>()
                                   .add(RootBodyFriendFoeEvent());

@@ -279,17 +279,44 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
             heroToReturn, alreadyStackToReturn));
       }
     }
-
   }
 
   _onChangeActiveStack(FriendFoeChangeActiveStackEvent event,
       Emitter<FriendFoeBodyState> emit) async {
-    // Handle the change active stack event
-    //var stack = database.getStackById(event.id);
     print("FriendFoeBodyBloc _onChangeActiveStack event.id == ${event.id} \n");
+
+    var allHeroes = await defaultData.getHeroes();
+
+    for (var i = 0; i < allHeroes.length; i++) {
+      if (allHeroes[i].heroStacks.isNotEmpty) {
+        if (allHeroes[i].heroStacks[0].id == event.id) {
+          if (allHeroes[i].isFriend) {
+            if (friend.heroStacks[0].cards.isEmpty) {
+              friend = allHeroes[i];
+              emit(
+                  FriendFoeBodySuccessActionState(friend, friendAlreadyPlayed));
+            } else {
+              emit(
+                  FriendFoeBodySuccessActionState(friend, friendAlreadyPlayed));
+            }
+          } else {
+            if (foe.heroStacks[0].cards.isEmpty) {
+              foe = allHeroes[i];
+              emit(FriendFoeBodySuccessActionState(foe, foeAlreadyPlayed));
+            } else {
+              emit(FriendFoeBodySuccessActionState(foe, foeAlreadyPlayed));
+            }
+          }
+        }
+      } else {
+        var alreadyPlayed = const CardsStack.empty();
+        emit(FriendFoeBodySuccessActionState(
+            const HeroStack.empty(), alreadyPlayed));
+      }
+    }
     //var stack = const CardsStack.empty();
-    var alreadyPlayed = const CardsStack.empty();
-    emit(FriendFoeBodySuccessActionState(
-        const HeroStack.empty(), alreadyPlayed));
+    // var alreadyPlayed = const CardsStack.empty();
+    // emit(FriendFoeBodySuccessActionState(
+    //     const HeroStack.empty(), alreadyPlayed));
   }
 }

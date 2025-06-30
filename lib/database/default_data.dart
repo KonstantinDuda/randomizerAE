@@ -27,6 +27,10 @@ class DefaultData {
     }
   }
 
+  setCards(List<AECard> newCards) {
+    _cards = newCards;
+  }
+
   Future<List<CardsStack>> getStacks() async {
     if (_stacks.isNotEmpty) {
       print("Default Data getStacks _stacks.length == ${_stacks.length}");
@@ -35,6 +39,10 @@ class DefaultData {
       print("Default Data getStacks _stacks was empty");
       return await _db.getAllStacks();
     }
+  }
+
+  setStacks(List<CardsStack> newStacks) {
+    _stacks = newStacks;
   }
 
   Future<List<HeroStack>> getHeroes() async {
@@ -46,6 +54,10 @@ class DefaultData {
       print("Default Data getHeroes friendFoeList was empty");
       return await _db.getAllHeroes();
     }
+  }
+
+  setHeroes(List<HeroStack> newHeroes) {
+    friendFoeList = newHeroes;
   }
 
   createDefaultData() async {

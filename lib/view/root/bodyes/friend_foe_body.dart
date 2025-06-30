@@ -96,8 +96,8 @@ class _FriendFoeBody extends State<FriendFoeBody> {
         stack = state.hero.heroStacks.isNotEmpty ? state.hero.heroStacks[0] : const CardsStack.empty();
         alreadyPlayed = state.alreadyPlayed;
 
-        print("FriendFoeBody stack == $stack \n");
-        print("FriendFoeBody alreadyPlayed == $alreadyPlayed \n");
+        // print("FriendFoeBody stack == $stack \n");
+        // print("FriendFoeBody alreadyPlayed == $alreadyPlayed \n");
 
         if(state.hero.id != 0) {
           hero = state.hero;
