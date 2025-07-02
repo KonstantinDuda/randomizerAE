@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:randomizer_new/bloc/event_state/friend_foe_body_es.dart';
+import 'package:randomizer_new/bloc/friend_foe_body_bloc.dart';
 
 import '../../bloc/crud_stack_bloc.dart';
 import '../../bloc/event_state/crud_stack_es.dart';
@@ -98,6 +100,7 @@ class _RootDrawerState extends State<RootDrawer> {
                 for (var i = 0; i < stacks.length; i++) {
                   if (stacks[i].isActive != boolList[i]) {
                     idList.add(stacks[i].id);
+                    context.read<FriendFoeBodyBloc>().add(FriendFoeChangeActiveStackEvent(stacks[i].id));
                   }
                 }
                 context
@@ -114,6 +117,7 @@ class _RootDrawerState extends State<RootDrawer> {
               onPressed: () {
                 Navigator.pop(context);
 
+context.read<CRUDStackBloc>().add(CRUDStackInitialEvent());
                 context.read<ProviderBloc>().add(UpdateDeleteEvent());
               },
             ),

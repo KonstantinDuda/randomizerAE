@@ -285,38 +285,92 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
       Emitter<FriendFoeBodyState> emit) async {
     print("FriendFoeBodyBloc _onChangeActiveStack event.id == ${event.id} \n");
 
+    var heroToReturn = const HeroStack.empty();
+    var stackToReturn = const CardsStack.empty();
+
     var allHeroes = await defaultData.getHeroes();
 
-    for (var i = 0; i < allHeroes.length; i++) {
-      if (allHeroes[i].heroStacks.isNotEmpty) {
-        if (allHeroes[i].heroStacks[0].id == event.id) {
-          if (allHeroes[i].isFriend) {
-            if (friend.heroStacks[0].cards.isEmpty) {
-              friend = allHeroes[i];
-              emit(
-                  FriendFoeBodySuccessActionState(friend, friendAlreadyPlayed));
+    
+    print("FriendFoeBodyBloc _onChangeActiveStack friend.heroStack[0].id == ${friend.heroStacks[0].id} \n");
+    print("FriendFoeBodyBloc _onChangeActiveStack foe.heroStack[0].id == ${foe.heroStacks[0].id} \n");
+
+    if (event.id != friend.heroStacks[0].id && event.id != foe.heroStacks[0].id) {
+      print(
+          "FriendFoeBodyBloc _onChangeActiveStack event.id != friend.id && event.id != foe.id");
+      for (var i = 0; i < allHeroes.length; i++) {
+        if (allHeroes[i].heroStacks.isNotEmpty) {
+          print(
+              "FriendFoeBodyBloc _onChangeActiveStack allHeroes[$i].heroStacks.isNotEmpty");
+          if (allHeroes[i].heroStacks[0].id == event.id) {
+            print(
+                "FriendFoeBodyBloc _onChangeActiveStack allHeroes[$i].heroStacks[0].id == event.id");
+            if (allHeroes[i].isFriend) {
+              print(
+                  "FriendFoeBodyBloc _onChangeActiveStack allHeroes[$i].isFriend");
+              if (allHeroes[i].heroStacks[0].cards.isNotEmpty) {
+                friend = allHeroes[i];
+              } else {
+                friend = await db.getHeroById(allHeroes[i].id);
+              }
+              friendAlreadyPlayed = CardsStack(
+                  id: friend.heroStacks[0].id,
+                  name: friend.heroStacks[0].name,
+                  isActive: true,
+                  stackType: friend.heroStacks[0].stackType,
+                  stackColor: friend.heroStacks[0].stackColor,
+                  cards: []);
+              heroToReturn = friend;
+              stackToReturn = friendAlreadyPlayed;
+              
             } else {
-              emit(
-                  FriendFoeBodySuccessActionState(friend, friendAlreadyPlayed));
-            }
-          } else {
-            if (foe.heroStacks[0].cards.isEmpty) {
-              foe = allHeroes[i];
-              emit(FriendFoeBodySuccessActionState(foe, foeAlreadyPlayed));
-            } else {
-              emit(FriendFoeBodySuccessActionState(foe, foeAlreadyPlayed));
+              print(
+                  "FriendFoeBodyBloc _onChangeActiveStack allHeroes[$i].isNotFriend");
+              if (allHeroes[i].heroStacks[0].cards.isNotEmpty) {
+                foe = allHeroes[i];
+              } else {
+                foe = await db.getHeroById(allHeroes[i].id);
+              }
+              foeAlreadyPlayed = CardsStack(
+                  id: foe.heroStacks[0].id,
+                  name: foe.heroStacks[0].name,
+                  isActive: true,
+                  stackType: foe.heroStacks[0].stackType,
+                  stackColor: foe.heroStacks[0].stackColor,
+                  cards: []);
+              heroToReturn = foe;
+              stackToReturn = foeAlreadyPlayed;
+
             }
           }
+        } else {
+          print(
+              "FriendFoeBodyBloc _onChangeActiveStack allHeroes[$i].heroStacks.isEmpty");
+          var alreadyPlayed = const CardsStack.empty();
+          emit(FriendFoeBodySuccessActionState(
+              const HeroStack.empty(), alreadyPlayed));
+          break;
         }
+      }
+    } else if (event.id == friend.heroStacks[0].id) {
+      print("FriendFoeBodyBloc _onChangeActiveStack event.id == friend.id ");
+      if (friend.id != 0 && friend.heroStacks.isNotEmpty) {
+        heroToReturn = friend;
+        stackToReturn = friendAlreadyPlayed;
       } else {
-        var alreadyPlayed = const CardsStack.empty();
-        emit(FriendFoeBodySuccessActionState(
-            const HeroStack.empty(), alreadyPlayed));
+        _onInit(const FriendFoeBodyInitialEvent(0), emit);
+      }
+    } else if (event.id == foe.heroStacks[0].id) {
+      print("FriendFoeBodyBloc _onChangeActiveStack event.id == foe.id ");
+      if (foe.id != 0 && foe.heroStacks.isNotEmpty) {
+        heroToReturn = foe;
+        stackToReturn = foeAlreadyPlayed;
+      } else {
+        _onInit(const FriendFoeBodyInitialEvent(0), emit);
       }
     }
-    //var stack = const CardsStack.empty();
-    // var alreadyPlayed = const CardsStack.empty();
-    // emit(FriendFoeBodySuccessActionState(
-    //     const HeroStack.empty(), alreadyPlayed));
+
+    print(
+        "FriendFoeBodyBloc _onChangeActiveStack heroToReturn == $heroToReturn, stackToReturn == $stackToReturn");
+    emit(FriendFoeBodySuccessActionState(heroToReturn, stackToReturn));
   }
 }

@@ -225,75 +225,34 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
     print("CRUDStackBloc _onUpdateAvailableList event.List<id> == ${event.id}");
 
     var ddStacks = await defaultData.getStacks();
-    List<CardsStack> newStackList = ddStacks;
+    List<CardsStack> newStackList = [];
 
     for (var i = 0; i < ddStacks.length; i++) {
+      CardsStack localStack = ddStacks[i];
       for (var j = 0; j < event.id.length; j++) {
         if (ddStacks[i].id == event.id[j]) {
           // print(
-          //     "CRUDStackBloc _onUpdateAvailableList ddStacks[i].id == event.id[j]");
-              newStackList.removeAt(i);
+          //     "CRUDStackBloc _onUpdateAvailableList ddStacks[$i].id == event.id[$j]");
 
-          newStackList.insert(i, CardsStack(
+          localStack = CardsStack(
               id: ddStacks[i].id,
               name: ddStacks[i].name,
               isActive: ddStacks[i].isActive == true ? false : true,
               stackType: ddStacks[i].stackType,
               stackColor: ddStacks[i].stackColor,
-              cards: ddStacks[i].cards));
+              cards: ddStacks[i].cards);
         }
       }
+      newStackList.add(localStack);
     }
+    stacks = newStackList;
+    defaultData.setStacks(newStackList);
 
-
-for (var i = 0; i < ddStacks.length; i++) {
-  print("CRUDStackBloc _onUpdateAvailableList ddStacks[$i].isActive == ${ddStacks[i].isActive}");
-  print("CRUDStackBloc _onUpdateAvailableList newStackList[$i].isActive == ${newStackList[i].isActive}");
-}
-
-    // print("CRUDStackBloc _onUpdateAvailableList ddStacks.length == ${ddStacks.length}");
-    // print("CRUDStackBloc _onUpdateAvailableList newStackList.length == ${newStackList.length}");
-
-
-    //defaultData.setStacks(newStackList);
-
-    // if (event.id.isNotEmpty) {
-    //   for (var i = 0; i < stacks.length; i++) {
-    //     for (var j = 0; j < event.id.length; j++) {
-    //       if (stacks[i].id == event.id[j]) {
-    //         print(
-    //             "CRUDStackBloc _onUpdateAvailableList element.id == ${event.id[j]}");
-    //         var newIsActive = !stacks[i].isActive;
-    //         var newStack = CardsStack(
-    //           id: stacks[i].id,
-    //           name: stacks[i].name,
-    //           isActive: newIsActive,
-    //           stackType: stacks[i].stackType,
-    //           stackColor: stacks[i].stackColor,
-    //           cards: stacks[i].cards,
-    //         );
-    //         stacks.removeAt(i);
-    //         stacks.insert(i, newStack);
-    //         print(
-    //             "CRUDStackBloc _onUpdateAvailableList stacks[i] == ${stacks[i]}");
-    //         //db.updateStack(stacks[i]);
-    //       }
-    //     }
-    //   }
-    // } else {
-    //   print("CRUDStackBloc _onUpdateAvailableList event.id.isEmpty");
-    //   var cardsIDs = [];
-    //   for (var element in cards) {
-    //     cardsIDs.add(element.id);
-    //   }
-    //   var stacksIDs = [];
-    //   for (var element in stacks) {
-    //     stacksIDs.add(element.id);
-    //   }
+    // for (var i = 0; i < ddStacks.length; i++) {
     //   print(
-    //       "CRUDStackBloc _onUpdateAvailableList event.id.isEmpty cardsIDs == $cardsIDs");
+    //       "CRUDStackBloc _onUpdateAvailableList ddStacks[$i].isActive \t ${ddStacks[i].name} == ${ddStacks[i].isActive}");
     //   print(
-    //       "CRUDStackBloc _onUpdateAvailableList event.id.isEmpty stacksIDs == $stacksIDs");
+    //       "CRUDStackBloc _onUpdateAvailableList newStackList[$i].isActive \t ${newStackList[i].name} == ${newStackList[i].isActive}");
     // }
 
     emit(CRUDStackSuccessActionState(cards, stacks));
