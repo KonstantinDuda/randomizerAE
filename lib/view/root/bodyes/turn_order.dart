@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../bloc/event_state/friend_foe_body_es.dart';
 import '../../../bloc/event_state/turn_order_body_es.dart';
+import '../../../bloc/friend_foe_body_bloc.dart';
+import '../../../bloc/providers/root_body_provider.dart';
 import '../../../bloc/turn_order_body_bloc.dart';
 import '../../../database/cards_stack.dart';
 import 'dialog_ch_seq.dart';
@@ -59,6 +62,17 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
             borderWidth:  newObj ? 4 : 2, 
             borderColor: newObj ? Colors.lightGreen : Colors.black
           ),
+          onTap: () {
+            if(text.isNotEmpty) {
+              if(text == "Friend" || text == "friend") {
+                context.read<FriendFoeBodyBloc>().add(const FriendFoeChangeActiveStackEvent(-1));
+                context.read<RootBodyProviderBloc>().add(RootBodyFriendFoeEvent());
+              } else if(text == "Foe" || text == "foe") {
+                context.read<FriendFoeBodyBloc>().add(const FriendFoeChangeActiveStackEvent(-2));
+                context.read<RootBodyProviderBloc>().add(RootBodyFriendFoeEvent());
+              }
+            }
+          },
           onLongPress: () {
             context.read<TurnOrderBodyBloc>().add(TurnOrderBodyShuffleInStackEvent(text));
             if(mounted) {

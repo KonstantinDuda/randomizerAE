@@ -290,9 +290,20 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
 
     var allHeroes = await defaultData.getHeroes();
 
-    
-    print("FriendFoeBodyBloc _onChangeActiveStack friend.heroStack[0].id == ${friend.heroStacks[0].id} \n");
+     print("FriendFoeBodyBloc _onChangeActiveStack friend.heroStack[0].id == ${friend.heroStacks[0].id} \n");
     print("FriendFoeBodyBloc _onChangeActiveStack foe.heroStack[0].id == ${foe.heroStacks[0].id} \n");
+
+// Check if we came here from Turn order page by toching the Friend or Foe card
+    if(event.id == -1) {
+      print("came here from Turn order page by toching the Friend card");
+      heroToReturn = friend;
+      stackToReturn = friendAlreadyPlayed;
+    } else if(event.id == -2) {
+
+      print("came here from Turn order page by toching the Foe card");
+      heroToReturn = foe;
+      stackToReturn = foeAlreadyPlayed;
+    } else
 
     if (event.id != friend.heroStacks[0].id && event.id != foe.heroStacks[0].id) {
       print(

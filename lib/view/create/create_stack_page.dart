@@ -257,28 +257,8 @@ class _CreateStackPageState extends State<CreateStackPage> {
                     Expanded(
                         child: SizedBox(
                           child: AddCardsListView(stack, cards, cardCounters, addCard, minusCard),
-                      // child: ListView.builder(
-                      //   itemCount: cards.isEmpty ? 0 : cards.length,
-                      //   itemBuilder: (_, index) =>
-                      //       Text(cards[index].text.split(":")[0]),
-                      // ),
+                     
                     ),),
-                    // ElevatedButton(
-                    //     onPressed: () {
-                    //       createNewStack();
-                    //       showDialog(
-                    //         context: context,
-                    //         builder: (BuildContext context) =>
-                    //             AddCardToStackDialog(stack: stack),
-                    //       );
-                    //     },
-                    //     style: ElevatedButton.styleFrom(
-                    //       backgroundColor: Colors.green,
-                    //     ),
-                    //     child: const Text(
-                    //       "Add card",
-                    //       style: TextStyle(fontSize: 16, color: Colors.black),
-                    //     )),
                   ],
                 ),
               ),
@@ -291,6 +271,9 @@ class _CreateStackPageState extends State<CreateStackPage> {
               context
                   .read<CRUDStackBloc>()
                   .add(CRUDStackUpdateStackEvent(stack));
+              context
+                  .read<CRUDStackBloc>()
+                  .add(CRUDStackInitialEvent());
               context
                   .read<ProviderBloc>()
                   .add(RootEvent());

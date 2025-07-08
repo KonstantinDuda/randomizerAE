@@ -134,7 +134,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
           "Nemesis Nemesis Nemesis Nemesis Foe Foe в різних комбінаціях: $NNNNFF");*/
 
       stack = stackList.isNotEmpty ? stackList.first : const CardsStack.empty();
-      print("TurnOrderBodyBloc _onInit stack.id == 0 stack == $stack \n");
+      // print("TurnOrderBodyBloc _onInit stack.id == 0 stack == $stack \n");
     } else {
 
       print(
