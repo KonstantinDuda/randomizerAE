@@ -47,11 +47,11 @@ class CardsStackDB {
 
   static StackType _parseStackType(String type) {
     switch (type) {
-      case 'turnOrder': return StackType.turnOrder;
-      case 'friendFoe': return StackType.friendFoe;
-      case 'gravehold': return StackType.gravehold;
-      case 'hero': return StackType.hero;
-      case 'nemesis': return StackType.nemesis;
+      case 'StackType.turnOrder': return StackType.turnOrder; // StackType.turnOrder
+      case 'StackType.friendFoe': return StackType.friendFoe;
+      case 'StackType.gravehold': return StackType.gravehold;
+      case 'StackType.hero': return StackType.hero;
+      case 'StackType.nemesis': return StackType.nemesis;
       default: 
         return StackType.turnOrder;
     }
@@ -62,6 +62,78 @@ class CardsStackDB {
     for (var element in list) {
       listInt.add(element.id);
     }
+
+      //print("CardsStackDB fromAECardToListInt listId == $listInt");
     return listInt;
   }
+
+  @override
+  String toString() {
+    return "CardsStackDB{id: $id, name: $name, isStandart: $isStandart, \n stackType: $stackType, cardsId: $cardsId} \n"; //stackColor: $stackColor, cardsId: $cardsId}";
+  }
+  
+}
+
+class HeroStackDB {
+  final int id;
+  final String name;
+  final bool isFriend;
+  final int energyClosetCount;
+  final String ability;
+  final String feature;
+  final List<int> stacksId;
+
+  HeroStackDB({
+    required this.id,
+    required this.name,
+    required this.isFriend,
+    required this.energyClosetCount,
+    required this.ability,
+    required this.feature,
+    required this.stacksId,
+});
+
+  factory HeroStackDB.fromMap(Map<String, dynamic> map) {
+    return HeroStackDB(
+      id: map['id'] as int,
+      name: map['name'] as String,
+      isFriend: map['is_friend'] == 1 ? true : false,
+      energyClosetCount: map['ec_count'] as int,
+      ability: map['ability'] as String,
+      feature: map['feature'] as String,
+      stacksId: (map['stacks'] as String?)?.split(',').map((e) => int.parse(e)).toList() ?? [],
+    );
+  }
+
+  Map<String, Object?> toMap() {
+    var map = <String, Object?>{
+      'name': name,
+      'is_friend': isFriend ? 1 : 0,
+      'ec_count': energyClosetCount,
+      'ability': ability,
+      'feature': feature,
+      'stacks': stacksId.join(','),
+    };
+    if (id != 0) {
+      map['id'] = id;
+    }
+
+    return map;
+  }
+
+  List<int> fromCardsStackToListInt(List<CardsStack> list) {
+    List<int> listInt = [];
+    for (var element in list) {
+      listInt.add(element.id);
+    }
+
+      //print("HeroStackDB fromCardsStackToListInt listId == $listInt");
+    return listInt;
+  }
+
+  @override
+  String toString() {
+    return "HeroStackDB{id: $id, name: $name, stacksId: $stacksId} \n";
+  }
+  
 }

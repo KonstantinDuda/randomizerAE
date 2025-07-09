@@ -1,5 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:randomizer_new/database/cards_stack_db.dart';
+
+import 'cards_stack_db.dart';
+
+enum CardType {
+  turnOrder,
+  friend,
+  foe,
+  nemesis,
+  gravehold,
+  suply,
+  hero,
+  other,
+}
 
 class AECard {
   int id = 0;
@@ -31,15 +43,30 @@ class AECard {
   }
 
   @override
+  bool operator ==(Object other) {
+    // if(other is AECard) {
+    //   print(id == other.id ? "true: AECard operator ==. id == other.id  ?" : "false: AECard operator ==. id == other.id ?");
+    //   print(text == other.text ? "true: AECard operator ==. text == other.text  ?" : "false: AECard operator ==. text == other.text ?");
+    //   print(imgPath == other.imgPath ? "true: AECard operator ==. imgPath == other.imgPath ?" : "false: AECard operator ==. imgPath == other.imgPath ?");
+    // }
+    return other is AECard &&
+        id == other.id &&
+        text == other.text &&
+        imgPath == other.imgPath;
+  }
+
+  @override
+  int get hashCode => Object.hash(id, text, imgPath);
+
+  @override
   String toString() {
-    var result = 'AECard text: $text';
+    var result = 'AECard text: $text';//, imgPath: $imgPath';
     return result;
   }
   // TODO: add toJson and fromJson methods
 }
 
-
-// Stacks 
+// Stacks
 enum StackType {
   turnOrder,
   friendFoe,
@@ -47,7 +74,6 @@ enum StackType {
   hero,
   nemesis,
 }
-
 
 class CardsStack {
   final int id;
@@ -77,7 +103,7 @@ class CardsStack {
     this.cards = const [],
     //this.cardsId = const [],
   });
-  
+
   CardsStack csDBToCS(CardsStackDB stackDB, List<AECard> list) {
     return CardsStack(
       id: stackDB.id,
@@ -89,46 +115,58 @@ class CardsStack {
     );
   }
 
-
   @override
   String toString() {
-    var result = 'CardsStack{id: $id, name: $name, cards: $cards';
+    var result = 'CardsStack{id: $id, name: $name, isActive: $isActive, stackType: $stackType,  \n cards: $cards}';//cards: $cards';
     return result;
   }
-
 }
 
 class HeroStack {
-  int id;
-  CardsStack heroStack;
-  int energyClosetCount;
-  String ability;
+  final int id;
+  final String name;
+  final bool isFriend;
+  final List<CardsStack> heroStacks;
+  final int energyClosetCount;
+  final String ability;
 
-// Support things  
-  int energyPointCount = 0;
-  String description = "";
-  String feature = "";
-  List <CardsStack> suportStacks = [];
-  int suportThingsCount = 0;
+// Support things
+  final int energyPointCount;
+  final String description;
+  final String feature;
+
+  final int suportThingsCount;
 
   HeroStack({
     required this.id,
-    required this.heroStack,
+    required this.name,
+    required this.isFriend,
+    required this.heroStacks,
     required this.energyClosetCount,
     required this.ability,
+    this.energyPointCount = 0,
+    this.description = "",
+    this.feature = "",
+    this.suportThingsCount = 0,
   });
 
-  HeroStack.empty({
+  const HeroStack.empty({
     this.id = 0,
-    this.heroStack = const CardsStack.empty(),
+    this.name = "",
+    this.isFriend = true,
+    this.heroStacks = const [],
     this.energyClosetCount = 0,
     this.ability = '',
+    this.energyPointCount = 0,
+    this.description = "",
+    this.feature = "",
+    this.suportThingsCount = 0,
   });
   // TODO: add toJson and fromJson methods
 
   @override
   String toString() {
-    var result = 'CardsStack{heroData.name: ${heroStack.name}, energyClosetCount:';
+    var result = 'HeroStack id: $id, name: $name, isFriend: $isFriend';
     return result;
   }
 }

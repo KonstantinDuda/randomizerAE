@@ -10,6 +10,8 @@ class TurnOrderBodyEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class TurnOrderInitialEvent extends TurnOrderBodyEvent {}
+
 class TurnOrderBodyNextEvent extends TurnOrderBodyEvent {
   const TurnOrderBodyNextEvent();
 }
@@ -20,6 +22,14 @@ class TurnOrderBodyDelWildEvent extends TurnOrderBodyEvent {
 
 class TurnOrderBodyShuffleEvent extends TurnOrderBodyEvent {
   const TurnOrderBodyShuffleEvent();
+}
+
+class TurnOrderBodyShuffleInStackEvent extends TurnOrderBodyEvent {
+  final String text;
+  const TurnOrderBodyShuffleInStackEvent(this.text);
+
+  @override
+  List<Object> get props => [text];
 }
 
 class TurnOrderBodyChangeSequenceEvent extends TurnOrderBodyEvent {
@@ -39,15 +49,15 @@ class TurnOrderBodyChangeActiveStackEvent extends TurnOrderBodyEvent {
   List<Object> get props => [id];
 }
 
-class TurnOrderBodyChangeAvailableStackListEvent extends TurnOrderBodyEvent {
-  final List<int> id;
+// class TurnOrderBodyChangeAvailableStackListEvent extends TurnOrderBodyEvent {
+//   final List<int> id;
 
-  const TurnOrderBodyChangeAvailableStackListEvent(
-    [this.id = const []]);
+//   const TurnOrderBodyChangeAvailableStackListEvent(
+//     [this.id = const []]);
 
-  @override
-  List<Object> get props => [id];
-}
+//   @override
+//   List<Object> get props => [id];
+// }
 
 // States
 class TurnOrderBodyState extends Equatable {
@@ -56,6 +66,10 @@ class TurnOrderBodyState extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+// class TurnOrderBodyInitialState extends TurnOrderBodyState {
+//   const TurnOrderBodyInitialState();
+// }
 
 class TurnOrderBodySuccessActionState extends TurnOrderBodyState {
   final CardsStack stack;
