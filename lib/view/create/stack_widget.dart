@@ -45,10 +45,8 @@ class _StackWidgetState extends State<StackWidget> {
 //  List<CardsStack> stacks = [];
   List<String> stackTypes = const [
     "Turn order",
-    "Friend / Foe",
-    "Gravehold",
-    "Hero",
-    "Nemesis",
+    "Friend", 
+    "Foe",
   ];
   List<Color> stackColors = const [
     Color.fromARGB(255, 76, 175, 80),

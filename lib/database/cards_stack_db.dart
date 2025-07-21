@@ -48,10 +48,12 @@ class CardsStackDB {
   static StackType _parseStackType(String type) {
     switch (type) {
       case 'StackType.turnOrder': return StackType.turnOrder; // StackType.turnOrder
-      case 'StackType.friendFoe': return StackType.friendFoe;
-      case 'StackType.gravehold': return StackType.gravehold;
-      case 'StackType.hero': return StackType.hero;
-      case 'StackType.nemesis': return StackType.nemesis;
+      //case 'StackType.friendFoe': return StackType.friendFoe;
+      case 'StackType.friend': return StackType.friend;
+      case 'StackType.foe': return StackType.foe;
+      // case 'StackType.gravehold': return StackType.gravehold;
+      // case 'StackType.hero': return StackType.hero;
+      // case 'StackType.nemesis': return StackType.nemesis;
       default: 
         return StackType.turnOrder;
     }
@@ -81,7 +83,8 @@ class HeroStackDB {
   final int energyClosetCount;
   final String ability;
   final String feature;
-  final List<int> stacksId;
+  //final List<int> stacksId;
+  final int stackId;
 
   HeroStackDB({
     required this.id,
@@ -90,7 +93,8 @@ class HeroStackDB {
     required this.energyClosetCount,
     required this.ability,
     required this.feature,
-    required this.stacksId,
+    //required this.stacksId,
+    required this.stackId,
 });
 
   factory HeroStackDB.fromMap(Map<String, dynamic> map) {
@@ -101,7 +105,8 @@ class HeroStackDB {
       energyClosetCount: map['ec_count'] as int,
       ability: map['ability'] as String,
       feature: map['feature'] as String,
-      stacksId: (map['stacks'] as String?)?.split(',').map((e) => int.parse(e)).toList() ?? [],
+      //stacksId: (map['stacks'] as String?)?.split(',').map((e) => int.parse(e)).toList() ?? [],
+      stackId: map['stack_id'] as int,
     );
   }
 
@@ -112,7 +117,8 @@ class HeroStackDB {
       'ec_count': energyClosetCount,
       'ability': ability,
       'feature': feature,
-      'stacks': stacksId.join(','),
+      //'stacks': stacksId.join(','),
+      'stack_id': stackId,
     };
     if (id != 0) {
       map['id'] = id;
@@ -133,7 +139,7 @@ class HeroStackDB {
 
   @override
   String toString() {
-    return "HeroStackDB{id: $id, name: $name, stacksId: $stacksId} \n";
+    return "HeroStackDB{id: $id, name: $name, stackId: $stackId} \n";
   }
   
 }

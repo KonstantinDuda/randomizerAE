@@ -147,17 +147,22 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
         var newStackType = StackType.turnOrder;
         if (value == "Turn order") {
           newStackType = StackType.turnOrder;
-        } else if (value == "Friend / Foe") {
-          newStackType = StackType.friendFoe;
-        } else if (value == "Gravehold") {
-          newStackType = StackType.gravehold;
-        } else if (value == "Hero") {
-          newStackType = StackType.hero;
-        } else if (value == "Nemesis") {
-          newStackType = StackType.nemesis;
-        } /*else {
-          value = "Is empty";
-        }*/
+        } else if (value == "Friend") {
+          newStackType = StackType.friend;
+        } else if (value == "Foe") {
+          newStackType = StackType.foe;
+        }
+        // } else if (value == "Friend / Foe") {
+        //   newStackType = StackType.friendFoe;
+        // } else if (value == "Gravehold") {
+        //   newStackType = StackType.gravehold;
+        // } else if (value == "Hero") {
+        //   newStackType = StackType.hero;
+        // } else if (value == "Nemesis") {
+        //   newStackType = StackType.nemesis;
+        // } /*else {
+        //   value = "Is empty";
+        // }*/
         var newStack = CardsStack(
             id: stacks[index].id,
             name: stacks[index].name,
@@ -287,17 +292,22 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
           var stackType = "";
           if (element.stackType == StackType.turnOrder) {
             stackType = "Turn order";
-          } else if (element.stackType == StackType.friendFoe) {
-            stackType = "Friend / Foe";
-          } else if (element.stackType == StackType.gravehold) {
-            stackType = "Gravehold";
-          } else if (element.stackType == StackType.hero) {
-            stackType = "Hero";
-          } else if (element.stackType == StackType.nemesis) {
-            stackType = "Nemesis";
-          } /*else {
-            stackType = "Is empty";
-          }*/
+          } else if (element.stackType == StackType.friend) {
+            stackType = "Friend";
+          } else if (element.stackType == StackType.foe) {
+            stackType = "Foe";
+          }
+          // } else if (element.stackType == StackType.friendFoe) {
+          //   stackType = "Friend / Foe";
+          // } else if (element.stackType == StackType.gravehold) {
+          //   stackType = "Gravehold";
+          // } else if (element.stackType == StackType.hero) {
+          //   stackType = "Hero";
+          // } else if (element.stackType == StackType.nemesis) {
+          //   stackType = "Nemesis";
+          // } /*else {
+          //   stackType = "Is empty";
+          // }*/
           if (stackType != "" && stacks.length > typesList.length) {
             typesList.add(stackType);
             colorsList.add(element.stackColor);

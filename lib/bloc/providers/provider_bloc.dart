@@ -21,6 +21,8 @@ class CreateEvent extends ProviderEvent {
   const CreateEvent(this.id);
 }
 
+class HistoryProviderEvent extends ProviderEvent {}
+
 
 // States
 class ProviderState extends Equatable {
@@ -42,6 +44,8 @@ class CreateState extends ProviderState {
   const CreateState(this.id);
 }
 
+class HistoryProviderState extends ProviderState {}
+
 
 class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
   ProviderBloc() : super(RootState()) {
@@ -49,6 +53,7 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
     on<RootEvent>((event, emit) => emit(RootState()));
     on<UpdateDeleteEvent>((event, emit) => emit(UpdateDeleteState()));
     on<CreateEvent>((event, emit) => emit(CreateState(event.id)));
+    on<HistoryProviderEvent>((event, emit) => emit(HistoryProviderState()));
   }
 
   _onLoad(LoadingEvent event, Emitter<ProviderState> emit) {

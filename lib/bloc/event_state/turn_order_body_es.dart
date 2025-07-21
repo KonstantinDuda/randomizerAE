@@ -49,15 +49,8 @@ class TurnOrderBodyChangeActiveStackEvent extends TurnOrderBodyEvent {
   List<Object> get props => [id];
 }
 
-// class TurnOrderBodyChangeAvailableStackListEvent extends TurnOrderBodyEvent {
-//   final List<int> id;
+class TurnOrderBodyClearStackEvent extends TurnOrderBodyEvent {}
 
-//   const TurnOrderBodyChangeAvailableStackListEvent(
-//     [this.id = const []]);
-
-//   @override
-//   List<Object> get props => [id];
-// }
 
 // States
 class TurnOrderBodyState extends Equatable {
@@ -66,10 +59,6 @@ class TurnOrderBodyState extends Equatable {
   @override
   List<Object> get props => [];
 }
-
-// class TurnOrderBodyInitialState extends TurnOrderBodyState {
-//   const TurnOrderBodyInitialState();
-// }
 
 class TurnOrderBodySuccessActionState extends TurnOrderBodyState {
   final CardsStack stack;
@@ -83,9 +72,9 @@ class TurnOrderBodySuccessActionState extends TurnOrderBodyState {
   List<Object> get props => [stack, alreadyPlayed];
 }
 
-class TurnOrderBodyClearScreenState extends TurnOrderBodyState {
-  const TurnOrderBodyClearScreenState();
-}
+// class TurnOrderBodyClearScreenState extends TurnOrderBodyState {
+//   const TurnOrderBodyClearScreenState();
+// }
 
 class TurnOrderBodyErrorActionState extends TurnOrderBodyState {
   const TurnOrderBodyErrorActionState();

@@ -36,10 +36,12 @@ class _CreateStackPageState extends State<CreateStackPage> {
 
   List<String> stackTypes = const [
     "Turn order",
-    "Friend / Foe",
-    "Gravehold",
-    "Hero",
-    "Nemesis",
+    // "Friend / Foe",
+    // "Gravehold",
+    // "Hero",
+    // "Nemesis",
+    "Friend",
+    "Foe",
   ];
   List<Color> stackColors = const [
     Color.fromARGB(255, 76, 175, 80),
@@ -55,14 +57,18 @@ class _CreateStackPageState extends State<CreateStackPage> {
     var stackType = StackType.turnOrder;
     if (curentType == "Turn order") {
       stackType == StackType.turnOrder;
-    } else if (curentType == "Friend / Foe") {
-      stackType == StackType.friendFoe;
-    } else if (curentType == "Gravehold") {
-      stackType == StackType.gravehold;
-    } else if (curentType == "Hero") {
-      stackType == StackType.hero;
-    } else if (curentType == "Nemesis") {
-      stackType == StackType.nemesis;
+    // } else if (curentType == "Friend / Foe") {
+    //   stackType == StackType.friendFoe;
+    // } else if (curentType == "Gravehold") {
+    //   stackType == StackType.gravehold;
+    // } else if (curentType == "Hero") {
+    //   stackType == StackType.hero;
+    // } else if (curentType == "Nemesis") {
+    //   stackType == StackType.nemesis;
+    } else if(curentType == "Friend") {
+      stackType = StackType.friend;
+    } else if(curentType == "Foe") {
+      stackType = StackType.foe;
     } else {
       print(
           "CreateStackPage stack type != Turn order && Friend / Foe && Gravehold && Hero && Nemesis");
@@ -271,9 +277,9 @@ class _CreateStackPageState extends State<CreateStackPage> {
               context
                   .read<CRUDStackBloc>()
                   .add(CRUDStackUpdateStackEvent(stack));
-              context
-                  .read<CRUDStackBloc>()
-                  .add(CRUDStackInitialEvent());
+              // context
+              //     .read<CRUDStackBloc>()
+              //     .add(CRUDStackInitialEvent());
               context
                   .read<ProviderBloc>()
                   .add(RootEvent());

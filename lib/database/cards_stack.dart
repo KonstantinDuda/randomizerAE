@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 
 import 'cards_stack_db.dart';
 
-enum CardType {
-  turnOrder,
-  friend,
-  foe,
-  nemesis,
-  gravehold,
-  suply,
-  hero,
-  other,
-}
+// enum CardType {
+//   turnOrder,
+//   friend,
+//   foe,
+//   nemesis,
+//   gravehold,
+//   suply,
+//   hero,
+//   other,
+// }
 
+/// AECard represents a card in the game with an id, text, and image path.
 class AECard {
   int id = 0;
   String text = "";
@@ -69,10 +70,12 @@ class AECard {
 // Stacks
 enum StackType {
   turnOrder,
-  friendFoe,
-  gravehold,
-  hero,
-  nemesis,
+  friend,
+  foe,
+  //friendFoe,
+  //gravehold,
+  //hero,
+  //nemesis,
 }
 
 class CardsStack {
@@ -117,7 +120,7 @@ class CardsStack {
 
   @override
   String toString() {
-    var result = 'CardsStack{id: $id, name: $name, isActive: $isActive, stackType: $stackType,  \n cards: $cards}';//cards: $cards';
+    var result = 'CardsStack{id: $id, name: $name, isActive: $isActive, stackType: $stackType}';//,  \n cards: $cards}';
     return result;
   }
 }
@@ -126,7 +129,8 @@ class HeroStack {
   final int id;
   final String name;
   final bool isFriend;
-  final List<CardsStack> heroStacks;
+  // final List<CardsStack> heroStacks;
+  final CardsStack heroStack;
   final int energyClosetCount;
   final String ability;
 
@@ -141,7 +145,8 @@ class HeroStack {
     required this.id,
     required this.name,
     required this.isFriend,
-    required this.heroStacks,
+    //required this.heroStacks,
+    required this.heroStack,
     required this.energyClosetCount,
     required this.ability,
     this.energyPointCount = 0,
@@ -154,7 +159,8 @@ class HeroStack {
     this.id = 0,
     this.name = "",
     this.isFriend = true,
-    this.heroStacks = const [],
+    //this.heroStacks = const [],
+    this.heroStack = const CardsStack.empty(),
     this.energyClosetCount = 0,
     this.ability = '',
     this.energyPointCount = 0,
@@ -166,7 +172,7 @@ class HeroStack {
 
   @override
   String toString() {
-    var result = 'HeroStack id: $id, name: $name, isFriend: $isFriend';
+    var result = 'HeroStack id: $id, name: $name, isFriend: $isFriend, heroStack.id: ${heroStack.id}';
     return result;
   }
 }

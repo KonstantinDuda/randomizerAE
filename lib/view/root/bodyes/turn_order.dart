@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../bloc/event_state/friend_foe_body_es.dart';
+import '../../../bloc/event_state/history_es.dart';
 import '../../../bloc/event_state/turn_order_body_es.dart';
 import '../../../bloc/friend_foe_body_bloc.dart';
+import '../../../bloc/providers/provider_bloc.dart';
 import '../../../bloc/providers/root_body_provider.dart';
+import '../../../bloc/history_bloc.dart';
 import '../../../bloc/turn_order_body_bloc.dart';
 import '../../../database/cards_stack.dart';
 import 'dialog_ch_seq.dart';
@@ -199,7 +202,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
               }
               varGridList.add(gridColumnObj(alreadyPlayed.cards[i].id, 
                 true, false));
-              // Мені не потрібно створювати пустишку для прокрутки якщо в секу вже 
+              // Мені не потрібно створювати пустишку для прокрутки якщо в стеку вже 
               // 1 або менше карт.
               if(stack.cards.length > 1) {
                 varGridList.add(gridListLastObj);
@@ -415,6 +418,41 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                                   context.read<TurnOrderBodyBloc>().add(const TurnOrderBodyDelWildEvent());
                                 }
                                 print("Discard wild tapped");
+                              },
+                            ),
+                          ),
+
+                          // Watch story
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: GestureDetector(
+                              child: Container(
+                                width: 100,
+                                height: 70,
+                                margin: const EdgeInsets.only(bottom: 80),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.black,
+                                    width: 2,
+                                  ),
+                                  borderRadius: const BorderRadius.only(
+                                    bottomLeft: Radius.circular(18),
+                                    topLeft: Radius.circular(18),
+                                  ),
+                                ),
+                                child: Container(
+                                  margin: const EdgeInsets.only(left: 10, top: 2),
+                                  child: const Center(
+                                    child: Text("History",
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              onTap: () {
+                                context.read<HistoryBloc>().add(HistoryGetEvent());
+                        context.read<ProviderBloc>().add(HistoryProviderEvent());
+                                print("History tapped");
                               },
                             ),
                           ),

@@ -35,6 +35,7 @@ class _RootAppBarState extends State<RootAppBar> {
           for (var element in allStacks) {
             if (element.isActive) {
               localStacks.add(element);
+              //print("RootAppBar Page element.isActive == $element \n");
               // stacks.add(element);
             }
           }
@@ -129,6 +130,7 @@ class _RootAppBarState extends State<RootAppBar> {
                             ),
                           ),
                           onTap: () {
+                                  print("RootAppBar stacks[index].stackType == ${stacks[index].stackType} \n");
                             //if (db[index].stackType == StackType.turnOrder) {
                             if (stacks[index].stackType ==
                                 StackType.turnOrder) {
@@ -140,16 +142,13 @@ class _RootAppBarState extends State<RootAppBar> {
                               context
                                   .read<RootBodyProviderBloc>()
                                   .add(const RootBodyTurnOrderEvent());
-                              //} else if (db[index].stackType == StackType.friendFoe) {
                             } else if (stacks[index].stackType ==
-                                StackType.friendFoe) {
+                                StackType.friend || stacks[index].stackType == StackType.foe) { 
+                                  print("RootAppBar stacks[index].stackType friend or foe \n");
                               var stack =
-                                  // dbObj.getHeroStackByStackId(db[index].id);
                                   stacks[index];
                               print("RootAppBar heroStack == $stack \n");
-                              // context
-                              //     .read<FriendFoeBodyBloc>()
-                              //     .add(FriendFoeBodyInitialEvent(stack.id));
+                              
                               context.read<FriendFoeBodyBloc>().add(FriendFoeChangeActiveStackEvent(stack.id));
                               context
                                   .read<RootBodyProviderBloc>()

@@ -13,6 +13,8 @@ class CRUDStackEvent extends Equatable {
 
 class CRUDStackInitialEvent extends CRUDStackEvent {}
 
+class CRUDDataFromDBEvent extends CRUDStackEvent {}
+
 class CRUDStackNewCardEvent extends CRUDStackEvent {
   //final AECard card;
   final int id;

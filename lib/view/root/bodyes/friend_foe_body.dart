@@ -95,14 +95,10 @@ class _FriendFoeBody extends State<FriendFoeBody> {
       }
 
       if (state is FriendFoeBodySuccessActionState) {
-        //stack = state.stack;
-        stack = state.hero.heroStacks.isNotEmpty
-            ? state.hero.heroStacks[0]
-            : const CardsStack.empty();
+        stack = state.hero.heroStack.id > 0 
+          ? state.hero.heroStack
+          : const CardsStack.empty();
         alreadyPlayed = state.alreadyPlayed;
-
-        // print("FriendFoeBody stack == $stack \n");
-        // print("FriendFoeBody alreadyPlayed == $alreadyPlayed \n");
 
         if (state.hero.id != 0) {
           hero = state.hero;
@@ -209,11 +205,11 @@ class _FriendFoeBody extends State<FriendFoeBody> {
           if (hero.id != 0) {
             context
                 .read<FriendFoeBodyBloc>()
-                .add(FriendFoeBodyInitialEvent(hero.heroStacks[0].id));
+                .add(FriendFoeBodyInitialEvent(/*hero.heroStacks[0].id*/ hero.heroStack.id));
           }
           context
               .read<FriendFoeBodyBloc>()
-              .add(FriendFoeBodyInitialEvent(/*hero.heroStacks[0].id*/ 0));
+              .add(const FriendFoeBodyInitialEvent(/*hero.heroStacks[0].id*/ 0));
           //context.read<FriendFoeBodyBloc>().add(FriendFoeBodyInitialEvent(hero.id));
         }
         return widgetList;
@@ -280,6 +276,10 @@ class _FriendFoeBody extends State<FriendFoeBody> {
               child: Column(
                 children: <Widget>[
                   TextButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(Colors.blue),
+                      foregroundColor:  WidgetStateProperty.all(Colors.black),
+                    ),
                     onPressed: () {
                       context
                           .read<RootBodyProviderBloc>()
@@ -345,22 +345,17 @@ class _FriendFoeBody extends State<FriendFoeBody> {
                                   margin: const EdgeInsets.all(0),
                                 ),
                                 onTap: () {
-                                  // print(
-                                  //     "FriendFoeBody onTap cardName == $cardNameText"); // ${cardNamesText.last}");
                                   if (stack.cards.isNotEmpty) {
-                                    //   print(
-                                    // "FriendFoeBody onTap stack.cards.isNotEmpty == ${stack.cards}");
+                                    print("FriendFoeBody onTap stack.cards.isNotEmpty");
                                     context
                                         .read<FriendFoeBodyBloc>()
                                         .add(FriendFoeBodyNextEvent(hero.id));
                                   } else {
-                                    // print(
-                                    //   "FriendFoeBody onTap stack.cards.isEmpty hero.id == ${hero.id} ");
-                                    //context.read<FriendFoeBodyBloc>().add(FriendFoeBodyInitialEvent(hero.id));
-
+print("FriendFoeBody onTap stack.cards.isEmpty");
+print("FriendFoeBody onTap hero == $hero");
                                     context.read<FriendFoeBodyBloc>().add(
                                         FriendFoeBodyInitialEvent(
-                                            hero.heroStacks[0].id));
+                                            /*hero.heroStacks[0].id*/ hero.heroStack.id));
                                   }
                                   setState(() {});
                                 },

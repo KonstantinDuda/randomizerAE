@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/crud_stack_bloc.dart';
 import 'bloc/event_state/crud_stack_es.dart';
 import 'bloc/event_state/turn_order_body_es.dart';
+import 'bloc/history_bloc.dart';
 import 'bloc/turn_order_body_bloc.dart';
 import 'bloc/event_state/friend_foe_body_es.dart';
 import 'bloc/friend_foe_body_bloc.dart';
@@ -15,22 +16,19 @@ import 'view/create/create_stack_page.dart';
 import 'view/create/update_delete_stack_page.dart';
 import 'view/loading_page.dart';
 import 'view/root/root_page.dart';
+import 'view/history_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  // var dbProvider = DbTemporary();
-  // dbProvider.createData();
+
   var defaultData = DefaultData();
   defaultData.createDefaultData();
+  
   Bloc.observer = SimpleBlocObserver();
-  //void getState() async {
+  
   runApp(
     BlocProvider(create: (context) => ProviderBloc(), child: const MyApp()),
   );
-  //}
-  //runApp(const MyApp());
-
-  //getState();
 }
 
 class MyApp extends StatelessWidget {
@@ -40,7 +38,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return
-        //BlocProvider(create: (_) => TurnOrderBodyBloc()..add(const TurnOrderBodyNextEvent()),
         MultiBlocProvider(
       providers: [
         BlocProvider<TurnOrderBodyBloc>(
@@ -53,19 +50,21 @@ class MyApp extends StatelessWidget {
         BlocProvider<CRUDStackBloc>(
           create: (_) => CRUDStackBloc()..add(CRUDStackInitialEvent()),
         ),
+        BlocProvider<HistoryBloc>(
+          create: (_) => HistoryBloc(),
+        ),
       ],
       child: MaterialApp(
         home: BlocBuilder<ProviderBloc, ProviderState>(
           builder: (_, state) {
             if (state is RootState) {
-              print("Main RootState");
               return const RootPage();
             } else if (state is UpdateDeleteState) {
-              print("Main UpdateDeleteState");
               return const UpdateDeleteStackPage();
             } else if (state is CreateState) {
-              print("Main CreateState");
               return CreateStackPage(state.id);
+            } else if(state is HistoryProviderState) {
+              return const HistoryPage();
             } else {
               return const LoadingPage();
             }

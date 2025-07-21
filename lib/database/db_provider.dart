@@ -54,7 +54,8 @@ class DBProvider {
             "ec_count INTEGER, "
             "ability TEXT, "
             "feature TEXT, "
-            "stacks TEXT)");
+            //"stacks TEXT)");
+            "stack INTEGER)");
       },
     );
   }
@@ -63,7 +64,6 @@ class DBProvider {
   void createCard(AECard card) async {
     final db = await getDatabase;
 
-    //if (card.id > 0) {
       var x = await getCardById(card.id);
       if (x.id == 0) {
         await db.insert(
@@ -74,14 +74,6 @@ class DBProvider {
       } else {
         print("DBProvider createCard() card ${card.id} was in the Database \n");
       }
-    // } else {
-    //   await db.insert(
-    //     cardsTableName,
-    //     card.toMap(),
-    //   );
-    //   var x = await getCardById(card.id);
-    //   print("DBProvider createCard() card.id < 1 card: $x was created");
-    // }
 
     // For debugging purposes
     /*List<Map<String, Object?>> maps = await db.query(cardsTableName);
@@ -137,47 +129,6 @@ class DBProvider {
     // });
     return result;
   }
-
-  // Future<List<AECard>> getTurnOrderCards() async {
-  //   //final db = await getDatabase;
-  //   List<CardsStack> turnOrderStacks = await getTurnOrderStacks();
-  //   List<AECard> result = [];
-  //   for (var i in turnOrderStacks) {
-  //     for (var j in i.cards) {
-  //       result.add(j);
-  //     }
-  //   }
-  //   print("DBProvider getTurnOrderCards result == $result");
-
-  //   return result;
-  // }
-
-  // Future<List<AECard>> getFriendFoeCards() async {
-  //   // final db = await getDatabase;
-  //   // List<Map<String, dynamic>> maps = await db.query(cardsTableName,
-  //   //   where: "stack_type = ?",
-  //   //   whereArgs: ["friendFoe"],
-  //   // );
-  //   // // TODO add other limitation
-  //   // var result = List.generate(maps.length, (i) => AECard.fromMap(maps[i]));
-  //   // print("DBProvider getTurnOrderCards result == $result");
-
-  //   var allCards = await getAllCards();
-  //   List<AECard> result = [];
-
-  //   for (var i in allCards) {
-  //     if (i.imgPath.isNotEmpty) {
-  //       var pathList = i.imgPath.split("/");
-  //       if (pathList.length > 3) {
-  //         if (pathList[2] == "friend" || pathList[2] == "foe") {
-  //           result.add(i);
-  //         }
-  //       }
-  //     }
-  //   }
-
-  //   return result;
-  // }
 
 // Create, Read, Update, Delete (CRUD) operations for CardsStack
   void createStack(CardsStack stack) async {
@@ -328,16 +279,16 @@ class DBProvider {
         stackColor: stack.stackColor,
         cardsId: stack.cards.map((card) => card.id).toList());
 
-    var stackBefore = await getStackById(stack.id);
-    print(
-        "DBProvider update stack, stack before: $stackBefore  stackBefore.color == ${stackBefore.stackColor} \n"); // stackDB == $stackDB
+    //var stackBefore = await getStackById(stack.id);
+    // print(
+    //     "DBProvider update stack, stack before: $stackBefore  stackBefore.color == ${stackBefore.stackColor} \n"); // stackDB == $stackDB
 
     await db.update(stackTableName, stackDB.toMap(),
         where: "id = ?", whereArgs: [stack.id]);
 
-    var stackAfter = await getStackById(stack.id);
-    print(
-        "DBProvider update stack, stack after: $stackAfter stackAfter.color == ${stackAfter.stackColor} \n");
+    //var stackAfter = await getStackById(stack.id);
+    // print(
+    //     "DBProvider update stack, stack after: $stackAfter stackAfter.color == ${stackAfter.stackColor} \n");
   }
 
   Future<void> deleteStack(int id) async {
@@ -357,12 +308,13 @@ class DBProvider {
       energyClosetCount: hero.energyClosetCount,
       ability: hero.ability,
       feature: hero.feature,
-      stacksId: [],
+      //stacksId: [],
+      stackId: hero.heroStack.id,
     );
 
-    var ids = heroToDB.fromCardsStackToListInt(hero.heroStacks);
-    heroToDB.stacksId.addAll(ids);
-    print("DBProvider createHero() heroToDB == $heroToDB \n");
+    // var ids = heroToDB.fromCardsStackToListInt(hero.heroStacks);
+    // heroToDB.stacksId.addAll(ids);
+    print("DBProvider createHero() heroToDB == $heroToDB");
 
     var isHeroEmpty = await getHeroById(hero.id);
     if (isHeroEmpty.id != 0) {
@@ -383,20 +335,20 @@ class DBProvider {
 
     if (maps.isNotEmpty) {
       var hDB = HeroStackDB.fromMap(maps.first);
-      List<CardsStack> csList = [];
+      //List<CardsStack> csList = [];
 
-      for (var element in hDB.stacksId) {
-        CardsStack stack = await getStackById(element);
-        if (stack.id > 0) {
-          csList.add(stack);
-        }
-      }
+      // for (var element in hDB.stacksId) {
+      //   CardsStack stack = await getStackById(element);
+      //   if (stack.id > 0) {
+      //     csList.add(stack);
+      //   }
+      // }
 
       HeroStack res = HeroStack(
         id: hDB.id,
         name: hDB.name,
         isFriend: hDB.isFriend,
-        heroStacks: csList,
+        heroStack: await getStackById(hDB.stackId),
         energyClosetCount: hDB.energyClosetCount,
         ability: hDB.ability,
       );
@@ -427,19 +379,20 @@ class DBProvider {
 
       if (hsDB.isNotEmpty) {
         for (var i = 0; i < hsDB.length; i++) {
-          List<CardsStack> list = [];
-          for (var id in hsDB[i].stacksId) {
-            CardsStack stack = await getStackById(id);
-            if (stack.id > 0) {
-              list.add(stack);
-            }
-          }
+          //List<CardsStack> list = [];
+          //for (var id in hsDB[i].stacksId) {
+            // CardsStack stack = await getStackById(id);
+            // if (stack.id > 0) {
+            //   list.add(stack);
+            // }
+          //}
 
           var hs = HeroStack(
               id: hsDB[i].id,
               name: hsDB[i].name,
               isFriend: hsDB[i].isFriend,
-              heroStacks: list,
+              //heroStacks: list,
+              heroStack: await getStackById(hsDB[i].stackId),
               energyClosetCount: hsDB[i].energyClosetCount,
               ability: hsDB[i].ability, feature: hsDB[i].feature);
           availableList.add(hs);

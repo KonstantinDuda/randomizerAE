@@ -11,6 +11,8 @@ class DefaultData {
 
   List<AECard> _ffCards = [];
 
+  List<List<AECard>> story = [];
+
   static final DefaultData _dbProvider = DefaultData._();
   DefaultData._();
   factory DefaultData() {
@@ -23,8 +25,12 @@ class DefaultData {
       return _cards;
     } else {
       print("Default Data getCards _cards was empty");
-      return await _db.getAllCards();
+      _cards = await _db.getAllCards();
+      print("Default Data getCards _cards.length == ${_cards.length}");
+      return _cards;
     }
+    // _cards = await _db.getAllCards();
+    // return _cards;
   }
 
   setCards(List<AECard> newCards) {
@@ -37,12 +43,29 @@ class DefaultData {
       return _stacks;
     } else {
       print("Default Data getStacks _stacks was empty");
-      return await _db.getAllStacks();
+      _stacks = await _db.getAllStacks();
+      print("Default Data getStacks _stacks.length == ${_stacks.length}");
+      return _stacks;
     }
+    // _stacks = await _db.getAllStacks();
+    // return _stacks;
   }
 
   setStacks(List<CardsStack> newStacks) {
     _stacks = newStacks;
+  }
+
+  updateStack(CardsStack stack) {
+    for (var i = 0; i < _stacks.length; i++) {
+      if (_stacks[i].id == stack.id) {
+        _stacks[i] = stack;
+        _db.updateStack(stack);
+        print(
+            "DefaultData updateStack stack == $stack stack[i] == ${_stacks[i]} ");
+        return _stacks;
+      }
+    }
+    return _stacks;
   }
 
   Future<List<HeroStack>> getHeroes() async {
@@ -52,7 +75,9 @@ class DefaultData {
       return friendFoeList;
     } else {
       print("Default Data getHeroes friendFoeList was empty");
-      return await _db.getAllHeroes();
+      friendFoeList = await _db.getAllHeroes();
+      print("Default Data getHeroes friendFoeList.length == ${friendFoeList.length}");
+      return friendFoeList;
     }
   }
 
@@ -77,26 +102,6 @@ class DefaultData {
       print(
           "DefaultData createDefaultData firstRun.length == ${firstRunCards.length}");
     }
-
-    /* var firstRunHeroes = await _db.getAllHeroes();
-    if (firstRunHeroes.isEmpty) {
-      createFriendFoeHeroes();
-    } else {
-      friendFoeList = firstRunHeroes;
-      print(
-          "DefaultData createDefaultData firstRunHeroes.length == ${firstRunHeroes.length}");
-    }
-
-    var firstRunStacks = await _db.getAllStacks();
-    if (firstRunStacks.isEmpty) {
-      checkStacks();
-    } else {
-      _stacks = firstRunStacks;
-      print(
-          "DefaultData createDefaultData firstRunStacks.length == ${firstRunStacks.length}");
-    }*/
-
-    //checkStacks();
     print("\n DefaultData createDefaultData is called \n");
   }
 
@@ -230,7 +235,8 @@ class DefaultData {
           id: 1,
           name: "Dalana, The Healer",
           isFriend: true,
-          heroStacks: [/*dalanaStack*/],
+          //heroStacks: [/*dalanaStack*/],
+          heroStack: const CardsStack.empty(),
           energyClosetCount: 5,
           ability: "Bandage: Any player or Gravehold gains 4 life");
 
@@ -239,7 +245,8 @@ class DefaultData {
           id: 2,
           name: "The Scavenger",
           isFriend: false,
-          heroStacks: [/*theScavengerStack*/],
+          // heroStacks: [/*theScavengerStack*/],
+          heroStack: const CardsStack.empty(),
           energyClosetCount: 4,
           ability:
               "Cull the stragglers: The player with the lowest life suffers 4 damage");
@@ -250,7 +257,8 @@ class DefaultData {
           id: 3,
           name: "Adelheim, The Blacksmith",
           isFriend: true,
-          heroStacks: [/*adStack, adSupStack*/],
+          // heroStacks: [/*adStack, adSupStack*/],
+          heroStack: const CardsStack.empty(),
           energyClosetCount: 4,
           ability:
               "Gather scrap: Each player may return up to three cards in their discard "
@@ -261,7 +269,8 @@ class DefaultData {
           id: 4,
           name: "Myrna, The Scholar",
           isFriend: true,
-          heroStacks: [/*myrStack*/],
+          // heroStacks: [/*myrStack*/],
+          heroStack: const CardsStack.empty(),
           energyClosetCount: 4,
           ability: "Study the ancients: Myrna gains 4 Knowledge");
 
@@ -271,7 +280,8 @@ class DefaultData {
           id: 5,
           name: "Fawn, The Alchemist",
           isFriend: true,
-          heroStacks: [/*fawnStack, fawnSupStack*/],
+          // heroStacks: [/*fawnStack, fawnSupStack*/],
+          heroStack: const CardsStack.empty(),
           energyClosetCount: 6,
           ability:
               "Custic brew: For each spell in the Cauldron, deal damage equal to its "
@@ -283,7 +293,8 @@ class DefaultData {
           id: 6,
           name: "The Corrosion",
           isFriend: false,
-          heroStacks: [/*corrStack, corrSupStack*/],
+          // heroStacks: [/*corrStack, corrSupStack*/],
+          heroStack: const CardsStack.empty(),
           energyClosetCount: 5,
           ability:
               "Return to dust: Remove 2 power tokens tokens from each power in play. "
@@ -295,7 +306,8 @@ class DefaultData {
           id: 7,
           name: "The Swarm",
           isFriend: false,
-          heroStacks: [/*swStack, swSupStack*/],
+          // heroStacks: [/*swStack, swSupStack*/],
+          heroStack: const CardsStack.empty(),
           energyClosetCount: 5,
           ability:
               "Call the hive: Place the bottomost minion from the nemesis discard pile "
@@ -308,7 +320,8 @@ class DefaultData {
           id: 8,
           name: "The Cultist",
           isFriend: false,
-          heroStacks: [/*culStack, culSupStack*/],
+          // heroStacks: [/*culStack, culSupStack*/],
+          heroStack: const CardsStack.empty(),
           energyClosetCount: 4,
           ability:
               "Feed the ritual: Volatile Pylon gains 2 2 life. Then remove a power token "
@@ -334,12 +347,14 @@ class DefaultData {
 
   HeroStack getHeroByStackId(int stackId) {
     for (var element in friendFoeList) {
-      if (element.heroStacks.isNotEmpty) {
-        if (element.heroStacks[0].id == stackId) {
-          print(
-              "DefaultData getHeroByStackId element.heroStacks[0].id == ${element.heroStacks[0].id}");
-          return element;
-        }
+      // if (element.heroStacks.isNotEmpty) {
+      //   if (element.heroStacks[0].id == stackId) {
+      if (element.heroStack.id == stackId) {
+        print(
+            //    "DefaultData getHeroByStackId element.heroStacks[0].id == ${element.heroStacks[0].id}");
+            "DefaultData getHeroByStackId element.heroStack.id == ${element.heroStack.id}");
+        return element;
+        //}
       } else {
         print("getHeroByStackId element.heroStacks.isEmpty");
       }
@@ -347,13 +362,12 @@ class DefaultData {
     return const HeroStack.empty();
   }
 
-  void addCardsToDB() async {
+// Friend Foe Cards
 
+  void addCardsToDB() async {
     for (var element in _cards) {
       _db.createCard(element);
     }
-    //var allCards = await _db.getAllCards();
-    // print("FriendFoeData addCardsToDB allCards.length == ${allCards.length}");
     print("FriendFoeData addCardsToDB in comment now");
   }
 
@@ -706,10 +720,20 @@ class DefaultData {
         id: 3,
         name: "Dalana, the healer",
         isActive: true,
-        stackType: StackType.friendFoe,
+        stackType: StackType.friend, //StackType.friendFoe,
         stackColor: const Color.fromARGB(255, 33, 150, 243),
         cards: dalanaList);
-    friendFoeList[0].heroStacks.add(dalanaTheHealerStack);
+    //friendFoeList[0].heroStacks.add(dalanaTheHealerStack);
+    var dalanaWithStack = HeroStack(
+        id: friendFoeList[0].id,
+        name: friendFoeList[0].name,
+        isFriend: friendFoeList[0].isFriend,
+        heroStack: dalanaTheHealerStack,
+        energyClosetCount: friendFoeList[0].energyClosetCount,
+        ability: friendFoeList[0].ability);
+    friendFoeList.removeAt(0);
+    friendFoeList.insert(0, dalanaWithStack);
+
     _stacks.add(dalanaTheHealerStack);
     _db.createStack(dalanaTheHealerStack);
     print(
@@ -725,11 +749,20 @@ class DefaultData {
         id: 4,
         name: "The Scavenger",
         isActive: true,
-        stackType: StackType.friendFoe,
+        stackType: StackType.foe, // StackType.friendFoe,
         stackColor: const Color.fromARGB(255, 244, 67, 54),
         cards: theScavengerList);
 //    theScavenger.heroStacks.add(theScavengerStack);
-    friendFoeList[1].heroStacks.add(theScavengerStack);
+    //friendFoeList[1].heroStacks.add(theScavengerStack);
+    var scavengerWithStack = HeroStack(
+        id: friendFoeList[1].id,
+        name: friendFoeList[1].name,
+        isFriend: friendFoeList[1].isFriend,
+        heroStack: theScavengerStack,
+        energyClosetCount: friendFoeList[1].energyClosetCount,
+        ability: friendFoeList[1].ability);
+    friendFoeList.removeAt(1);
+    friendFoeList.insert(1, scavengerWithStack);
     _stacks.add(theScavengerStack);
     _db.createStack(theScavengerStack);
     print(
@@ -741,40 +774,25 @@ class DefaultData {
       _ffCards[10],
       _ffCards[11]
     ];
-    // List<AECard> adelheimListTwo = [
-    //   _ffCards[32],
-    //   _ffCards[32],
-    //   _ffCards[32],
-    //   _ffCards[32],
-    //   _ffCards[32],
-    //   _ffCards[32],
-    //   _ffCards[33],
-    //   _ffCards[33],
-    //   _ffCards[33],
-    //   _ffCards[33]
-    // ];
     CardsStack adelheimTheBlacksmithStack = CardsStack(
         id: 5,
         name: "Adelheim, the blacksmith",
         isActive: false,
-        stackType: StackType.friendFoe,
+        stackType: StackType.friend, // StackType.friendFoe,
         stackColor: const Color.fromARGB(255, 33, 150, 243),
         cards: adelheimList);
-    // CardsStack adelheimTheBlacksmithSuportStack = CardsStack(
-    //     id: 6,
-    //     name: "Adelheim, the blacksmith. Support stack",
-    //     isActive: false,
-    //     stackType: StackType.friendFoe,
-    //     stackColor: const Color.fromARGB(255, 33, 150, 243),
-    //     cards: adelheimListTwo);
-    // adelheimTheBlacksmith.heroStacks.add(adelheimTheBlacksmithStack);
-    // adelheimTheBlacksmith.heroStacks.add(adelheimTheBlacksmithSuportStack);
-    friendFoeList[2].heroStacks.add(adelheimTheBlacksmithStack);
-    //friendFoeList[2].heroStacks.add(adelheimTheBlacksmithSuportStack);
+    //friendFoeList[2].heroStacks.add(adelheimTheBlacksmithStack);
+    var adelheimWithStack = HeroStack(
+        id: friendFoeList[2].id,
+        name: friendFoeList[2].name,
+        isFriend: friendFoeList[2].isFriend,
+        heroStack: adelheimTheBlacksmithStack,
+        energyClosetCount: friendFoeList[2].energyClosetCount,
+        ability: friendFoeList[2].ability);
+    friendFoeList.removeAt(2);
+    friendFoeList.insert(2, adelheimWithStack);
     _stacks.add(adelheimTheBlacksmithStack);
-    //_stacks.add(adelheimTheBlacksmithSuportStack);
     _db.createStack(adelheimTheBlacksmithStack);
-    //_db.createStack(adelheimTheBlacksmithSuportStack);
 
     print(
         "FriendFoeData createStacks adelheimTheBlacksmithStack.name == ${adelheimTheBlacksmithStack.name}");
@@ -789,11 +807,20 @@ class DefaultData {
         id: 7,
         name: "Myrna, the scholar",
         isActive: false,
-        stackType: StackType.friendFoe,
+        stackType: StackType.friend, // StackType.friendFoe,
         stackColor: const Color.fromARGB(255, 33, 150, 243),
         cards: myrnaList);
     //myrnaTheScholar.heroStacks.add(myrnaTheScholarStack);
-    friendFoeList[3].heroStacks.add(myrnaTheScholarStack);
+    //friendFoeList[3].heroStacks.add(myrnaTheScholarStack);
+    var myrnaWithStack = HeroStack(
+        id: friendFoeList[3].id,
+        name: friendFoeList[3].name,
+        isFriend: friendFoeList[3].isFriend,
+        heroStack: myrnaTheScholarStack,
+        energyClosetCount: friendFoeList[3].energyClosetCount,
+        ability: friendFoeList[3].ability);
+    friendFoeList.removeAt(3);
+    friendFoeList.insert(3, myrnaWithStack);
     _stacks.add(myrnaTheScholarStack);
     _db.createStack(myrnaTheScholarStack);
     print(
@@ -805,36 +832,25 @@ class DefaultData {
       _ffCards[18],
       _ffCards[19]
     ];
-    // List<AECard> fawnSuportList = [
-    //   _ffCards[34],
-    //   _ffCards[34],
-    //   _ffCards[34],
-    //   _ffCards[34],
-    //   _ffCards[34],
-    //   _ffCards[34]
-    // ];
     CardsStack fawnTheAlchemistStack = CardsStack(
         id: 8,
         name: "Fawn, the alchemist",
         isActive: false,
-        stackType: StackType.friendFoe,
+        stackType: StackType.friend, // StackType.friendFoe,
         stackColor: const Color.fromARGB(255, 33, 150, 243),
         cards: fawnList);
-    // CardsStack fawnTheAlchemistSupportStack = CardsStack(
-    //     id: 9,
-    //     name: "Fawn, the alchemist. Support stack",
-    //     isActive: false,
-    //     stackType: StackType.friendFoe,
-    //     stackColor: const Color.fromARGB(255, 33, 150, 243),
-    //     cards: fawnSuportList);
-    // fawnTheAlchemist.heroStacks.add(fawnTheAlchemistStack);
-    // fawnTheAlchemist.heroStacks.add(fawnTheAlchemistSupportStack);
-    friendFoeList[4].heroStacks.add(fawnTheAlchemistStack);
-    //friendFoeList[4].heroStacks.add(fawnTheAlchemistSupportStack);
+    //friendFoeList[4].heroStacks.add(fawnTheAlchemistStack);
+    var fawnWithStack = HeroStack(
+        id: friendFoeList[4].id,
+        name: friendFoeList[4].name,
+        isFriend: friendFoeList[4].isFriend,
+        heroStack: fawnTheAlchemistStack,
+        energyClosetCount: friendFoeList[4].energyClosetCount,
+        ability: friendFoeList[4].ability);
+    friendFoeList.removeAt(4);
+    friendFoeList.insert(4, fawnWithStack);
     _stacks.add(fawnTheAlchemistStack);
-    //_stacks.add(fawnTheAlchemistSupportStack);
     _db.createStack(fawnTheAlchemistStack);
-    //_db.createStack(fawnTheAlchemistSupportStack);
     print(
         "FriendFoeData createStacks fawnTheAlchemistStack.name == ${fawnTheAlchemistStack.name}");
 
@@ -844,33 +860,25 @@ class DefaultData {
       _ffCards[22],
       _ffCards[23]
     ];
-    // List<AECard> corrosionSupportList = [
-    //   _ffCards[35],
-    //   _ffCards[35],
-    //   _ffCards[35]
-    // ];
     CardsStack theCorrosionStack = CardsStack(
         id: 10,
         name: "The Corrosion",
         isActive: false,
-        stackType: StackType.friendFoe,
+        stackType: StackType.foe, // StackType.friendFoe,
         stackColor: const Color.fromARGB(255, 244, 67, 54),
         cards: corrosionList);
-    // CardsStack theCorrosionSupportStack = CardsStack(
-    //     id: 11,
-    //     name: "The Corrosion. Support stack",
-    //     isActive: false,
-    //     stackType: StackType.friendFoe,
-    //     stackColor: const Color.fromARGB(255, 244, 67, 54),
-    //     cards: corrosionSupportList);
-    // theCorrosion.heroStacks.add(theCorrosionStack);
-    // theCorrosion.heroStacks.add(theCorrosionSupportStack);
-    friendFoeList[5].heroStacks.add(theCorrosionStack);
-    //friendFoeList[5].heroStacks.add(theCorrosionSupportStack);
+    //friendFoeList[5].heroStacks.add(theCorrosionStack);
+    var corrosionWithStack = HeroStack(
+        id: friendFoeList[5].id,
+        name: friendFoeList[5].name,
+        isFriend: friendFoeList[5].isFriend,
+        heroStack: theCorrosionStack,
+        energyClosetCount: friendFoeList[5].energyClosetCount,
+        ability: friendFoeList[5].ability);
+    friendFoeList.removeAt(5);
+    friendFoeList.insert(5, corrosionWithStack);
     _stacks.add(theCorrosionStack);
-    //_stacks.add(theCorrosionSupportStack);
     _db.createStack(theCorrosionStack);
-    //_db.createStack(theCorrosionSupportStack);
     print(
         "FriendFoeData createStacks theCorrosionStack.name == ${theCorrosionStack.name}");
 
@@ -880,34 +888,25 @@ class DefaultData {
       _ffCards[26],
       _ffCards[27]
     ];
-    // List<AECard> swarmSupportList = [
-    //   _ffCards[36],
-    //   _ffCards[36],
-    //   _ffCards[36],
-    //   _ffCards[36]
-    // ];
     CardsStack theSwarmStack = CardsStack(
         id: 12,
         name: "The Swarm",
         isActive: false,
-        stackType: StackType.friendFoe,
+        stackType: StackType.foe, // StackType.friendFoe,
         stackColor: const Color.fromARGB(255, 244, 67, 54),
         cards: swarmList);
-    // CardsStack theSwarmSupportStack = CardsStack(
-    //     id: 13,
-    //     name: "The Swarm. Support stack",
-    //     isActive: false,
-    //     stackType: StackType.friendFoe,
-    //     stackColor: const Color.fromARGB(255, 244, 67, 54),
-    //     cards: swarmSupportList);
-    // theSwarm.heroStacks.add(theSwarmStack);
-    // theSwarm.heroStacks.add(theSwarmSupportStack);
-    friendFoeList[6].heroStacks.add(theSwarmStack);
-    //friendFoeList[6].heroStacks.add(theSwarmSupportStack);
+    //friendFoeList[6].heroStacks.add(theSwarmStack);
+    var swarmWithStack = HeroStack(
+        id: friendFoeList[6].id,
+        name: friendFoeList[6].name,
+        isFriend: friendFoeList[6].isFriend,
+        heroStack: theSwarmStack,
+        energyClosetCount: friendFoeList[6].energyClosetCount,
+        ability: friendFoeList[6].ability);
+    friendFoeList.removeAt(6);
+    friendFoeList.insert(6, swarmWithStack);
     _stacks.add(theSwarmStack);
-    //_stacks.add(theSwarmSupportStack);
     _db.createStack(theSwarmStack);
-    //_db.createStack(theSwarmSupportStack);
     print(
         "FriendFoeData createStacks theSwarmStack.name == ${theSwarmStack.name}");
 
@@ -917,29 +916,26 @@ class DefaultData {
       _ffCards[30],
       _ffCards[31]
     ];
-    //List<AECard> cultistSupportList = [_ffCards[37], _ffCards[38]];
+    // List<AECard> cultistSupportList = [_ffCards[37], _ffCards[38]];
     CardsStack theCultistStack = CardsStack(
         id: 14,
         name: "The Cultist",
         isActive: false,
-        stackType: StackType.friendFoe,
+        stackType: StackType.foe, // StackType.friendFoe,
         stackColor: const Color.fromARGB(255, 244, 67, 54),
         cards: cultistList);
-    // CardsStack theCultistSupportStack = CardsStack(
-    //     id: 15,
-    //     name: "The Cultist. Support stack",
-    //     isActive: false,
-    //     stackType: StackType.friendFoe,
-    //     stackColor: const Color.fromARGB(255, 244, 67, 54),
-    //     cards: cultistSupportList);
-    // theCultist.heroStacks.add(theCultistStack);
-    // theCultist.heroStacks.add(theCultistSupportStack);
-    friendFoeList[7].heroStacks.add(theCultistStack);
-    //friendFoeList[7].heroStacks.add(theCultistSupportStack);
+    //friendFoeList[7].heroStacks.add(theCultistStack);
+    var cultistWithStack = HeroStack(
+        id: friendFoeList[7].id,
+        name: friendFoeList[7].name,
+        isFriend: friendFoeList[7].isFriend,
+        heroStack: theCultistStack,
+        energyClosetCount: friendFoeList[7].energyClosetCount,
+        ability: friendFoeList[7].ability);
+    friendFoeList.removeAt(7);
+    friendFoeList.insert(7, cultistWithStack);
     _stacks.add(theCultistStack);
-    //_stacks.add(theCultistSupportStack);
     _db.createStack(theCultistStack);
-   // _db.createStack(theCultistSupportStack);
     print(
         "FriendFoeData createStacks theCultistStack.name == ${theCultistStack.name}");
 
@@ -951,5 +947,16 @@ class DefaultData {
     _db.createHero(friendFoeList[5]);
     _db.createHero(friendFoeList[6]);
     _db.createHero(friendFoeList[7]);
+  }
+
+  addCardToStory(AECard card, bool isNewTurn) {
+    if (isNewTurn) {
+      story.add([card]);
+    } else {
+      var list = story.last;
+      list.add(card);
+      story.removeLast();
+      story.add(list);
+    }
   }
 }
