@@ -31,8 +31,9 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
     cards = await defaultData.getCards();
     stacks = await defaultData.getStacks();
 
-    print("CRUDStackBlock _onInit carts.length == ${cards.length}");
-    print("CRUDStackBlock _onInit stacks.length == ${stacks.length}");
+    // for(var element in stacks) {
+    //   print("CRUDStackBlock stack = id: ${element.id} name: ${element.name}, \t isActive: ${element.isActive}");
+    // }
 
     emit(CRUDStackSuccessActionState(cards, stacks));
   }
@@ -119,15 +120,8 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
         isOptionalFunc("Friend");
       } else if (cardType == "Foe") {
         isOptionalFunc("Foe");
-      } else if (cardType == "Nemesis") {
-        isOptionalFunc("Nemesis");
-      } else if (cardType == "Gravehold") {
-        isOptionalFunc("Gravehold");
-      } else if (cardType == "Suply") {
-        isOptionalFunc("Suply");
-      } else if (cardType == "Hero") {
-        isOptionalFunc("Hero");
       } else {
+        print("CRUDStackBlock _onNewCard event.type != Turn order, != Friend, != Foe");
         isOptionalFunc("Other");
       }
     }
@@ -136,12 +130,14 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
       if (newCard.text.isNotEmpty && newCard.imgPath.isNotEmpty) {
         print(
             "CRUDStackBlock _onNewCard newCard.id == 0 \n create newCard == $newCard");
-        db.createCard(newCard);
+        //db.createCard(newCard);
+        defaultData.newCard(newCard);
       }
     } else if (newCard.text.isNotEmpty && newCard.imgPath.isNotEmpty) {
       print(
           "CRUDStackBlock _onNewCard newCard.id != 0 \n update newCard == $newCard");
-      db.updateCard(newCard);
+      //db.updateCard(newCard);
+      defaultData.updateCard(newCard);
     }
 
     print("CRUDStackBlock _onNewCard newCard == $newCard");

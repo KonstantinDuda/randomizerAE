@@ -100,16 +100,31 @@ class _RootDrawerState extends State<RootDrawer> {
                 for (var i = 0; i < stacks.length; i++) {
                   if (stacks[i].isActive != boolList[i]) {
                     idList.add(stacks[i].id);
-                    context
-                        .read<FriendFoeBodyBloc>()
-                        .add(FriendFoeChangeActiveStackEvent(stacks[i].id));
                   }
                 }
                 context
                     .read<CRUDStackBloc>()
                     .add(CRUDStackUpdateAvailableListEvent(idList));
+
+                for (var i = 0; i < stacks.length; i++) {
+                  if (stacks[i].stackType == StackType.friend ||
+                      stacks[i].stackType == StackType.foe) {
+                    for (var j = 0; j < idList.length; j++) {
+                      if (stacks[i].id == idList[j] &&
+                          stacks[i].isActive == false) {
+                        print(
+                            "RootDrawer stack ${stacks[i].name} send to FriendFoeChangeActiveStackEvent with stacks[i].id ${stacks[i].id} \n");
+                        context
+                            .read<FriendFoeBodyBloc>()
+                            .add(FriendFoeChangeActiveStackEvent(stacks[i].id));
+                      }
+                    }
+                  }
+                }
+
                 context.read<CRUDStackBloc>().add(CRUDStackInitialEvent());
 
+                context.read<ProviderBloc>().add(LoadingEvent());
                 Navigator.pop(context);
               },
             ),

@@ -22,17 +22,8 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
   String cardTextBeforeOr = "";
   String cardTextAfterOr = "";
   bool isOptional = false;
-  List<String> cardTypesList = [
-    "Turn order",
-    "Friend",
-    "Foe",
-    "Nemesis",
-    "Gravehold",
-    "Suply",
-    "Hero",
-    "Other"
-  ];
-  var cardType = "Other";
+  List<String> cardTypesList = ["Turn order", "Friend", "Foe"];
+  var cardType = "Turn order"; // "Other";
   var typeIsTO = false;
 
   @override
@@ -43,9 +34,9 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
         var pathAndName = widget.card.imgPath.split("/");
         if (pathAndName.length > 3) {
           for (var element in cardTypesList) {
-            element.toLowerCase() == pathAndName[2]
-                ? cardType = element
-                : cardType = "Other";
+            if (element.toLowerCase() == pathAndName[2]) {
+              cardType = element;
+            }
           }
         }
       }
@@ -176,16 +167,15 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
           onPressed: () {
             if (cardType == "Turn order") cardName = "";
             print("DialogCreateCard create card");
-            //if(widget.card.id == 0) {
-            //  print("DialogCreateCard create card widget.card.id == 0");
-            context.read<CRUDStackBloc>().add(CRUDStackNewCardEvent(widget.card.id, cardName,
-                isOptional, cardTextBeforeOr, cardTextAfterOr, cardType));
+
+            context.read<CRUDStackBloc>().add(CRUDStackNewCardEvent(
+                widget.card.id,
+                cardName,
+                isOptional,
+                cardTextBeforeOr,
+                cardTextAfterOr,
+                cardType));
             Navigator.of(context).pop();
-           // } else {
-            //   print("DialogCreateCard create card widget.card.id != 0");
-            //   context.read<CRUDStackBloc>().add(CRUDStackUpdateCardEvent(widget.card.id, cardName,
-            //     isOptional, cardTextBeforeOr, cardTextAfterOr, cardType));
-            // }
           },
           child: const Text("Save"),
         ),

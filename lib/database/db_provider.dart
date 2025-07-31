@@ -55,7 +55,7 @@ class DBProvider {
             "ability TEXT, "
             "feature TEXT, "
             //"stacks TEXT)");
-            "stack INTEGER)");
+            "stack_id INTEGER)");
       },
     );
   }
@@ -70,7 +70,7 @@ class DBProvider {
           cardsTableName, card.toMap(),
           //conflictAlgorithm: ConflictAlgorithm.abort);
         );
-        //print("DBProvider createCard() db.insert $card \n");
+
       } else {
         print("DBProvider createCard() card ${card.id} was in the Database \n");
       }

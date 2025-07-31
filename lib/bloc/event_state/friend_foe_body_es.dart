@@ -27,11 +27,11 @@ class FriendFoeBodyNextEvent extends FriendFoeBodyEvent {
 }
 
 class FriendFoeChangeActiveStackEvent extends FriendFoeBodyEvent {
-  final int id;
-  const FriendFoeChangeActiveStackEvent(this.id);
+  final int stackId;
+  const FriendFoeChangeActiveStackEvent(this.stackId);
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [stackId];
 }
 
 // States

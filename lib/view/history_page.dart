@@ -140,7 +140,8 @@ class HistoryPage extends StatelessWidget {
                 columns.clear();
                 rows.clear();
                 context.read<HistoryBloc>().add(HistoryClearEvent());
-                context.read<TurnOrderBodyBloc>().add(TurnOrderInitialEvent());
+                context.read<TurnOrderBodyBloc>().add(TurnOrderBodyClearStackEvent());
+                //context.read<TurnOrderBodyBloc>().add(TurnOrderInitialEvent());
                 context.read<ProviderBloc>().add(RootEvent());
             }, 
             style: ElevatedButton.styleFrom(

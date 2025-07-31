@@ -120,7 +120,7 @@ class CardsStack {
 
   @override
   String toString() {
-    var result = 'CardsStack{id: $id, name: $name, isActive: $isActive, stackType: $stackType}';//,  \n cards: $cards}';
+    var result = 'CardsStack{id: $id, name: $name, isActive: $isActive, cards.length: ${cards.length}}';//,  \n cards: $cards}';
     return result;
   }
 }
@@ -172,7 +172,7 @@ class HeroStack {
 
   @override
   String toString() {
-    var result = 'HeroStack id: $id, name: $name, isFriend: $isFriend, heroStack.id: ${heroStack.id}';
+    var result = 'HeroStack id: $id, name: $name, isFriend: $isFriend, heroStack.id: ${heroStack.id}, cards.length: ${heroStack.cards.length}';
     return result;
   }
 }

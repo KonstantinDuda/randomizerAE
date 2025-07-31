@@ -21,7 +21,7 @@ class DefaultData {
 
   Future<List<AECard>> getCards() async {
     if (_cards.isNotEmpty) {
-      print("Default Data getCards _cards.length == ${_cards.length}");
+      print("Default Data getCards _cards.isNotEmpty _cards.length == ${_cards.length}");
       return _cards;
     } else {
       print("Default Data getCards _cards was empty");
@@ -35,6 +35,21 @@ class DefaultData {
 
   setCards(List<AECard> newCards) {
     _cards = newCards;
+  }
+
+  newCard(AECard card) {
+    _cards.add(card);
+    _db.createCard(card);
+  }
+  updateCard(AECard card) {
+    for (var i = 0; i < _cards.length; i++) {
+      if (_cards[i].id == card.id) {
+        _cards[i] = card;
+        _db.updateCard(card);
+        print("DefaultData updateCard card == $card");
+        return _cards;
+      }
+    }
   }
 
   Future<List<CardsStack>> getStacks() async {
@@ -61,7 +76,7 @@ class DefaultData {
         _stacks[i] = stack;
         _db.updateStack(stack);
         print(
-            "DefaultData updateStack stack == $stack stack[i] == ${_stacks[i]} ");
+            "DefaultData updateStack stack == $stack");
         return _stacks;
       }
     }
@@ -94,15 +109,21 @@ class DefaultData {
       createCards();
 
       createFriendFoeHeroes();
-      checkStacks();
+      //checkStacks();
+      createStacks();
+
+      print("DefaultData createDefaultData _cards.length == ${_cards.length}");
+      print("DefaultData createDefaultData _stacks.length == ${_stacks.length}");
+      print("DefaultData createDefaultData friendFoeList.length == ${friendFoeList.length}");
+      
     } else {
       _cards = firstRunCards;
-      friendFoeList = await _db.getAllHeroes();
-      _stacks = await _db.getAllStacks();
+      // friendFoeList = await _db.getAllHeroes();
+      // _stacks = await _db.getAllStacks();
       print(
           "DefaultData createDefaultData firstRun.length == ${firstRunCards.length}");
     }
-    print("\n DefaultData createDefaultData is called \n");
+    print("DefaultData createDefaultData is called \n");
   }
 
   createTurnOrderData() {
@@ -368,7 +389,7 @@ class DefaultData {
     for (var element in _cards) {
       _db.createCard(element);
     }
-    print("FriendFoeData addCardsToDB in comment now");
+    print("DefaultData FriendFoeData addCardsToDB in comment now");
   }
 
   createCards() {
@@ -684,28 +705,28 @@ class DefaultData {
 
   // Friend Foe Stacks
   void checkStacks() async {
-    var listFDB = await _getFFStacksFromDB();
+    var listFDB = await _db.getFriendFoeStacks();
     if (listFDB.length <= 12) {
-      print("FriendFoeData checkStacks listFDB.length <= 7");
+      print("DefaultData FriendFoeData checkStacks listFDB.length <= 7");
       createStacks();
     } else {
-      print("FriendFoeData checkStacks listFDB.length > 7");
+      print("DefaultData FriendFoeData checkStacks listFDB.length > 7");
       if (friendFoeList.isNotEmpty) {
         if (friendFoeList.length < 8) {
           friendFoeList.clear();
           createFriendFoeHeroes();
         }
       } else {
-        print("FriendFoeData checkStacks friendFoeList.isEmpty");
+        print("DefaultData FriendFoeData checkStacks friendFoeList.isEmpty");
         createFriendFoeHeroes();
       }
     }
   }
 
-  Future<List<CardsStack>> _getFFStacksFromDB() async {
-    var list = await _db.getFriendFoeStacks();
-    return list;
-  }
+  // Future<List<CardsStack>> _getFFStacksFromDB() async {
+  //   var list = await _db.getFriendFoeStacks();
+  //   return list;
+  // }
 
   createStacks() {
     //checkCards();
@@ -737,7 +758,7 @@ class DefaultData {
     _stacks.add(dalanaTheHealerStack);
     _db.createStack(dalanaTheHealerStack);
     print(
-        "FriendFoeData createStacks dalanaTheHealerStack.name == ${dalanaTheHealerStack.name}");
+        "DefaultData FriendFoeData createStacks dalanaTheHealerStack.name == ${dalanaTheHealerStack.name}");
 
     List<AECard> theScavengerList = [
       _ffCards[4],
@@ -766,7 +787,7 @@ class DefaultData {
     _stacks.add(theScavengerStack);
     _db.createStack(theScavengerStack);
     print(
-        "FriendFoeData createStacks theScavengerStack.name == ${theScavengerStack.name}");
+        "DefaultData FriendFoeData createStacks theScavengerStack.name == ${theScavengerStack.name}");
 
     List<AECard> adelheimList = [
       _ffCards[8],
@@ -795,7 +816,7 @@ class DefaultData {
     _db.createStack(adelheimTheBlacksmithStack);
 
     print(
-        "FriendFoeData createStacks adelheimTheBlacksmithStack.name == ${adelheimTheBlacksmithStack.name}");
+        "DefaultData FriendFoeData createStacks adelheimTheBlacksmithStack.name == ${adelheimTheBlacksmithStack.name}");
 
     List<AECard> myrnaList = [
       _ffCards[12],
@@ -824,7 +845,7 @@ class DefaultData {
     _stacks.add(myrnaTheScholarStack);
     _db.createStack(myrnaTheScholarStack);
     print(
-        "FriendFoeData createStacks myrnaTheScholarStack.name == ${myrnaTheScholarStack.name}");
+        "DefaultData FriendFoeData createStacks myrnaTheScholarStack.name == ${myrnaTheScholarStack.name}");
 
     List<AECard> fawnList = [
       _ffCards[16],
@@ -852,7 +873,7 @@ class DefaultData {
     _stacks.add(fawnTheAlchemistStack);
     _db.createStack(fawnTheAlchemistStack);
     print(
-        "FriendFoeData createStacks fawnTheAlchemistStack.name == ${fawnTheAlchemistStack.name}");
+        "DefaultData FriendFoeData createStacks fawnTheAlchemistStack.name == ${fawnTheAlchemistStack.name}");
 
     List<AECard> corrosionList = [
       _ffCards[20],
@@ -880,7 +901,7 @@ class DefaultData {
     _stacks.add(theCorrosionStack);
     _db.createStack(theCorrosionStack);
     print(
-        "FriendFoeData createStacks theCorrosionStack.name == ${theCorrosionStack.name}");
+        "DefaultData FriendFoeData createStacks theCorrosionStack.name == ${theCorrosionStack.name}");
 
     List<AECard> swarmList = [
       _ffCards[24],
@@ -908,7 +929,7 @@ class DefaultData {
     _stacks.add(theSwarmStack);
     _db.createStack(theSwarmStack);
     print(
-        "FriendFoeData createStacks theSwarmStack.name == ${theSwarmStack.name}");
+        "DefaultData FriendFoeData createStacks theSwarmStack.name == ${theSwarmStack.name}");
 
     List<AECard> cultistList = [
       _ffCards[28],
@@ -937,7 +958,7 @@ class DefaultData {
     _stacks.add(theCultistStack);
     _db.createStack(theCultistStack);
     print(
-        "FriendFoeData createStacks theCultistStack.name == ${theCultistStack.name}");
+        "DefaultData FriendFoeData createStacks theCultistStack.name == ${theCultistStack.name}");
 
     _db.createHero(friendFoeList[0]);
     _db.createHero(friendFoeList[1]);

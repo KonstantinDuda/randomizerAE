@@ -41,6 +41,9 @@ class _RootAppBarState extends State<RootAppBar> {
           }
         }
         stacks = localStacks;
+        for(var element in stacks) {
+          print("RootAppBar stack = id: ${element.id} name: ${element.name}");
+        }
         //print("RootAppBar stacks == $stacks \n");
       } else {
         print("RootAppBar state is NOT CRUDStackSuccessActionState");
@@ -130,6 +133,7 @@ class _RootAppBarState extends State<RootAppBar> {
                             ),
                           ),
                           onTap: () {
+                            print("\n \n \n");
                                   print("RootAppBar stacks[index].stackType == ${stacks[index].stackType} \n");
                             //if (db[index].stackType == StackType.turnOrder) {
                             if (stacks[index].stackType ==
@@ -149,10 +153,11 @@ class _RootAppBarState extends State<RootAppBar> {
                                   stacks[index];
                               print("RootAppBar heroStack == $stack \n");
                               
-                              context.read<FriendFoeBodyBloc>().add(FriendFoeChangeActiveStackEvent(stack.id));
                               context
                                   .read<RootBodyProviderBloc>()
                                   .add(RootBodyFriendFoeEvent());
+                              
+                              context.read<FriendFoeBodyBloc>().add(FriendFoeChangeActiveStackEvent(stack.id));
                             } else {
                               context
                                   .read<RootBodyProviderBloc>()
