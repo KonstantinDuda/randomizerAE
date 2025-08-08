@@ -41,9 +41,9 @@ class _RootAppBarState extends State<RootAppBar> {
           }
         }
         stacks = localStacks;
-        for(var element in stacks) {
-          print("RootAppBar stack = id: ${element.id} name: ${element.name}");
-        }
+        // for(var element in stacks) {
+        //   print("RootAppBar stack = id: ${element.id} name: ${element.name}");
+        // }
         //print("RootAppBar stacks == $stacks \n");
       } else {
         print("RootAppBar state is NOT CRUDStackSuccessActionState");

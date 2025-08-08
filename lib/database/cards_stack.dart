@@ -2,17 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'cards_stack_db.dart';
 
-// enum CardType {
-//   turnOrder,
-//   friend,
-//   foe,
-//   nemesis,
-//   gravehold,
-//   suply,
-//   hero,
-//   other,
-// }
-
 /// AECard represents a card in the game with an id, text, and image path.
 class AECard {
   int id = 0;
@@ -61,7 +50,7 @@ class AECard {
 
   @override
   String toString() {
-    var result = 'AECard text: $text';//, imgPath: $imgPath';
+    var result = 'AECard text: $text, imgPath: $imgPath';//, imgPath: $imgPath';
     return result;
   }
   // TODO: add toJson and fromJson methods

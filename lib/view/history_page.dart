@@ -43,13 +43,15 @@ class HistoryPage extends StatelessWidget {
           text = state.error;
         }
 
-        _listColumns() {
+        listColumns() {
           print("HistoryPage _listColumns $columns");
+          columns.insert(0, "");
           for (var i = 0; i < columns.length; i++) {
             columnWidgets.add(
               DataColumn(
                 label: Text(
-                  "Step ${i + 1}",
+                  //"Step ${i + 1}",
+                  i > 0 ? "Step $i" : "Turn: ",
                   style: const TextStyle(
                       fontStyle: FontStyle.italic, fontSize: 18),
                 ),
@@ -59,17 +61,27 @@ class HistoryPage extends StatelessWidget {
           return columnWidgets;
         }
 
-        _listRows() {
+        listRows() {
           print("HistoryPage _listRows $rows");
+          for(int i = 0; i < rows.length; i++) {
+            rows[i].insert(0, "Turn $i");
+          }
           for (var i = 0; i < rows.length; i++) {
             List<DataCell> cells = [];
+            //rows.insert(0, "Turn $i");
             for (var cell in rows[i]) {
+              var splitedCell = cell.split(" ");
               cells.add(
                 DataCell(
+                  splitedCell[0] == "Turn" ? 
                   Text(
                     cell,
-                    //style: TextStyle(backgroundColor: i % 2 == 0 ? Colors.grey[200] : Colors.white),
-                  ),
+                    style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 18),
+                  ) : Center(child: Text(cell)),
+                  // Text(
+                  //   cell,
+                  //   style: splitedCell[0] == "Turn" ? const TextStyle(fontStyle: FontStyle.italic, fontSize: 18) : const TextStyle(),
+                  // ),
                 ),
               );
             }
@@ -124,14 +136,8 @@ class HistoryPage extends StatelessWidget {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
-                  columns: _listColumns(),
-                  //columns.map((col) => DataColumn(label: Text(col, style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 20),))).toList(),
-                  rows: _listRows(),
-                  // rows.map((row) => DataRow(
-                  //         cells:
-                  //             row.map((cell) => DataCell(Text(cell))).toList(),
-                  //       ))
-                  //   .toList(),
+                  columns: listColumns(),
+                  rows: listRows(),
                 ),
               ),
             ),
@@ -140,15 +146,16 @@ class HistoryPage extends StatelessWidget {
                 columns.clear();
                 rows.clear();
                 context.read<HistoryBloc>().add(HistoryClearEvent());
-                context.read<TurnOrderBodyBloc>().add(TurnOrderBodyClearStackEvent());
-                //context.read<TurnOrderBodyBloc>().add(TurnOrderInitialEvent());
+                context
+                    .read<TurnOrderBodyBloc>()
+                    .add(TurnOrderBodyClearStackEvent());
                 context.read<ProviderBloc>().add(RootEvent());
-            }, 
-            style: ElevatedButton.styleFrom(
+              },
+              style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.black,
               ),
-            child: const Text("Clear the story"),
+              child: const Text("Clear the story"),
             ),
           );
         }

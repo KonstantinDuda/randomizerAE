@@ -147,8 +147,6 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
   void _onNext(
       TurnOrderBodyNextEvent event, Emitter<TurnOrderBodyState> emit) async {
     // Handle the next event
-
-    //print("TurnOrderBodyBloc _onNext stack.id == ${stack.id} \n");
     if (stack.id == 0 || stack.cards.isEmpty) {
       //stack = database.getActiveStack();
 
@@ -156,8 +154,6 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
       alreadyPlayed = const CardsStack.empty();
       stack.cards.shuffle();
-      // print(
-      //     "TurnOrderBodyBloc _onNext stack.id == 0 stack.cards == ${stack.cards} \n");
     } else {
       if (alreadyPlayed.id == 0) {
         alreadyPlayed = CardsStack(
@@ -174,10 +170,8 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
       // Creating story to statistic
       if (alreadyPlayed.cards.length > 1) {
-        //print("TurnOrderBodyBloc _onNext alreadyPlayed.cards.length > 1, story.add(${alreadyPlayed.cards.last}, addToLastList) \n");
         data.addCardToStory(alreadyPlayed.cards.last, false);
       } else {
-        //print("TurnOrderBodyBloc _onNext alreadyPlayed.cards.length <= 1, story.add(${alreadyPlayed.cards.last}, newList) \n");
         data.addCardToStory(alreadyPlayed.cards.last, true);
       }
     }
@@ -200,10 +194,6 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
       cards: alreadyPlayed.cards,
     );
 
-    // print("TurnOrderBodyBloc _onNext stack.id != 0 stack == $stack \n ");
-    // print(
-    //     "TurnOrderBodyBloc _onNext alreadyPlayed.cards == ${alreadyPlayed.cards} \n");
-
     emit(TurnOrderBodySuccessActionState(newStack, newAlreadyPlayed));
   }
 
@@ -219,6 +209,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
         stack.cards.removeAt(i);
       }
     }
+    data.addCardToStory(newAlreadyCards[0], true);
 
     print(
         "TurnOrderBodyBlock onDelWild stack.cards after Wild deleted == ${stack.cards} \n");

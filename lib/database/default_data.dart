@@ -96,6 +96,24 @@ class DefaultData {
     }
   }
 
+  newHero(HeroStack hero) async {
+    //friendFoeList.add(hero);
+    _db.createHero(hero);
+    friendFoeList = await _db.getAllHeroes();
+    print("DefaultData newHero hero == $hero");
+  }
+
+  updateHero(int id, HeroStack hero) async {
+    int index = friendFoeList.indexWhere((hero) => hero.id == id);
+    if (index != -1) {
+      friendFoeList[index] = hero;
+      _db.updateHero(hero);
+      print("DefaultData updateHero hero == $hero");
+      return friendFoeList;
+    }
+    print("DefaultData updateHero hero with id $id not found");
+  }
+
   setHeroes(List<HeroStack> newHeroes) {
     friendFoeList = newHeroes;
   }

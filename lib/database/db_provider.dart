@@ -64,16 +64,15 @@ class DBProvider {
   void createCard(AECard card) async {
     final db = await getDatabase;
 
-      var x = await getCardById(card.id);
-      if (x.id == 0) {
-        await db.insert(
-          cardsTableName, card.toMap(),
-          //conflictAlgorithm: ConflictAlgorithm.abort);
-        );
-
-      } else {
-        print("DBProvider createCard() card ${card.id} was in the Database \n");
-      }
+    var x = await getCardById(card.id);
+    if (x.id == 0) {
+      await db.insert(
+        cardsTableName, card.toMap(),
+        //conflictAlgorithm: ConflictAlgorithm.abort);
+      );
+    } else {
+      print("DBProvider createCard() card ${card.id} was in the Database \n");
+    }
 
     // For debugging purposes
     /*List<Map<String, Object?>> maps = await db.query(cardsTableName);
@@ -131,7 +130,7 @@ class DBProvider {
   }
 
 // Create, Read, Update, Delete (CRUD) operations for CardsStack
-  void createStack(CardsStack stack) async {
+  Future<void> createStack(CardsStack stack) async {
     final db = await getDatabase;
     //await db.insert(stackTableName, stack.toMap());
 
@@ -318,7 +317,8 @@ class DBProvider {
 
     var isHeroEmpty = await getHeroById(hero.id);
     if (isHeroEmpty.id != 0) {
-      print("DBProvider createHero() HeroStack was in DB. Is it need to update?");
+      print(
+          "DBProvider createHero() HeroStack was in DB. Is it need to update?");
     } else {
       db.insert(heroTableName, heroToDB.toMap());
       print("DBProvider createHero() $heroToDB insert to DB");
@@ -369,6 +369,30 @@ class DBProvider {
     return stacks;
   }
 
+  Future<void> updateHero(HeroStack hero) async {
+    final db = await getDatabase;
+    HeroStackDB heroDB = HeroStackDB(
+        id: hero.id,
+        name: hero.name,
+        isFriend: hero.isFriend,
+        energyClosetCount: hero.energyClosetCount,
+        ability: hero.ability,
+        feature: hero.feature,
+        stackId: hero.heroStack.id);
+
+    //var stackBefore = await getStackById(stack.id);
+    // print(
+    //     "DBProvider update stack, stack before: $stackBefore  stackBefore.color == ${stackBefore.stackColor} \n"); // stackDB == $stackDB
+
+    await db.update(heroTableName, heroDB.toMap(),
+        where: "id = ?", whereArgs: [hero.id]);
+  }
+
+  Future<void> deleteHero(int id) async {
+    final db = await getDatabase;
+    await db.delete(heroTableName, where: "id = ?", whereArgs: [id]);
+  }
+
   _pullStacksToHero(List<Map<String, dynamic>> maps) async {
     List<HeroStackDB> hsDB = [];
     List<HeroStack> availableList = [];
@@ -381,10 +405,10 @@ class DBProvider {
         for (var i = 0; i < hsDB.length; i++) {
           //List<CardsStack> list = [];
           //for (var id in hsDB[i].stacksId) {
-            // CardsStack stack = await getStackById(id);
-            // if (stack.id > 0) {
-            //   list.add(stack);
-            // }
+          // CardsStack stack = await getStackById(id);
+          // if (stack.id > 0) {
+          //   list.add(stack);
+          // }
           //}
 
           var hs = HeroStack(
@@ -394,7 +418,8 @@ class DBProvider {
               //heroStacks: list,
               heroStack: await getStackById(hsDB[i].stackId),
               energyClosetCount: hsDB[i].energyClosetCount,
-              ability: hsDB[i].ability, feature: hsDB[i].feature);
+              ability: hsDB[i].ability,
+              feature: hsDB[i].feature);
           availableList.add(hs);
         }
       }

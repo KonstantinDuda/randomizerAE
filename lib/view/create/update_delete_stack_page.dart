@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../bloc/event_state/hero_es.dart';
+import '../../bloc/hero_bloc.dart';
 import '../root/bodyes/my_card.dart';
 import '/bloc/providers/provider_bloc.dart';
 import '../../bloc/crud_stack_bloc.dart';
@@ -152,17 +154,6 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
         } else if (value == "Foe") {
           newStackType = StackType.foe;
         }
-        // } else if (value == "Friend / Foe") {
-        //   newStackType = StackType.friendFoe;
-        // } else if (value == "Gravehold") {
-        //   newStackType = StackType.gravehold;
-        // } else if (value == "Hero") {
-        //   newStackType = StackType.hero;
-        // } else if (value == "Nemesis") {
-        //   newStackType = StackType.nemesis;
-        // } /*else {
-        //   value = "Is empty";
-        // }*/
         var newStack = CardsStack(
             id: stacks[index].id,
             name: stacks[index].name,
@@ -297,17 +288,6 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
           } else if (element.stackType == StackType.foe) {
             stackType = "Foe";
           }
-          // } else if (element.stackType == StackType.friendFoe) {
-          //   stackType = "Friend / Foe";
-          // } else if (element.stackType == StackType.gravehold) {
-          //   stackType = "Gravehold";
-          // } else if (element.stackType == StackType.hero) {
-          //   stackType = "Hero";
-          // } else if (element.stackType == StackType.nemesis) {
-          //   stackType = "Nemesis";
-          // } /*else {
-          //   stackType = "Is empty";
-          // }*/
           if (stackType != "" && stacks.length > typesList.length) {
             typesList.add(stackType);
             colorsList.add(element.stackColor);
@@ -372,6 +352,14 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
               ),
               () => createStack(),
             ),
+            ElevatedButton(
+                  onPressed: () {
+                    print("UpdateDeleteStackPage: Go to Hero List button pressed");
+                    context.read<HeroBloc>().add(HeroInitEvent());
+                    context.read<ProviderBloc>().add(HeroListEvent());
+                  },
+                  child: const Text("Go to Heroes", style: TextStyle(fontSize: 20)),
+                ),
           ],
         ),
       );

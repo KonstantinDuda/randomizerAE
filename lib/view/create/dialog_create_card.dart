@@ -175,6 +175,7 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
                 cardTextBeforeOr,
                 cardTextAfterOr,
                 cardType));
+            context.read<CRUDStackBloc>().add(CRUDStackInitialEvent());
             Navigator.of(context).pop();
           },
           child: const Text("Save"),

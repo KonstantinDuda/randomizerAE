@@ -40,7 +40,7 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
 
   _onNewCard(CRUDStackNewCardEvent event, Emitter<CRUDStackState> emit) async {
     print(
-        "CRUDStackBlock _onNewCard event.data == \n ${event.id} ${event.name}, ${event.isOptional}, ${event.textBeforeOr}, ${event.textAfterOr}, ${event.type} ");
+        "CRUDStackBlock _onNewCard event.data == \n ${event.id}, ${event.name}, ${event.isOptional}, ${event.textBeforeOr}, ${event.textAfterOr}, ${event.type} ");
     AECard newCard = AECard(id: event.id, text: "", imgPath: "");
     var cardName = event.name.isNotEmpty ? event.name : "";
     var cardIsOptional = event.isOptional;
@@ -110,6 +110,7 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
           }
         }
       }
+      print("CRUDStackBlock _onNewCard isOptional result == $newCard");
     }
 
     if (cardTextBeforeOr.isNotEmpty) {
@@ -131,21 +132,22 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
         print(
             "CRUDStackBlock _onNewCard newCard.id == 0 \n create newCard == $newCard");
         //db.createCard(newCard);
-        defaultData.newCard(newCard);
+        await defaultData.newCard(newCard);
+        cards.add(newCard);
       }
     } else if (newCard.text.isNotEmpty && newCard.imgPath.isNotEmpty) {
       print(
           "CRUDStackBlock _onNewCard newCard.id != 0 \n update newCard == $newCard");
       //db.updateCard(newCard);
-      defaultData.updateCard(newCard);
+      await defaultData.updateCard(newCard);
     }
 
     print("CRUDStackBlock _onNewCard newCard == $newCard");
 
-    List<AECard> newCardsList = await db.getAllCards();
-    cards = newCardsList;
+    // List<AECard> newCardsList = await db.getAllCards();
+    // cards = newCardsList;
 
-    emit(CRUDStackSuccessActionState(newCardsList, stacks));
+    emit(CRUDStackSuccessActionState(/*newCardsList*/cards, stacks));
   }
 
   // _onUpdateCard(CRUDStackUpdateCardEvent event, Emitter<CRUDStackState> emit) {
@@ -175,13 +177,11 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
     var stacksFromDB = await db.getAllStacks();
     List<CardsStack> newStacks = [];
 
-// This was commented
     var stackFromDB = await db.getStackById(event.stack.id);
     if (stackFromDB.id == 0) {
       print("CRUDStackBloc _onUpdateStack stackFromDB.id == 0");
-      db.createStack(event.stack);
+      await db.createStack(event.stack);
       newStacks = await db.getAllStacks();
-      stacks = newStacks;
       defaultData.setStacks(newStacks);
     } else {
       print("CRUDStackBloc _onUpdateStack stackFromDB.id != 0");
@@ -217,7 +217,6 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
     cards = await defaultData.getCards();
 
     emit(CRUDStackSuccessActionState(cards, newStacks));
-// This was commented
 
     print(
         "CRUDStackBloc _onUpdateStack stacks.length == ${stacksFromDB.length}, newStacks.length == ${stacks.length}");

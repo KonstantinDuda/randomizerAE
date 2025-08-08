@@ -23,6 +23,10 @@ class CreateEvent extends ProviderEvent {
 
 class HistoryProviderEvent extends ProviderEvent {}
 
+class HeroListEvent extends ProviderEvent {}
+
+class HeroCreateEvent extends ProviderEvent {}
+
 
 // States
 class ProviderState extends Equatable {
@@ -46,6 +50,10 @@ class CreateState extends ProviderState {
 
 class HistoryProviderState extends ProviderState {}
 
+class HeroListState extends ProviderState {}
+
+class HeroCreateState extends ProviderState {}
+
 
 class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
   ProviderBloc() : super(RootState()) {
@@ -54,6 +62,8 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
     on<UpdateDeleteEvent>((event, emit) => emit(UpdateDeleteState()));
     on<CreateEvent>((event, emit) => emit(CreateState(event.id)));
     on<HistoryProviderEvent>((event, emit) => emit(HistoryProviderState()));
+    on<HeroListEvent>((event, emit) => emit(HeroListState()));
+    on<HeroCreateEvent>((event, emit) => emit(HeroCreateState()));
   }
 
   _onLoad(LoadingEvent event, Emitter<ProviderState> emit) {

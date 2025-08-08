@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/crud_stack_bloc.dart';
 import 'bloc/event_state/crud_stack_es.dart';
 import 'bloc/event_state/turn_order_body_es.dart';
+import 'bloc/hero_bloc.dart';
 import 'bloc/history_bloc.dart';
 import 'bloc/turn_order_body_bloc.dart';
 import 'bloc/event_state/friend_foe_body_es.dart';
@@ -14,6 +15,8 @@ import 'bloc/providers/provider_bloc.dart';
 import 'database/default_data.dart';
 import 'view/create/create_stack_page.dart';
 import 'view/create/update_delete_stack_page.dart';
+import 'view/hero/hero_create.dart';
+import 'view/hero/hero_list.dart';
 import 'view/loading_page.dart';
 import 'view/root/root_page.dart';
 import 'view/history_page.dart';
@@ -53,6 +56,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<HistoryBloc>(
           create: (_) => HistoryBloc(),
         ),
+        BlocProvider<HeroBloc>(
+          create: (_) => HeroBloc(),//..add(HeroInitEvent()),
+        ),
       ],
       child: MaterialApp(
         home: BlocBuilder<ProviderBloc, ProviderState>(
@@ -65,7 +71,11 @@ class MyApp extends StatelessWidget {
               return CreateStackPage(state.id);
             } else if(state is HistoryProviderState) {
               return const HistoryPage();
-            } else {
+            } else if(state is HeroListState) {
+              return const HeroListPage();
+            } else if(state is HeroCreateState) {
+              return const HeroCreatePage();
+}             else {
               return const LoadingPage();
             }
           },
