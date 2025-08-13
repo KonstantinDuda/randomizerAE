@@ -54,6 +54,7 @@ class DBProvider {
             "ec_count INTEGER, "
             "ability TEXT, "
             "feature TEXT, "
+            "description TEXT, "
             //"stacks TEXT)");
             "stack_id INTEGER)");
       },
@@ -307,6 +308,7 @@ class DBProvider {
       energyClosetCount: hero.energyClosetCount,
       ability: hero.ability,
       feature: hero.feature,
+      description: hero.description,
       //stacksId: [],
       stackId: hero.heroStack.id,
     );
@@ -351,6 +353,8 @@ class DBProvider {
         heroStack: await getStackById(hDB.stackId),
         energyClosetCount: hDB.energyClosetCount,
         ability: hDB.ability,
+        feature: hDB.feature,
+        description: hDB.description,
       );
       return res;
     } else {
@@ -378,6 +382,7 @@ class DBProvider {
         energyClosetCount: hero.energyClosetCount,
         ability: hero.ability,
         feature: hero.feature,
+        description: hero.description,
         stackId: hero.heroStack.id);
 
     //var stackBefore = await getStackById(stack.id);
@@ -419,7 +424,8 @@ class DBProvider {
               heroStack: await getStackById(hsDB[i].stackId),
               energyClosetCount: hsDB[i].energyClosetCount,
               ability: hsDB[i].ability,
-              feature: hsDB[i].feature);
+              feature: hsDB[i].feature,
+              description: hsDB[i].description);
           availableList.add(hs);
         }
       }

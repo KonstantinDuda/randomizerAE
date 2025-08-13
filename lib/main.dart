@@ -15,7 +15,6 @@ import 'bloc/providers/provider_bloc.dart';
 import 'database/default_data.dart';
 import 'view/create/create_stack_page.dart';
 import 'view/create/update_delete_stack_page.dart';
-import 'view/hero/hero_create.dart';
 import 'view/hero/hero_list.dart';
 import 'view/loading_page.dart';
 import 'view/root/root_page.dart';
@@ -73,9 +72,7 @@ class MyApp extends StatelessWidget {
               return const HistoryPage();
             } else if(state is HeroListState) {
               return const HeroListPage();
-            } else if(state is HeroCreateState) {
-              return const HeroCreatePage();
-}             else {
+            } else {
               return const LoadingPage();
             }
           },

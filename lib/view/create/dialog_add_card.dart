@@ -25,53 +25,37 @@ class _AddCardToStackDialogState extends State<AddCardToStackDialog> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
-// var initCards = widget.stack.cards;
-// for (var i in widget.stack.cards) {
-//   if(cardsList.isEmpty) {
-//     cardsList.add(i);
-//   }
-//   for (var j in initCards) {
-//     print("AddCardDialog initState cardsList for (var j in initCards) i.id == ${i.id} and j.id == ${j.id}");
-//     if(i.id != j.id) {
-//        cardsList.add(i);
-//     }
-//   }
-// }
-// print("AddCardDialog initState cardsList == $cardsList");
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CRUDStackBloc, CRUDStackState>(
         builder: (context, state) {
+      if (state is CRUDStackSuccessActionState) {
+        allCards = state
+            .cards;
 
-if(state is CRUDStackSuccessActionState) {
-  allCards = state.cards; // TODO maybe I need to read only cards with stack.Type I need here
-  
-  
-  var counter = 0;
-  for (var i in allCards) {
-    namesAllCards.add(i.text.split(":")[0]);
-    for (var j in widget.stack.cards) {
-      print("AddCardDialog i.id == ${i.id}; j.id == ${j.id}");
-      if(i.id == j.id) {
-        counter++;
+        var counter = 0;
+        for (var i in allCards) {
+          namesAllCards.add(i.text.split(":")[0]);
+          for (var j in widget.stack.cards) {
+            print("AddCardDialog i.id == ${i.id}; j.id == ${j.id}");
+            if (i.id == j.id) {
+              counter++;
+            }
+            if (counter > 0) {
+              cardsList.add(j);
+            }
+          }
+          if (cardCounter.length < allCards.length) {
+            cardCounter.add(counter);
+          }
+          counter = 0;
+        }
+        print("AddCardDialog cardsList == $cardsList");
+        print("AddCardDialog cardCounter == $cardCounter");
       }
-      if(counter > 0) {
-        cardsList.add(j);
-      }
-    }
-    if(cardCounter.length < allCards.length) {
-cardCounter.add(counter);
-    }
-    counter = 0;
-  }
-  print("AddCardDialog cardsList == $cardsList");
-  print("AddCardDialog cardCounter == $cardCounter");
-}
 
       return AlertDialog(
         title: Text('Add card to ${widget.stack.name}'),
@@ -94,22 +78,22 @@ cardCounter.add(counter);
                       ),
                     )),
                     TextButton(
-                          onPressed: () {
-                            if(cardCounter[index] > 0) {
-                              setState(() {
-                                cardCounter[index]--;
-                              });
-                            }
-                          },
-                          style: TextButton.styleFrom(
-                            iconColor: Colors.black,
-                            backgroundColor: Colors.blue,
-                            shape: const CircleBorder(),
-                          ),
-                          child: const Icon(
-                            Icons.remove_outlined,
-                            size: 16,
-                          ),
+                      onPressed: () {
+                        if (cardCounter[index] > 0) {
+                          setState(() {
+                            cardCounter[index]--;
+                          });
+                        }
+                      },
+                      style: TextButton.styleFrom(
+                        iconColor: Colors.black,
+                        backgroundColor: Colors.blue,
+                        shape: const CircleBorder(),
+                      ),
+                      child: const Icon(
+                        Icons.remove_outlined,
+                        size: 16,
+                      ),
                     ),
                     Text("${cardCounter[index]}"),
                     TextButton(
@@ -144,14 +128,16 @@ cardCounter.add(counter);
             onPressed: () {
               List<AECard> newCardsList = [];
               for (var i = 0; i < cardCounter.length; i++) {
-                if(cardCounter[i] > 0) {
+                if (cardCounter[i] > 0) {
                   for (var j = 0; j < cardCounter[i]; j++) {
                     newCardsList.add(allCards[i]);
                   }
                 }
               }
-              print("AddCardDialog update ${widget.stack.name} with List<AECard> == $newCardsList \n");
-              print("AddCardDialog update ${widget.stack.name} old list == ${widget.stack.cards} \n");
+              print(
+                  "AddCardDialog update ${widget.stack.name} with List<AECard> == $newCardsList \n");
+              print(
+                  "AddCardDialog update ${widget.stack.name} old list == ${widget.stack.cards} \n");
               var newStack = CardsStack(
                   id: widget.stack.id,
                   name: widget.stack.name,

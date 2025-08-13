@@ -21,7 +21,8 @@ class DefaultData {
 
   Future<List<AECard>> getCards() async {
     if (_cards.isNotEmpty) {
-      print("Default Data getCards _cards.isNotEmpty _cards.length == ${_cards.length}");
+      print(
+          "Default Data getCards _cards.isNotEmpty _cards.length == ${_cards.length}");
       return _cards;
     } else {
       print("Default Data getCards _cards was empty");
@@ -41,6 +42,7 @@ class DefaultData {
     _cards.add(card);
     _db.createCard(card);
   }
+
   updateCard(AECard card) {
     for (var i = 0; i < _cards.length; i++) {
       if (_cards[i].id == card.id) {
@@ -66,6 +68,11 @@ class DefaultData {
     // return _stacks;
   }
 
+  newStack(CardsStack stack) async {
+    await _db.createStack(stack);
+    _stacks = await _db.getAllStacks();
+  }
+
   setStacks(List<CardsStack> newStacks) {
     _stacks = newStacks;
   }
@@ -75,8 +82,7 @@ class DefaultData {
       if (_stacks[i].id == stack.id) {
         _stacks[i] = stack;
         _db.updateStack(stack);
-        print(
-            "DefaultData updateStack stack == $stack");
+        print("DefaultData updateStack stack == $stack");
         return _stacks;
       }
     }
@@ -91,7 +97,8 @@ class DefaultData {
     } else {
       print("Default Data getHeroes friendFoeList was empty");
       friendFoeList = await _db.getAllHeroes();
-      print("Default Data getHeroes friendFoeList.length == ${friendFoeList.length}");
+      print(
+          "Default Data getHeroes friendFoeList.length == ${friendFoeList.length}");
       return friendFoeList;
     }
   }
@@ -108,10 +115,20 @@ class DefaultData {
     if (index != -1) {
       friendFoeList[index] = hero;
       _db.updateHero(hero);
-      print("DefaultData updateHero hero == $hero");
+      print("DefaultData updateHero hero == ${hero.name}");
       return friendFoeList;
+    } else {
+      print("DefaultData updateHero hero with id $id not found");
     }
-    print("DefaultData updateHero hero with id $id not found");
+  }
+
+  deleteHero(int id) async {
+    print("DefaultData deleteHero id == $id");
+    await _db.deleteHero(id);
+    friendFoeList.removeWhere((hero) => hero.id == id);
+    //friendFoeList = await _db.getAllHeroes();
+    print(
+        "DefaultData deleteHero friendFoeList.length == ${friendFoeList.length}");
   }
 
   setHeroes(List<HeroStack> newHeroes) {
@@ -131,9 +148,10 @@ class DefaultData {
       createStacks();
 
       print("DefaultData createDefaultData _cards.length == ${_cards.length}");
-      print("DefaultData createDefaultData _stacks.length == ${_stacks.length}");
-      print("DefaultData createDefaultData friendFoeList.length == ${friendFoeList.length}");
-      
+      print(
+          "DefaultData createDefaultData _stacks.length == ${_stacks.length}");
+      print(
+          "DefaultData createDefaultData friendFoeList.length == ${friendFoeList.length}");
     } else {
       _cards = firstRunCards;
       // friendFoeList = await _db.getAllHeroes();

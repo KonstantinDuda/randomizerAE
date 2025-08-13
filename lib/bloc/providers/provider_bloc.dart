@@ -25,9 +25,6 @@ class HistoryProviderEvent extends ProviderEvent {}
 
 class HeroListEvent extends ProviderEvent {}
 
-class HeroCreateEvent extends ProviderEvent {}
-
-
 // States
 class ProviderState extends Equatable {
   const ProviderState();
@@ -52,9 +49,6 @@ class HistoryProviderState extends ProviderState {}
 
 class HeroListState extends ProviderState {}
 
-class HeroCreateState extends ProviderState {}
-
-
 class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
   ProviderBloc() : super(RootState()) {
     on<LoadingEvent>(_onLoad);
@@ -63,7 +57,6 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
     on<CreateEvent>((event, emit) => emit(CreateState(event.id)));
     on<HistoryProviderEvent>((event, emit) => emit(HistoryProviderState()));
     on<HeroListEvent>((event, emit) => emit(HeroListState()));
-    on<HeroCreateEvent>((event, emit) => emit(HeroCreateState()));
   }
 
   _onLoad(LoadingEvent event, Emitter<ProviderState> emit) {

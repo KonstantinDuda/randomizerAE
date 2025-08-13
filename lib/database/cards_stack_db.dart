@@ -83,6 +83,7 @@ class HeroStackDB {
   final int energyClosetCount;
   final String ability;
   final String feature;
+  final String description;
   //final List<int> stacksId;
   final int stackId;
 
@@ -93,6 +94,7 @@ class HeroStackDB {
     required this.energyClosetCount,
     required this.ability,
     required this.feature,
+    required this.description,
     //required this.stacksId,
     required this.stackId,
 });
@@ -105,6 +107,7 @@ class HeroStackDB {
       energyClosetCount: map['ec_count'] as int,
       ability: map['ability'] as String,
       feature: map['feature'] as String,
+      description: map['description'] as String,
       //stacksId: (map['stacks'] as String?)?.split(',').map((e) => int.parse(e)).toList() ?? [],
       stackId: map['stack_id'] as int,
     );
@@ -117,6 +120,7 @@ class HeroStackDB {
       'ec_count': energyClosetCount,
       'ability': ability,
       'feature': feature,
+      'description': description,
       //'stacks': stacksId.join(','),
       'stack_id': stackId,
     };

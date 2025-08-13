@@ -124,11 +124,8 @@ class HeroStack {
   final String ability;
 
 // Support things
-  final int energyPointCount;
   final String description;
   final String feature;
-
-  final int suportThingsCount;
 
   HeroStack({
     required this.id,
@@ -138,10 +135,8 @@ class HeroStack {
     required this.heroStack,
     required this.energyClosetCount,
     required this.ability,
-    this.energyPointCount = 0,
     this.description = "",
     this.feature = "",
-    this.suportThingsCount = 0,
   });
 
   const HeroStack.empty({
@@ -152,10 +147,8 @@ class HeroStack {
     this.heroStack = const CardsStack.empty(),
     this.energyClosetCount = 0,
     this.ability = '',
-    this.energyPointCount = 0,
     this.description = "",
     this.feature = "",
-    this.suportThingsCount = 0,
   });
   // TODO: add toJson and fromJson methods
 

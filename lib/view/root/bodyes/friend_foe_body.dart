@@ -122,11 +122,11 @@ class _FriendFoeBody extends State<FriendFoeBody> {
         List<Widget> closets = [];
 
         var energyCC = isHeroEmpty ? 0 : hero.energyClosetCount;
-        var energyPC = isHeroEmpty ? 0 : hero.energyPointCount;
+        //var energyPC = isHeroEmpty ? 0 : hero.energyPointCount;
 
-        if (energyPC > energyCC) {
-          energyPC -= energyCC;
-        }
+        // if (energyPC > energyCC) {
+        //   energyPC -= energyCC;
+        // }
         if (energyCC > 0) {
           for (int i = 0; i < energyCC; i++) {
             closets.add(
@@ -135,7 +135,7 @@ class _FriendFoeBody extends State<FriendFoeBody> {
                 height: 50,
                 margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                 decoration: BoxDecoration(
-                  color: i < energyPC ? Colors.blue : Colors.white,
+                  color: /*i < energyPC ? Colors.blue :*/ Colors.white,
                   border: Border.all(
                     color: Colors.black,
                     width: 2,

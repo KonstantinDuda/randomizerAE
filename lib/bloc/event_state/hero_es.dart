@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 
 import '../../database/cards_stack.dart';
 
+// Events
 class HeroEvent extends Equatable {
   const HeroEvent();
 
@@ -11,23 +12,24 @@ class HeroEvent extends Equatable {
 
 class HeroInitEvent extends HeroEvent {}
 
-class HeroCreateEvent extends HeroEvent {
-  final HeroStack heroStack;
+class HeroNextPrevEvent extends HeroEvent {
+  final int index;
 
-  const HeroCreateEvent(this.heroStack);
+  const HeroNextPrevEvent(this.index);
 
   @override
-  List<Object?> get props => [heroStack];
+  List<Object?> get props => [index];
 }
 
-class HeroUpdateEvent extends HeroEvent {
-  final int id;
-  final HeroStack heroStack;
+class HeroCreateEvent extends HeroEvent {}
 
-  const HeroUpdateEvent(this.id, this.heroStack);
+class HeroSaveEvent extends HeroEvent {
+  final HeroStack hero;
+
+  const HeroSaveEvent(this.hero);
 
   @override
-  List<Object?> get props => [id, heroStack];
+  List<Object?> get props => [hero];
 }
 
 class HeroDeleteEvent extends HeroEvent {
@@ -39,6 +41,17 @@ class HeroDeleteEvent extends HeroEvent {
   List<Object?> get props => [id];
 }
 
+class HeroChangeStackEvent extends HeroEvent {
+  final HeroStack hero;
+  final CardsStack stack;
+
+  const HeroChangeStackEvent(this.hero, this.stack);
+
+  @override
+  List<Object?> get props => [hero, stack];
+}
+
+// States
 class HeroState extends Equatable {
   const HeroState();
 
@@ -47,12 +60,13 @@ class HeroState extends Equatable {
 }
 
 class HeroSuccessState extends HeroState {
-  final List<HeroStack> heroStacks;
+  final int index;
+  final HeroStack heroStack;
 
-  const HeroSuccessState(this.heroStacks);
+  const HeroSuccessState(this.index, this.heroStack);
 
   @override
-  List<Object?> get props => [heroStacks];
+  List<Object?> get props => [index, heroStack];
 }
 
 class HeroErrorState extends HeroState {
