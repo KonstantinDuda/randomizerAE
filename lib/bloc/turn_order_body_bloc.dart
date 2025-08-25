@@ -18,6 +18,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     on<TurnOrderBodyDelWildEvent>(_onDelWild);
     on<TurnOrderBodyShuffleEvent>(_onShuffle);
     on<TurnOrderBodyShuffleInStackEvent>(_onShuffleIn);
+    on<TurnOrderBodyPutInButtom>(_onPutInTheButtom);
     on<TurnOrderBodyChangeSequenceEvent>(_onChangeSequence);
     on<TurnOrderBodyChangeActiveStackEvent>(_onChangeActiveStack);
     on<TurnOrderBodyClearStackEvent>(_onClearStack);
@@ -273,6 +274,26 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     }
 
     emit(TurnOrderBodySuccessActionState(/*newStack*/ stack, alreadyPlayed));
+  }
+
+  _onPutInTheButtom(TurnOrderBodyPutInButtom event, Emitter<TurnOrderBodyState> emit) {
+    print("TurnOrderBodyBloc _onPutInTheButtom event.text == ${event.text} \n");
+
+    AECard card = AECard(id: 0, text: "", imgPath: "");
+    for (var i = 0; i < alreadyPlayed.cards.length; i++) {
+      if (alreadyPlayed.cards[i].text == event.text) {
+        print("TurnOrderBodyBloc _onPutInTheButtom found card to put in the buttom: ${alreadyPlayed.cards[i]} \n");
+        card = alreadyPlayed.cards[i];
+        alreadyPlayed.cards.removeAt(i);
+        break;
+      }
+    }
+
+    if (card.id > 0) {
+      stack.cards.insert(0, card);
+    }
+
+    emit(TurnOrderBodySuccessActionState(stack, alreadyPlayed));
   }
 
   void _onChangeSequence(TurnOrderBodyChangeSequenceEvent event,

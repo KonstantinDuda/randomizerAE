@@ -252,7 +252,6 @@ class _FriendFoeBody extends State<FriendFoeBody> {
               ],
             ),
 
-            // Back to turn order deck
             Container(
               width: contentContainerSize.width,
               height: contentContainerSize.height,
@@ -266,6 +265,7 @@ class _FriendFoeBody extends State<FriendFoeBody> {
               ),
               child: Column(
                 children: <Widget>[
+                  // Back to turn order deck
                   TextButton(
                     style: ButtonStyle(
                       backgroundColor: WidgetStateProperty.all(Colors.blue),
@@ -357,6 +357,7 @@ class _FriendFoeBody extends State<FriendFoeBody> {
                             ],
                           ),
                           const VerticalDivider(),
+                          // Already played
                           SizedBox(
                             width: MediaQuery.of(context).size.width -
                                 mainObjSize.width -

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
 
 import 'bloc/crud_stack_bloc.dart';
 import 'bloc/event_state/crud_stack_es.dart';
@@ -27,6 +28,11 @@ void main() {
   defaultData.createDefaultData();
   
   Bloc.observer = SimpleBlocObserver();
+
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp, // Normal Portrait
+    DeviceOrientation.portraitDown, // Upside-Down Portrait
+  ]);
   
   runApp(
     BlocProvider(create: (context) => ProviderBloc(), child: const MyApp()),

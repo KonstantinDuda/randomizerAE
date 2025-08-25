@@ -50,15 +50,7 @@ class _HeroListPageState extends State<HeroListPage> {
           description = hero.description;
           feature = hero.feature;
           ability = hero.ability;
-        } else {/*if(hero.id == 0) {
-          name == "" ? name = hero.name : name;
-          //isFriend = hero.isFriend;
-          energyClosetCount == 0 ? energyClosetCount = hero.energyClosetCount : energyClosetCount;
-          //heroStack.id == 0 ? heroStack = hero.heroStack : const CardsStack.empty();
-          description == "" ? description = hero.description : description;
-          //feature == "" ? feature = hero.feature : feature;
-          ability == "" ? ability = hero.ability : ability;
-          print("HeroListPage: hero.id == id");*/
+        } else {
           heroStack = hero.heroStack;
           print("HeroListPage: state is HeroSuccessState. hero.id == id");
         }

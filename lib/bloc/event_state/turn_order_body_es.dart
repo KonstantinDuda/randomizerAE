@@ -32,6 +32,14 @@ class TurnOrderBodyShuffleInStackEvent extends TurnOrderBodyEvent {
   List<Object> get props => [text];
 }
 
+class TurnOrderBodyPutInButtom extends TurnOrderBodyEvent {
+  final String text;
+  const TurnOrderBodyPutInButtom(this.text);
+
+  @override
+  List<Object> get props => [text];
+}
+
 class TurnOrderBodyChangeSequenceEvent extends TurnOrderBodyEvent {
   final List<AECard> list;
   
