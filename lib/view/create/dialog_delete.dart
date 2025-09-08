@@ -56,6 +56,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
             } else {
               print("DialogDelete isCard == false, isStack == false");
             }
+            context.read<CRUDStackBloc>().add(CRUDStackInitialEvent()); // Addad 08.09.2025
             Navigator.of(context).pop();
           },
           child: const Text("Delete"),

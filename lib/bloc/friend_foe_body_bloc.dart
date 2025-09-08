@@ -24,7 +24,7 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
   _onInit(
       FriendFoeBodyInitialEvent event, Emitter<FriendFoeBodyState> emit) async {
     // Friend Initialisation
-    print("\n FriendFoeBodyBloc _onInit event.stackId == ${event.stackId} \n");
+    //print("\n FriendFoeBodyBloc _onInit event.stackId == ${event.stackId} \n");
 
     var heroToReturn = const HeroStack.empty();
     var stackToReturn = const CardsStack.empty();
@@ -34,6 +34,7 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
 
     Future<HeroStack> heroCheck(
         HeroStack hero, CardsStack alreadyPlayed, bool isFriend) async {
+// print("FriendFoeBodyBloc _onInit heroCheck hero == $hero");
       if (hero.id == 0) {
         var first = allHeroes.firstWhere((el) =>
             el.heroStack.id != 0 &&
@@ -41,7 +42,12 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
             el.isFriend == isFriend);
         if (first.heroStack.cards.isNotEmpty) {
           hero = first;
+          // print("\t FriendFoeBodyBloc _onInit heroCheck "
+          //     "first.heroStack.cards == ${hero.heroStack.cards} \n");
           hero.heroStack.cards.shuffle();
+          hero.heroStack.cards.shuffle();
+          // print("\t FriendFoeBodyBloc _onInit heroCheck "
+          //     "first.heroStack.cards == ${hero.heroStack.cards} \n");
         } else {
           var stack = await db.getStackById(first.heroStack.id);
           stack.cards.shuffle();
@@ -53,16 +59,13 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
               energyClosetCount: first.energyClosetCount,
               ability: first.ability);
         }
-        return hero;
-      } else {
-        return hero;
       }
+
+      return hero;
     }
 
     friend = await heroCheck(friend, friendAlreadyPlayed, true);
     foe = await heroCheck(foe, foeAlreadyPlayed, false);
-    print("FriendFoeBodyBloc _onInit after heroChecks "
-        "friend == $friend \n \t foe == $foe");
 
     
     // Friend and Foe ids != 0
@@ -107,12 +110,12 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
       foe = heroToReturn;
       foeAlreadyPlayed = stackToReturn;
     }
-    
-    print("FriendFoeBodyBloc _onInit after stackCheck "
-        "friend == $friend \n \t foe == $foe");
 
-    print("FriendFoeBodyBloc _onInit heroToReturn == $heroToReturn \n"
-        "\t stackToReturn == $stackToReturn");
+    // print("FriendFoeBodyBloc _onInit after stackCheck "
+    //     "friend == $friend \n \t foe == $foe");
+
+    // print("FriendFoeBodyBloc _onInit heroToReturn == $heroToReturn \n"
+    //     "\t stackToReturn == $stackToReturn");
 
     emit(FriendFoeBodySuccessActionState(heroToReturn, stackToReturn));
   }
@@ -202,8 +205,8 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
 
   _onChangeActiveStack(FriendFoeChangeActiveStackEvent event,
       Emitter<FriendFoeBodyState> emit) async {
-    print(
-        "FriendFoeBodyBloc _onChangeActiveStack event.stackId == ${event.stackId} \n");
+    // print(
+    //     "FriendFoeBodyBloc _onChangeActiveStack event.stackId == ${event.stackId} \n");
 
     var heroToReturn = const HeroStack.empty();
     var stackToReturn = const CardsStack.empty();
@@ -212,8 +215,8 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
 
     checkAllHeroes(CardsStack alreadyPlayed) async {
       allHeroes = await defaultData.getHeroes();
-      print(
-          "FriendFoeBodyBloc _onChangeActiveStack checkAllHeroes allHeroes.length == ${allHeroes.length} \n");
+      // print(
+      //     "FriendFoeBodyBloc _onChangeActiveStack checkAllHeroes allHeroes.length == ${allHeroes.length} \n");
       var hero = allHeroes
           .firstWhere((el) => el.heroStack.id != 0 && el.heroStack.isActive);
       if (hero.id == 0) {
@@ -264,17 +267,17 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
 
     await friendFoeCheck(friend, friendAlreadyPlayed);
     await friendFoeCheck(foe, foeAlreadyPlayed);
-    print("FriendFoeBodyBloc _onChangeActiveStack after checks "
-        "friend == $friend, \n \t foe == $foe");
+    // print("FriendFoeBodyBloc _onChangeActiveStack after checks "
+    //     "friend == $friend, \n \t foe == $foe");
 
 
 // Check if we came here from Turn order page by toching the Friend or Foe card
     if (event.stackId == -1) {
-      print("came here from Turn order page by toching the Friend card");
+      // print("came here from Turn order page by toching the Friend card");
       heroToReturn = friend;
       stackToReturn = friendAlreadyPlayed;
     } else if (event.stackId == -2) {
-      print("came here from Turn order page by toching the Foe card");
+      // print("came here from Turn order page by toching the Foe card");
       heroToReturn = foe;
       stackToReturn = foeAlreadyPlayed;
     } else if (event.stackId > 0) {
@@ -324,13 +327,13 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
         }
       }
     } else {
-      print("FriendFoeBodyBloc _onChangeActiveStack event.id == 0");
+      // print("FriendFoeBodyBloc _onChangeActiveStack event.id == 0");
     }
 
-    print(
-        "FriendFoeBodyBloc _onChangeActiveStack friend == $friend, \n \t foe == $foe");
-    print(
-        "FriendFoeBodyBloc _onChangeActiveStack heroToReturn == $heroToReturn, \n \t stackToReturn == $stackToReturn");
+    // print(
+    //     "FriendFoeBodyBloc _onChangeActiveStack friend == $friend, \n \t foe == $foe");
+    // print(
+    //     "FriendFoeBodyBloc _onChangeActiveStack heroToReturn == $heroToReturn, \n \t stackToReturn == $stackToReturn");
     emit(FriendFoeBodySuccessActionState(heroToReturn, stackToReturn));
   }
 }

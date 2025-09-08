@@ -49,7 +49,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
       late List<AECard> even = [];
       late List<AECard> odd = [];
       List<Widget> varGridList = [];
-      late Widget gridListSecondObj;
+      //late Widget gridListSecondObj;
 
       gridObj(String text, bool newObj) {
         //print("root_body.dart gridObj()");
@@ -243,16 +243,16 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
         if (myController.hasClients) {
           var listViewWidth =
               varGridList.length * (contetnBodySize.height / 3);
-          var jumpToValue = myController.position.maxScrollExtent + 
-              contetnBodySize.height / 3;
+          // var jumpToValue = myController.position.maxScrollExtent + 
+          //     contetnBodySize.height / 3;
           var jumpNewTry = listViewWidth - bodyContainerSize.width +
               30; // +30 щоб не обрізало останній елемент
           //(contetnBodySize.height / 3);
           if (listViewWidth > bodyContainerSize.width) {
-            print("varGridList.width == $listViewWidth "
-                " bodyContainerSize.width == ${bodyContainerSize.width} "
-                " jumpNewTry == $jumpNewTry "
-                " jumpToValue == $jumpToValue");
+            // print("varGridList.width == $listViewWidth "
+            //     " bodyContainerSize.width == ${bodyContainerSize.width} "
+            //     " jumpNewTry == $jumpNewTry "
+            //     " jumpToValue == $jumpToValue");
             myController.jumpTo(jumpNewTry);
           }
         }

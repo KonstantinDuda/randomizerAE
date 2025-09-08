@@ -117,6 +117,39 @@ class DBProvider {
   void deleteCard(int id) async {
     final db = await getDatabase;
     await db.delete(cardsTableName, where: "id = ?", whereArgs: [id]);
+
+    // Delete card from all stacks // Addad 08.09.2025
+    List<Map<String, dynamic>> maps = await db.query(stackTableName);
+    List<CardsStackDB> allStacks = [];
+    if(maps.isNotEmpty) {
+      for (var element in maps) {
+        allStacks.add(CardsStackDB.fromMap(element));
+      }
+    }
+    for (var stack in allStacks) {
+      var cardIds = stack.cardsId;
+      cardIds.removeWhere((card) => card == id);
+      if(cardIds.length != stack.cardsId.length && cardIds.isNotEmpty) {
+        CardsStackDB newStack = CardsStackDB(
+          id: stack.id,
+          name: stack.name,
+          isStandart: stack.isStandart,
+          stackType: stack.stackType,
+          stackColor: stack.stackColor,
+          cardsId: cardIds);
+
+        List<AECard> cardList = [];
+        for (var id in cardIds) {
+          cardList.add(await getCardById(id));
+        }
+      print("DBProvider deleteCard() newStack after remove cardId $id == $newStack");
+      CardsStack stackToUpdate = const CardsStack.empty();
+      stackToUpdate.csDBToCS(newStack, cardList);
+      await updateStack(stackToUpdate);
+      } else {
+        print("DBProvider deleteCard() stack ${stack.id} not need to update");
+      }
+    }
   }
 
   Future<List<AECard>> getAllCards() async {
@@ -247,6 +280,7 @@ class DBProvider {
     List<CardsStack> availableList = [];
     if (maps.isNotEmpty) {
       for (var element in maps) {
+        //print("DBProvider _pullCardsToStack element == $element");
         csDB.add(CardsStackDB.fromMap(element));
       }
 

@@ -2,6 +2,21 @@ import 'dart:ui';
 
 import 'cards_stack.dart';
 
+/// class CardsStackDB {
+///
+///   final int id;
+///
+///   final String name;
+///
+///   final bool isStandart;
+///
+///   final StackType stackType;
+///
+///   final Color stackColor;
+///
+///   final List<int> cardsId;
+
+
 class CardsStackDB {
   final int id;
   final String name;
@@ -17,17 +32,38 @@ class CardsStackDB {
     required this.stackType,
     required this.stackColor,
     required this.cardsId,
-});
+  });
 
   factory CardsStackDB.fromMap(Map<String, dynamic> map) {
-    return CardsStackDB(
-      id: map['id'] as int,
-      name: map['name'] as String,
-      isStandart: map['is_standart'] == 1 ? true : false,
-      stackType: _parseStackType(map['stack_type']),
-      stackColor: Color(map['stack_color']),
-      cardsId: (map['cards'] as String?)?.split(',').map((e) => int.parse(e)).toList() ?? [],
+    // return CardsStackDB(
+    //   id: map['id'] as int,
+    //   name: map['name'] as String,
+    //   isStandart: map['is_standart'] == 1 ? true : false,
+    //   stackType: _parseStackType(map['stack_type']),
+    //   stackColor: Color(map['stack_color']),
+    //   cardsId: (map['cards'] as String?)?.split(',').map((e) => int.parse(e)).toList() ?? [],
+    // );
+
+    var id = map['id'] as int;
+    var name = map['name'] as String;
+    var isStandart = map['is_standart'] == 1 ? true : false;
+    var stackType = _parseStackType(map['stack_type']);
+    var stackColor = Color(map['stack_color']);
+    var cardsIdString = (map['cards'] as String);
+    List<int> cardsIDs = [];
+    if (cardsIdString.isNotEmpty) {
+      cardsIDs = cardsIdString.split(',').map((e) => int.parse(e)).toList();
+    }
+    var result = CardsStackDB(
+      id: id,
+      name: name,
+      isStandart: isStandart,
+      stackType: stackType,
+      stackColor: stackColor,
+      cardsId: cardsIDs,
     );
+
+    return result;
   }
 
   Map<String, Object?> toMap() {
@@ -47,14 +83,17 @@ class CardsStackDB {
 
   static StackType _parseStackType(String type) {
     switch (type) {
-      case 'StackType.turnOrder': return StackType.turnOrder; // StackType.turnOrder
+      case 'StackType.turnOrder':
+        return StackType.turnOrder; // StackType.turnOrder
       //case 'StackType.friendFoe': return StackType.friendFoe;
-      case 'StackType.friend': return StackType.friend;
-      case 'StackType.foe': return StackType.foe;
+      case 'StackType.friend':
+        return StackType.friend;
+      case 'StackType.foe':
+        return StackType.foe;
       // case 'StackType.gravehold': return StackType.gravehold;
       // case 'StackType.hero': return StackType.hero;
       // case 'StackType.nemesis': return StackType.nemesis;
-      default: 
+      default:
         return StackType.turnOrder;
     }
   }
@@ -65,15 +104,14 @@ class CardsStackDB {
       listInt.add(element.id);
     }
 
-      //print("CardsStackDB fromAECardToListInt listId == $listInt");
+    //print("CardsStackDB fromAECardToListInt listId == $listInt");
     return listInt;
   }
 
   @override
   String toString() {
-    return "CardsStackDB{id: $id, name: $name, isStandart: $isStandart, \n stackType: $stackType, cardsId: $cardsId} \n"; //stackColor: $stackColor, cardsId: $cardsId}";
+    return "CardsStackDB{id: $id, name: $name, cardsId: $cardsId} \n";
   }
-  
 }
 
 class HeroStackDB {
@@ -97,7 +135,7 @@ class HeroStackDB {
     required this.description,
     //required this.stacksId,
     required this.stackId,
-});
+  });
 
   factory HeroStackDB.fromMap(Map<String, dynamic> map) {
     return HeroStackDB(
@@ -137,7 +175,7 @@ class HeroStackDB {
       listInt.add(element.id);
     }
 
-      //print("HeroStackDB fromCardsStackToListInt listId == $listInt");
+    //print("HeroStackDB fromCardsStackToListInt listId == $listInt");
     return listInt;
   }
 
@@ -145,5 +183,4 @@ class HeroStackDB {
   String toString() {
     return "HeroStackDB{id: $id, name: $name, stackId: $stackId} \n";
   }
-  
 }

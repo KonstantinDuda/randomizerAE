@@ -27,6 +27,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
   void _onInit(
       TurnOrderInitialEvent event, Emitter<TurnOrderBodyState> emit) async {
+        print("TurnOrderBodyBloc _onInit stack == $stack \n");
     if (stack.id == 0) {
       var stackList = await db.getAvailableStacks();
       //var stackList = await data.getStacks();
@@ -136,7 +137,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
       stack = stackList.isNotEmpty ? stackList.first : const CardsStack.empty();
       stack.cards.shuffle();
-      // print("TurnOrderBodyBloc _onInit stack.id == 0 stack == $stack \n");
+      print("TurnOrderBodyBloc _onInit stack.id == 0 stack == $stack \n");
     } else {
       print(
           "TurnOrderBodyBloc _onInit stack.id != 0 \n stack.cards == ${stack.cards} \n alreadyPlayed.cards == ${alreadyPlayed.cards}");
@@ -327,6 +328,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     } else {
       var dbStack = await db.getStackById(event.id);
       stack = dbStack;
+      stack.cards.shuffle();
       alreadyPlayed = const CardsStack.empty();
 
       emit(TurnOrderBodySuccessActionState(dbStack, const CardsStack.empty()));

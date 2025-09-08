@@ -160,9 +160,8 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
       CRUDStackDeleteCardEvent event, Emitter<CRUDStackState> emit) async {
     print("CRUDStackBloc _onDeleteCard card.id == ${event.id}");
 
-    //db.deleteCard(event.id);
-
-    //cards = await db.getAllCards();
+    defaultData.deleteCard(event.id);
+    cards = await defaultData.getCards();
 
     emit(CRUDStackSuccessActionState(cards, stacks));
   }
@@ -260,14 +259,11 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
 
   _onDeleteStack(
       CRUDStackDeleteStackEvent event, Emitter<CRUDStackState> emit) async {
-    //var stackFromDB = await db.getStackById(event.id);
     print("CRUDStackBloc _onDeleteStack delete ${event.id}?");
-    // db.deleteStack(event.id);
+    defaultData.deleteStack(event.id);
+    stacks = await defaultData.getStacks();
 
-    // var newStacks = await db.getAllStacks();
-    // stacks = newStacks;
-
-    // emit(CRUDStackSuccessActionState(cards, newStacks));
+    emit(CRUDStackSuccessActionState(cards, stacks));
   }
 
   _onDBData(CRUDDataFromDBEvent event, Emitter<CRUDStackState> emit) async {

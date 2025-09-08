@@ -19,126 +19,123 @@ class DefaultData {
     return _dbProvider;
   }
 
+// Cards
   Future<List<AECard>> getCards() async {
     if (_cards.isNotEmpty) {
-      print(
-          "Default Data getCards _cards.isNotEmpty _cards.length == ${_cards.length}");
       return _cards;
     } else {
-      print("Default Data getCards _cards was empty");
       _cards = await _db.getAllCards();
-      print("Default Data getCards _cards.length == ${_cards.length}");
       return _cards;
     }
-    // _cards = await _db.getAllCards();
-    // return _cards;
   }
-
   setCards(List<AECard> newCards) {
     _cards = newCards;
   }
-
   newCard(AECard card) {
     _cards.add(card);
     _db.createCard(card);
   }
-
   updateCard(AECard card) {
     for (var i = 0; i < _cards.length; i++) {
       if (_cards[i].id == card.id) {
         _cards[i] = card;
         _db.updateCard(card);
-        print("DefaultData updateCard card == $card");
+        // print("DefaultData updateCard card == $card");
         return _cards;
       }
     }
   }
-
-  Future<List<CardsStack>> getStacks() async {
-    if (_stacks.isNotEmpty) {
-      print("Default Data getStacks _stacks.length == ${_stacks.length}");
-      return _stacks;
-    } else {
-      print("Default Data getStacks _stacks was empty");
-      _stacks = await _db.getAllStacks();
-      print("Default Data getStacks _stacks.length == ${_stacks.length}");
-      return _stacks;
-    }
-    // _stacks = await _db.getAllStacks();
-    // return _stacks;
+  deleteCard(int id) {
+    _db.deleteCard(id);
+    _cards.removeWhere((card) => card.id == id);
   }
 
+// Stacks
+  Future<List<CardsStack>> getStacks() async {
+    if (_stacks.isNotEmpty) {
+      return _stacks;
+    } else {
+      _stacks = await _db.getAllStacks();
+      return _stacks;
+    }
+  }
   newStack(CardsStack stack) async {
     await _db.createStack(stack);
     _stacks = await _db.getAllStacks();
   }
-
   setStacks(List<CardsStack> newStacks) {
     _stacks = newStacks;
   }
-
   updateStack(CardsStack stack) {
     for (var i = 0; i < _stacks.length; i++) {
       if (_stacks[i].id == stack.id) {
         _stacks[i] = stack;
         _db.updateStack(stack);
-        print("DefaultData updateStack stack == $stack");
+        // // print("DefaultData updateStack stack == $stack");
         return _stacks;
       }
     }
     return _stacks;
   }
+  deleteStack(int id) {
+    _db.deleteStack(id);
+    _stacks.removeWhere((stack) => stack.id == id);
+  }
 
+// Heroes
   Future<List<HeroStack>> getHeroes() async {
     if (friendFoeList.isNotEmpty) {
-      print(
-          "Default Data getHeroes friendFoeList.length == ${friendFoeList.length}");
       return friendFoeList;
     } else {
-      print("Default Data getHeroes friendFoeList was empty");
       friendFoeList = await _db.getAllHeroes();
-      print(
-          "Default Data getHeroes friendFoeList.length == ${friendFoeList.length}");
       return friendFoeList;
     }
   }
-
+  HeroStack getHeroByStackId(int stackId) {
+    for (var element in friendFoeList) {
+      // if (element.heroStacks.isNotEmpty) {
+      //   if (element.heroStacks[0].id == stackId) {
+      if (element.heroStack.id == stackId) {
+        // print(
+          //  "DefaultData getHeroByStackId element.heroStack.id == ${element.heroStack.id}");
+        return element;
+        //}
+      } else {
+        // print("getHeroByStackId element.heroStacks.isEmpty");
+      }
+    }
+    return const HeroStack.empty();
+  }
   newHero(HeroStack hero) async {
     //friendFoeList.add(hero);
     _db.createHero(hero);
     friendFoeList = await _db.getAllHeroes();
-    print("DefaultData newHero hero == $hero");
+    // // print("DefaultData newHero hero == $hero");
   }
-
   updateHero(int id, HeroStack hero) async {
     int index = friendFoeList.indexWhere((hero) => hero.id == id);
     if (index != -1) {
       friendFoeList[index] = hero;
       _db.updateHero(hero);
-      print("DefaultData updateHero hero == ${hero.name}");
+      // print("DefaultData updateHero hero == ${hero.name}");
       return friendFoeList;
     } else {
-      print("DefaultData updateHero hero with id $id not found");
+      // print("DefaultData updateHero hero with id $id not found");
     }
   }
-
   deleteHero(int id) async {
-    print("DefaultData deleteHero id == $id");
     await _db.deleteHero(id);
     friendFoeList.removeWhere((hero) => hero.id == id);
-    //friendFoeList = await _db.getAllHeroes();
-    print(
-        "DefaultData deleteHero friendFoeList.length == ${friendFoeList.length}");
   }
-
   setHeroes(List<HeroStack> newHeroes) {
     friendFoeList = newHeroes;
   }
 
+// Default Data
   createDefaultData() async {
     var firstRunCards = await _db.getAllCards();
     if (firstRunCards.isEmpty) {
-      print("DefaultData createDefaultData firstRun = true");
+      // print("DefaultData createDefaultData firstRun = true");
       createTurnOrderData();
       //checkCards();
       createCards();
@@ -146,20 +143,9 @@ class DefaultData {
       createFriendFoeHeroes();
       //checkStacks();
       createStacks();
-
-      print("DefaultData createDefaultData _cards.length == ${_cards.length}");
-      print(
-          "DefaultData createDefaultData _stacks.length == ${_stacks.length}");
-      print(
-          "DefaultData createDefaultData friendFoeList.length == ${friendFoeList.length}");
     } else {
       _cards = firstRunCards;
-      // friendFoeList = await _db.getAllHeroes();
-      // _stacks = await _db.getAllStacks();
-      print(
-          "DefaultData createDefaultData firstRun.length == ${firstRunCards.length}");
     }
-    print("DefaultData createDefaultData is called \n");
   }
 
   createTurnOrderData() {
@@ -384,7 +370,7 @@ class DefaultData {
               "Feed the ritual: Volatile Pylon gains 2 2 life. Then remove a power token "
               "from Ritual of Flame three times");
 
-      print("DefaultData createFriendFoeHeroes with Empty heroStacks");
+      // print("DefaultData createFriendFoeHeroes with Empty heroStacks");
       friendFoeList.clear();
       friendFoeList.addAll([
         dalanaTheHealer,
@@ -402,30 +388,12 @@ class DefaultData {
     }
   }
 
-  HeroStack getHeroByStackId(int stackId) {
-    for (var element in friendFoeList) {
-      // if (element.heroStacks.isNotEmpty) {
-      //   if (element.heroStacks[0].id == stackId) {
-      if (element.heroStack.id == stackId) {
-        print(
-            //    "DefaultData getHeroByStackId element.heroStacks[0].id == ${element.heroStacks[0].id}");
-            "DefaultData getHeroByStackId element.heroStack.id == ${element.heroStack.id}");
-        return element;
-        //}
-      } else {
-        print("getHeroByStackId element.heroStacks.isEmpty");
-      }
-    }
-    return const HeroStack.empty();
-  }
-
 // Friend Foe Cards
-
   void addCardsToDB() async {
     for (var element in _cards) {
       _db.createCard(element);
     }
-    print("DefaultData FriendFoeData addCardsToDB in comment now");
+    // print("DefaultData FriendFoeData addCardsToDB in comment now");
   }
 
   createCards() {
@@ -706,6 +674,7 @@ class DefaultData {
     _ffCards.add(cardABF);
     _ffCards.add(cardAB);
     _ffCards.add(cardAPS);
+    
     _ffCards.add(cardMAS);
     _ffCards.add(cardMA);
     _ffCards.add(cardMD);
@@ -743,17 +712,17 @@ class DefaultData {
   void checkStacks() async {
     var listFDB = await _db.getFriendFoeStacks();
     if (listFDB.length <= 12) {
-      print("DefaultData FriendFoeData checkStacks listFDB.length <= 7");
+      // print("DefaultData FriendFoeData checkStacks listFDB.length <= 7");
       createStacks();
     } else {
-      print("DefaultData FriendFoeData checkStacks listFDB.length > 7");
+      // print("DefaultData FriendFoeData checkStacks listFDB.length > 7");
       if (friendFoeList.isNotEmpty) {
         if (friendFoeList.length < 8) {
           friendFoeList.clear();
           createFriendFoeHeroes();
         }
       } else {
-        print("DefaultData FriendFoeData checkStacks friendFoeList.isEmpty");
+        // print("DefaultData FriendFoeData checkStacks friendFoeList.isEmpty");
         createFriendFoeHeroes();
       }
     }
@@ -793,8 +762,8 @@ class DefaultData {
 
     _stacks.add(dalanaTheHealerStack);
     _db.createStack(dalanaTheHealerStack);
-    print(
-        "DefaultData FriendFoeData createStacks dalanaTheHealerStack.name == ${dalanaTheHealerStack.name}");
+    // print(
+      //  "DefaultData FriendFoeData createStacks dalanaTheHealerStack.name == ${dalanaTheHealerStack.name}");
 
     List<AECard> theScavengerList = [
       _ffCards[4],
@@ -822,8 +791,8 @@ class DefaultData {
     friendFoeList.insert(1, scavengerWithStack);
     _stacks.add(theScavengerStack);
     _db.createStack(theScavengerStack);
-    print(
-        "DefaultData FriendFoeData createStacks theScavengerStack.name == ${theScavengerStack.name}");
+    // print(
+      //  "DefaultData FriendFoeData createStacks theScavengerStack.name == ${theScavengerStack.name}");
 
     List<AECard> adelheimList = [
       _ffCards[8],
@@ -851,8 +820,8 @@ class DefaultData {
     _stacks.add(adelheimTheBlacksmithStack);
     _db.createStack(adelheimTheBlacksmithStack);
 
-    print(
-        "DefaultData FriendFoeData createStacks adelheimTheBlacksmithStack.name == ${adelheimTheBlacksmithStack.name}");
+    // print(
+      //  "DefaultData FriendFoeData createStacks adelheimTheBlacksmithStack.name == ${adelheimTheBlacksmithStack.name}");
 
     List<AECard> myrnaList = [
       _ffCards[12],
@@ -880,8 +849,8 @@ class DefaultData {
     friendFoeList.insert(3, myrnaWithStack);
     _stacks.add(myrnaTheScholarStack);
     _db.createStack(myrnaTheScholarStack);
-    print(
-        "DefaultData FriendFoeData createStacks myrnaTheScholarStack.name == ${myrnaTheScholarStack.name}");
+    // print(
+      //  "DefaultData FriendFoeData createStacks myrnaTheScholarStack.name == ${myrnaTheScholarStack.name}");
 
     List<AECard> fawnList = [
       _ffCards[16],
@@ -908,8 +877,8 @@ class DefaultData {
     friendFoeList.insert(4, fawnWithStack);
     _stacks.add(fawnTheAlchemistStack);
     _db.createStack(fawnTheAlchemistStack);
-    print(
-        "DefaultData FriendFoeData createStacks fawnTheAlchemistStack.name == ${fawnTheAlchemistStack.name}");
+    // print(
+      //  "DefaultData FriendFoeData createStacks fawnTheAlchemistStack.name == ${fawnTheAlchemistStack.name}");
 
     List<AECard> corrosionList = [
       _ffCards[20],
@@ -936,8 +905,8 @@ class DefaultData {
     friendFoeList.insert(5, corrosionWithStack);
     _stacks.add(theCorrosionStack);
     _db.createStack(theCorrosionStack);
-    print(
-        "DefaultData FriendFoeData createStacks theCorrosionStack.name == ${theCorrosionStack.name}");
+    // print(
+      //  "DefaultData FriendFoeData createStacks theCorrosionStack.name == ${theCorrosionStack.name}");
 
     List<AECard> swarmList = [
       _ffCards[24],
@@ -964,8 +933,8 @@ class DefaultData {
     friendFoeList.insert(6, swarmWithStack);
     _stacks.add(theSwarmStack);
     _db.createStack(theSwarmStack);
-    print(
-        "DefaultData FriendFoeData createStacks theSwarmStack.name == ${theSwarmStack.name}");
+    // print(
+      //  "DefaultData FriendFoeData createStacks theSwarmStack.name == ${theSwarmStack.name}");
 
     List<AECard> cultistList = [
       _ffCards[28],
@@ -993,8 +962,8 @@ class DefaultData {
     friendFoeList.insert(7, cultistWithStack);
     _stacks.add(theCultistStack);
     _db.createStack(theCultistStack);
-    print(
-        "DefaultData FriendFoeData createStacks theCultistStack.name == ${theCultistStack.name}");
+    // print(
+      //  "DefaultData FriendFoeData createStacks theCultistStack.name == ${theCultistStack.name}");
 
     _db.createHero(friendFoeList[0]);
     _db.createHero(friendFoeList[1]);

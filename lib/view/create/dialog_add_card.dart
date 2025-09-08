@@ -148,6 +148,7 @@ class _AddCardToStackDialogState extends State<AddCardToStackDialog> {
               context
                   .read<CRUDStackBloc>()
                   .add(CRUDStackUpdateStackEvent(newStack));
+              context.read<CRUDStackBloc>().add(CRUDStackInitialEvent()); // Addad 08.09.2025
               Navigator.of(context).pop();
             },
             style: TextButton.styleFrom(
