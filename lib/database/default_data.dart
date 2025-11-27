@@ -367,7 +367,7 @@ class DefaultData {
           heroStack: const CardsStack.empty(),
           energyClosetCount: 4,
           ability:
-              "Feed the ritual: Volatile Pylon gains 2 2 life. Then remove a power token "
+              "Feed the ritual: Volatile Pylon gains 2 life. Then remove a power token "
               "from Ritual of Flame three times");
 
       // print("DefaultData createFriendFoeHeroes with Empty heroStacks");

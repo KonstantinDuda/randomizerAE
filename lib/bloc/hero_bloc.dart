@@ -9,6 +9,7 @@ class HeroBloc extends Bloc<HeroEvent, HeroState> {
 
   int index = 0;
   List<HeroStack> heroes = [];
+  var newHero = const HeroStack.empty();
 
   HeroBloc() : super(const HeroSuccessState(0, const HeroStack.empty())) {
     on<HeroInitEvent>(_onInit);
@@ -20,8 +21,8 @@ class HeroBloc extends Bloc<HeroEvent, HeroState> {
   }
 
   _onInit(HeroInitEvent event, Emitter<HeroState> emit) async {
-    print("HeroBloc: Initializing HeroBloc");
     heroes = await defaultData.getHeroes();
+     print("HeroBloc/ _onInit: heroes.length == ${heroes.length}");
     emit(HeroSuccessState(index, heroes[index]));
   }
 
@@ -30,12 +31,13 @@ class HeroBloc extends Bloc<HeroEvent, HeroState> {
 
     var heroToReturn = const HeroStack.empty();
     index = event.index;
+    var newHeroId = heroes.last.id + 1;
     if (index == heroes.length) {
       heroToReturn = HeroStack(
-          id: 0,
+          id: newHeroId,
           name: "",
           isFriend: true,
-          heroStack: CardsStack.empty(),
+          heroStack: const CardsStack.empty(),
           energyClosetCount: 0,
           ability: "");
     } else if (index > heroes.length) {
@@ -50,16 +52,26 @@ class HeroBloc extends Bloc<HeroEvent, HeroState> {
 
   _createHero(HeroCreateEvent event, Emitter<HeroState> emit) {
     print("HeroBloc: Creating Hero event");
-    //heroes.add(event.heroStack);
-    var heroToReturn = const HeroStack.empty();
+
+    var newHeroId = heroes.last.id + 1;
+    var heroToReturn = HeroStack(
+          id: newHeroId,
+          name: "",
+          isFriend: true,
+          heroStack: const CardsStack.empty(),
+          energyClosetCount: 0,
+          ability: "");
     index = heroes.length;
-    //heroes = defaultData.friendFoeList;
+
     emit(HeroSuccessState(index, heroToReturn));
   }
 
   _saveHero(HeroSaveEvent event, Emitter<HeroState> emit) async {
-    print("HeroBloc: Updating Hero with id ${event.hero.id}");
-    int index = heroes.indexWhere((hero) => hero.id == event.hero.id);
+    print("HeroBloc/ _saveHero: event.hero.id ${event.hero.id}");
+    var dDHeroes = await defaultData.getHeroes();
+    print("HeroBloc/ _saveHero: dDHeroes.length == ${dDHeroes.length}");
+    int index = dDHeroes.indexWhere((hero) => hero.id == event.hero.id);
+    print("HeroBloc/ _saveHero: index == $index");
     if (index != -1) {
       //heroes[index] = event.heroStack;
       if (event.hero.name == heroes[index].name &&
@@ -72,11 +84,13 @@ class HeroBloc extends Bloc<HeroEvent, HeroState> {
         print("HeroBloc: No changes detected, not updating hero");
         return; // No changes, do not update
       } else {
+        print("HeroBloc/ _saveHero: Update hero with id == ${event.hero.id}");
         defaultData.updateHero(event.hero.id, event.hero);
       }
     } else {
       index = 0;
-      print("HeroBloc: Hero with id ${event.hero.id} not found for update");
+      print("HeroBloc/ _saveHero: Hero with id ${event.hero.id} not found for update. \n"
+            "Create new Hero: ${event.hero.name}");
       await defaultData.newHero(event.hero);
     }
     emit(HeroSuccessState(index, heroes[index]));
@@ -94,10 +108,10 @@ index = 0;
 
   _changeStack(HeroChangeStackEvent event, Emitter<HeroState> emit) async {
     print(
-        "HeroBloc: Changing stack for hero ${event.hero.name} to stack ${event.stack.name}");
+        "HeroBloc/ _changeStack: Changing stack for hero ${event.hero.name} to stack ${event.stack.name}");
     int indexLocal = heroes.indexWhere((hero) => hero.id == event.hero.id);
     if (indexLocal == -1) {
-      print("HeroBloc: indexLocal == -1, creating new hero");
+      print("HeroBloc/ _changeStack: indexLocal == -1, creating new hero");
     var hero = HeroStack(
         id: event.hero.id,
         name: event.hero.name,
@@ -107,10 +121,12 @@ index = 0;
         ability: event.hero.ability,
         feature: event.hero.feature,
         description: event.hero.description);
-    heroes.add(hero);
-    index = heroes.length - 1;
+    //heroes.add(hero);
+    newHero = hero;
+    index = heroes.length;
+    print("HeroBloc/_changeStack: new hero == $newHero \n ");
     } else {
-      print("HeroBloc: Updating existing hero at index $indexLocal");
+      print("HeroBloc/ _changeStack: Updating existing hero at index $indexLocal");
       heroes[indexLocal] = HeroStack(
         id: event.hero.id,
         name: event.hero.name,
@@ -122,13 +138,19 @@ index = 0;
         description: event.hero.description,
       );
       index = indexLocal;
+      print("HeroBloc/_changeStack: Updated hero == ${heroes[indexLocal]} \n ");
     }
 
-    print("HeroBloc: Updated hero at index $index with stack ${event.stack.name} \n" 
-        "HeroBloc: Hero details: ${heroes[index].name}, ${heroes[index].isFriend}, \n"
-        "${heroes[index].heroStack.name}, ${heroes[index].energyClosetCount}, \n"
-        "${heroes[index].ability}, ${heroes[index].feature}, ${heroes[index].description}");
+    // print("HeroBloc/_changeStack: Updated hero at index $index \n "
+    // "(heroes[index].name == ${heroes[index].name})"
+    
+    // " with stack ${event.stack.name} \n" 
+    //     "HeroBloc: Hero details: ${heroes[index].name}, ${heroes[index].isFriend}, \n"
+    //     "${heroes[index].heroStack.name}, ${heroes[index].energyClosetCount}, \n"
+    //     "${heroes[index].ability}, ${heroes[index].feature}, ${heroes[index].description}");
 
-    emit(HeroSuccessState(index, heroes[index]));
+    
+
+    emit(HeroSuccessState(index, newHero));
   }
 }

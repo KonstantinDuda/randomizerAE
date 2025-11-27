@@ -20,12 +20,14 @@ class _HeroListPageState extends State<HeroListPage> {
   var name = "";
   var isFriend = false;
   var energyClosetCount = 0;
-    var heroStack = const CardsStack.empty();
-      var description = "";
-      var feature = "";
-      var ability = "";
+  var heroStack = const CardsStack.empty();
+  var description = "";
+  var feature = "";
+  var ability = "";
 
-      @override
+  //var createHeroAvailable = false;
+
+  @override
   void initState() {
     super.initState();
   }
@@ -41,7 +43,7 @@ class _HeroListPageState extends State<HeroListPage> {
       if (state is HeroSuccessState) {
         index = state.index;
         hero = state.heroStack;
-        if(hero.id != id) {
+        if (hero.id != id) {
           id = hero.id;
           name = hero.name;
           isFriend = hero.isFriend;
@@ -50,9 +52,11 @@ class _HeroListPageState extends State<HeroListPage> {
           description = hero.description;
           feature = hero.feature;
           ability = hero.ability;
+          //createHeroAvailable = true;
         } else {
           heroStack = hero.heroStack;
-          print("HeroListPage: state is HeroSuccessState. hero.id == id");
+          //createHeroAvailable = false;
+          print("HeroListPage: state is HeroSuccessState. hero.id == id ($id)");
         }
       } else {
         print("HeroListPage: Error in HeroBloc state: $state");
@@ -87,8 +91,10 @@ class _HeroListPageState extends State<HeroListPage> {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          if(index > 0) {
-                            context.read<HeroBloc>().add(HeroNextPrevEvent(--index));
+                          if (index > 0) {
+                            context
+                                .read<HeroBloc>()
+                                .add(HeroNextPrevEvent(--index));
                           }
                           // print(
                           //     "HeroListPage: Previous button pressed for hero ${heroes[index].name}");
@@ -103,7 +109,9 @@ class _HeroListPageState extends State<HeroListPage> {
                       const Expanded(child: SizedBox()),
                       ElevatedButton(
                         onPressed: () {
-                          context.read<HeroBloc>().add(HeroNextPrevEvent(++index));
+                          context
+                              .read<HeroBloc>()
+                              .add(HeroNextPrevEvent(++index));
                           // if (index < heroes.length) {
                           //   changeHero(index + 1);
                           // }
@@ -138,7 +146,7 @@ class _HeroListPageState extends State<HeroListPage> {
                           maxLines: 1,
                           onChanged: (value) {
                             //setState(() {
-                              name = value;
+                            name = value;
                             //});
                             // print(
                             //     "Hero name changed to $value for hero ${heroes[index].name}");
@@ -164,8 +172,9 @@ class _HeroListPageState extends State<HeroListPage> {
                             setState(() {
                               isFriend = value!;
                             });
-                            
-                            print("HeroListPage: Checkbox changed to $value. isFriend $isFriend");
+
+                            print(
+                                "HeroListPage: Checkbox changed to $value. isFriend $isFriend");
                             // print(
                             //     "Checkbox changed to $value for hero ${heroes[index].name}");
                             // setState(() {
@@ -187,26 +196,27 @@ class _HeroListPageState extends State<HeroListPage> {
                           heroStack.id > 0 ? heroStack.name : "No stack",
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
-                              overflow: TextOverflow.ellipsis,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       ElevatedButton(
                           onPressed: () {
                             var newHero = HeroStack(
-                              id: id,
-                              name: name,
-                              isFriend: isFriend,
-                              heroStack: heroStack,
-                              energyClosetCount: energyClosetCount,
-                              ability: ability,
-                              feature: feature,
-                              description: description);
+                                id: id,
+                                name: name,
+                                isFriend: isFriend,
+                                heroStack: heroStack,
+                                energyClosetCount: energyClosetCount,
+                                ability: ability,
+                                feature: feature,
+                                description: description);
                             showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return ChangeStackDialog(newHero); //TopCardDialog(id: stack.cards.last.id , list: stack.cards);
-                                  },
-                                );
+                              context: context,
+                              builder: (BuildContext context) {
+                                return ChangeStackDialog(
+                                    newHero); //TopCardDialog(id: stack.cards.last.id , list: stack.cards);
+                              },
+                            );
                             // print(
                             //     "Hero stack button pressed for hero ${heroes[index].name}");
                           },
@@ -236,16 +246,16 @@ class _HeroListPageState extends State<HeroListPage> {
                           size: 16,
                         ),
                       ),
-                      Text(
-                          "$energyClosetCount"),
-                          //"${energyClosetCount + eCCAdded}"),
+                      Text("$energyClosetCount"),
+                      //"${energyClosetCount + eCCAdded}"),
                       TextButton(
                           onPressed: () {
                             setState(() {
-                               //eCCAdded++;
+                              //eCCAdded++;
                               energyClosetCount++;
                             });
-                            print("HeroListPage: Add energy closet count $energyClosetCount");
+                            print(
+                                "HeroListPage: Add energy closet count $energyClosetCount");
                           },
                           style: TextButton.styleFrom(
                             iconColor: Colors.black,
@@ -276,7 +286,7 @@ class _HeroListPageState extends State<HeroListPage> {
                           maxLines: 5,
                           onChanged: (value) {
                             //setState(() {
-                              ability = value;
+                            ability = value;
                             //});
                             // print(
                             //     "Ability changed to $value for hero ${heroes[index].name}");
@@ -304,7 +314,7 @@ class _HeroListPageState extends State<HeroListPage> {
                           maxLines: 3,
                           onChanged: (value) {
                             //setState(() {
-                              feature = value;
+                            feature = value;
                             //});
                             // print(
                             //     "Feature changed to $value for hero ${heroes[index].name}");
@@ -331,7 +341,7 @@ class _HeroListPageState extends State<HeroListPage> {
                             maxLines: 4,
                             onChanged: (value) {
                               //setState(() {
-                                description = value;
+                              description = value;
                               //});
                               // print(
                               //     "Description changed to $value for hero ${heroes[index].name}");
@@ -363,7 +373,9 @@ class _HeroListPageState extends State<HeroListPage> {
                               feature: feature,
                               description: description,
                             );
-                            context.read<HeroBloc>().add(HeroSaveEvent(newData));
+                            context
+                                .read<HeroBloc>()
+                                .add(HeroSaveEvent(newData));
                             // print(
                             //     "HeroListPage: Save button pressed for hero ${heroes[index].name}");
                           },
@@ -398,9 +410,9 @@ class _HeroListPageState extends State<HeroListPage> {
             print("HeroListPage: Create Hero button pressed");
             context.read<HeroBloc>().add(HeroCreateEvent());
           },
-          backgroundColor: Colors.blue,
+          backgroundColor: name != "" ? Colors.blue : Colors.grey,
           foregroundColor: Colors.black,
-          label: const Text("Create Hero"),
+          label: const Text("Create new hero"),
         ),
       );
     });

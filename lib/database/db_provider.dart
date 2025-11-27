@@ -402,7 +402,7 @@ class DBProvider {
 
     List<HeroStack> stacks = [];
     stacks = await _pullStacksToHero(maps);
-    //print("DBProvider getAllStacks() stacks == $stacks");
+    print("DBProvider getAllHeroes() HeroStacks.langth == ${stacks.length}");
 
     return stacks;
   }
