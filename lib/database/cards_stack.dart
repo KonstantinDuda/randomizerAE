@@ -5,25 +5,25 @@ import 'cards_stack_db.dart';
 /// AECard represents a card in the game with an id, text, and image path.
 class AECard {
   int id = 0;
+  String name = "";
   String text = "";
-  String imgPath = "";
 
   AECard({
     required this.id,
+    required this.name,
     required this.text,
-    required this.imgPath,
   });
 
   AECard.fromMap(Map<String, Object?> map) {
     id = map['id'] as int;
+    name = map['name'] as String;
     text = map['text'] as String;
-    imgPath = map['img_path'] as String;
   }
 
   Map<String, Object?> toMap() {
     var map = <String, Object?>{
       'text': text,
-      'img_path': imgPath,
+      'name': name,
     };
     if (id != 0) {
       map['id'] = id;
@@ -34,30 +34,22 @@ class AECard {
 
   @override
   bool operator ==(Object other) {
-    // if(other is AECard) {
-    //   print(id == other.id ? "true: AECard operator ==. id == other.id  ?" : "false: AECard operator ==. id == other.id ?");
-    //   print(text == other.text ? "true: AECard operator ==. text == other.text  ?" : "false: AECard operator ==. text == other.text ?");
-    //   print(imgPath == other.imgPath ? "true: AECard operator ==. imgPath == other.imgPath ?" : "false: AECard operator ==. imgPath == other.imgPath ?");
-    // }
-    return other is AECard &&
-        id == other.id &&
-        text == other.text &&
-        imgPath == other.imgPath;
+    return other is AECard && id == other.id && text == other.text;
   }
 
   @override
-  int get hashCode => Object.hash(id, text, imgPath);
+  int get hashCode => Object.hash(id, text);
 
   @override
   String toString() {
-    var result = 'AECard text: $text, imgPath: $imgPath';//, imgPath: $imgPath';
+    var result = 'AECard text: $text';
     return result;
   }
-  // TODO: add toJson and fromJson methods
 }
 
 // Stacks
 enum StackType {
+  none,
   turnOrder,
   friend,
   foe,
@@ -109,7 +101,8 @@ class CardsStack {
 
   @override
   String toString() {
-    var result = 'CardsStack{id: $id, name: $name, isActive: $isActive, cards.length: ${cards.length}}';//,  \n cards: $cards}';
+    var result =
+        'CardsStack{id: $id, name: $name, isActive: $isActive, cards.length: ${cards.length}}'; //,  \n cards: $cards}';
     return result;
   }
 }
@@ -154,7 +147,8 @@ class HeroStack {
 
   @override
   String toString() {
-    var result = 'HeroStack id: $id, name: $name, isFriend: $isFriend, heroStack.id: ${heroStack.id}, cards.length: ${heroStack.cards.length}';
+    var result =
+        'HeroStack id: $id, name: $name, isFriend: $isFriend, heroStack.id: ${heroStack.id}, cards.length: ${heroStack.cards.length}';
     return result;
   }
 }

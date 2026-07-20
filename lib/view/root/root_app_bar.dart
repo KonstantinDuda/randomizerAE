@@ -35,16 +35,10 @@ class _RootAppBarState extends State<RootAppBar> {
           for (var element in allStacks) {
             if (element.isActive) {
               localStacks.add(element);
-              //print("RootAppBar Page element.isActive == $element \n");
-              // stacks.add(element);
             }
           }
         }
         stacks = localStacks;
-        // for(var element in stacks) {
-        //   print("RootAppBar stack = id: ${element.id} name: ${element.name}");
-        // }
-        //print("RootAppBar stacks == $stacks \n");
       } else {
         print("RootAppBar state is NOT CRUDStackSuccessActionState");
       }
@@ -134,7 +128,8 @@ class _RootAppBarState extends State<RootAppBar> {
                           ),
                           onTap: () {
                             print("\n \n \n");
-                                  print("RootAppBar stacks[index].stackType == ${stacks[index].stackType} \n");
+                            print(
+                                "RootAppBar stacks[index].stackType == ${stacks[index].stackType} \n");
                             //if (db[index].stackType == StackType.turnOrder) {
                             if (stacks[index].stackType ==
                                 StackType.turnOrder) {
@@ -147,17 +142,19 @@ class _RootAppBarState extends State<RootAppBar> {
                                   .read<RootBodyProviderBloc>()
                                   .add(const RootBodyTurnOrderEvent());
                             } else if (stacks[index].stackType ==
-                                StackType.friend || stacks[index].stackType == StackType.foe) { 
-                                  print("RootAppBar stacks[index].stackType friend or foe \n");
-                              var stack =
-                                  stacks[index];
+                                    StackType.friend ||
+                                stacks[index].stackType == StackType.foe) {
+                              print(
+                                  "RootAppBar stacks[index].stackType friend or foe \n");
+                              var stack = stacks[index];
                               print("RootAppBar heroStack == $stack \n");
-                              
+
                               context
                                   .read<RootBodyProviderBloc>()
                                   .add(RootBodyFriendFoeEvent());
-                              
-                              context.read<FriendFoeBodyBloc>().add(FriendFoeChangeActiveStackEvent(stack.id));
+
+                              context.read<FriendFoeBodyBloc>().add(
+                                  FriendFoeChangeActiveStackEvent(stack.id));
                             } else {
                               context
                                   .read<RootBodyProviderBloc>()

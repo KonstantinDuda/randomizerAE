@@ -121,9 +121,7 @@ class _RootDrawerState extends State<RootDrawer> {
                     }
                   }
                 }
-
                 context.read<CRUDStackBloc>().add(CRUDStackInitialEvent());
-
                 context.read<ProviderBloc>().add(LoadingEvent());
                 Navigator.pop(context);
               },
@@ -135,7 +133,6 @@ class _RootDrawerState extends State<RootDrawer> {
                 Navigator.pop(context);
 
                 context.read<CRUDStackBloc>().add(CRUDDataFromDBEvent());
-                //context.read<CRUDStackBloc>().add(CRUDStackInitialEvent());
                 context.read<ProviderBloc>().add(UpdateDeleteEvent());
               },
             ),

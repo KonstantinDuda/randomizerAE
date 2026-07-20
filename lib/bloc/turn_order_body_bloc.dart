@@ -27,7 +27,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
   void _onInit(
       TurnOrderInitialEvent event, Emitter<TurnOrderBodyState> emit) async {
-        print("TurnOrderBodyBloc _onInit stack == $stack \n");
+    print("TurnOrderBodyBloc _onInit stack == $stack \n");
     if (stack.id == 0) {
       var stackList = await db.getAvailableStacks();
       //var stackList = await data.getStacks();
@@ -204,7 +204,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     // Handle the delete wild event
     List<AECard> newAlreadyCards = [];
     newAlreadyCards
-        .add(AECard(id: 5, text: 'Wild', imgPath: 'assets/images/wild.png'));
+        .add(AECard(id: 5, text: 'Wild', name: 'assets/images/wild.png'));
 
     for (var i = 0; i < stack.cards.length; i++) {
       if (stack.cards[i].id == 5) {
@@ -260,7 +260,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
   void _onShuffleIn(TurnOrderBodyShuffleInStackEvent event,
       Emitter<TurnOrderBodyState> emit) {
-    AECard card = AECard(id: 0, text: "", imgPath: "");
+    AECard card = AECard(id: 0, text: "", name: "");
     for (var i = 0; i < alreadyPlayed.cards.length; i++) {
       if (alreadyPlayed.cards[i].text == event.text) {
         card = alreadyPlayed.cards[i];
@@ -277,13 +277,15 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     emit(TurnOrderBodySuccessActionState(/*newStack*/ stack, alreadyPlayed));
   }
 
-  _onPutInTheButtom(TurnOrderBodyPutInButtom event, Emitter<TurnOrderBodyState> emit) {
+  _onPutInTheButtom(
+      TurnOrderBodyPutInButtom event, Emitter<TurnOrderBodyState> emit) {
     print("TurnOrderBodyBloc _onPutInTheButtom event.text == ${event.text} \n");
 
-    AECard card = AECard(id: 0, text: "", imgPath: "");
+    AECard card = AECard(id: 0, text: "", name: "");
     for (var i = 0; i < alreadyPlayed.cards.length; i++) {
       if (alreadyPlayed.cards[i].text == event.text) {
-        print("TurnOrderBodyBloc _onPutInTheButtom found card to put in the buttom: ${alreadyPlayed.cards[i]} \n");
+        print(
+            "TurnOrderBodyBloc _onPutInTheButtom found card to put in the buttom: ${alreadyPlayed.cards[i]} \n");
         card = alreadyPlayed.cards[i];
         alreadyPlayed.cards.removeAt(i);
         break;

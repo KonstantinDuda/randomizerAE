@@ -39,7 +39,7 @@ class DBProvider {
         await db.execute("CREATE TABLE IF NOT EXISTS $cardsTableName ("
             "id INTEGER PRIMARY KEY, "
             "text TEXT, "
-            "img_path TEXT)");
+            "name TEXT)");
         await db.execute("CREATE TABLE IF NOT EXISTS $stackTableName ("
             "id INTEGER PRIMARY KEY, "
             "name TEXT, "
@@ -74,18 +74,6 @@ class DBProvider {
     } else {
       print("DBProvider createCard() card ${card.id} was in the Database \n");
     }
-
-    // For debugging purposes
-    /*List<Map<String, Object?>> maps = await db.query(cardsTableName);
-    print("DBProvider createCard() maps == ${maps.length} \n");
-    if(maps.isNotEmpty) {
-      for (var element in maps) {
-        AECard cardFromDB = AECard.fromMap(element);
-        print("DBProvider createCard() cardFromDB == ${cardFromDB.toString()} \n");
-      }
-    } else {
-      print("DBProvider createCard() maps.isEmpty");
-    }*/
   }
 
   Future<AECard> getCardById(int id) async {
@@ -97,7 +85,7 @@ class DBProvider {
       return AECard.fromMap(maps.first);
     } else {
       //print("DBProvider getCardById($id) card does not Exist \n");
-      return AECard(id: 0, text: '', imgPath: '');
+      return AECard(id: 0, text: '', name: '');
     }
   }
 
@@ -121,7 +109,7 @@ class DBProvider {
     // Delete card from all stacks // Addad 08.09.2025
     List<Map<String, dynamic>> maps = await db.query(stackTableName);
     List<CardsStackDB> allStacks = [];
-    if(maps.isNotEmpty) {
+    if (maps.isNotEmpty) {
       for (var element in maps) {
         allStacks.add(CardsStackDB.fromMap(element));
       }
@@ -129,23 +117,24 @@ class DBProvider {
     for (var stack in allStacks) {
       var cardIds = stack.cardsId;
       cardIds.removeWhere((card) => card == id);
-      if(cardIds.length != stack.cardsId.length && cardIds.isNotEmpty) {
+      if (cardIds.length != stack.cardsId.length && cardIds.isNotEmpty) {
         CardsStackDB newStack = CardsStackDB(
-          id: stack.id,
-          name: stack.name,
-          isStandart: stack.isStandart,
-          stackType: stack.stackType,
-          stackColor: stack.stackColor,
-          cardsId: cardIds);
+            id: stack.id,
+            name: stack.name,
+            isStandart: stack.isStandart,
+            stackType: stack.stackType,
+            stackColor: stack.stackColor,
+            cardsId: cardIds);
 
         List<AECard> cardList = [];
         for (var id in cardIds) {
           cardList.add(await getCardById(id));
         }
-      print("DBProvider deleteCard() newStack after remove cardId $id == $newStack");
-      CardsStack stackToUpdate = const CardsStack.empty();
-      stackToUpdate.csDBToCS(newStack, cardList);
-      await updateStack(stackToUpdate);
+        print(
+            "DBProvider deleteCard() newStack after remove cardId $id == $newStack");
+        CardsStack stackToUpdate = const CardsStack.empty();
+        stackToUpdate = stackToUpdate.csDBToCS(newStack, cardList);
+        await updateStack(stackToUpdate);
       } else {
         print("DBProvider deleteCard() stack ${stack.id} not need to update");
       }

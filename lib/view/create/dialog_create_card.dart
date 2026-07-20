@@ -22,13 +22,13 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
   String cardTextBeforeOr = "";
   String cardTextAfterOr = "";
   bool isOptional = false;
-  List<String> cardTypesList = ["Turn order", "Friend", "Foe"];
-  var cardType = "Turn order"; // "Other";
-  var typeIsTO = false;
+  // List<String> cardTypesList = ["Turn order", "Friend", "Foe"];
+  // var cardType = "Turn order"; // "Other";
+  // var typeIsTO = false;
 
   @override
   Widget build(BuildContext context) {
-    if (widget.card.id > 0) {
+    /*if (widget.card.id > 0) {
       print("DialogCreateCard widget.card.id > 0");
       if (widget.card.imgPath.isNotEmpty) {
         var pathAndName = widget.card.imgPath.split("/");
@@ -66,7 +66,7 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
               .join(" ");
         }
       }
-    }
+    }*/
 
     return AlertDialog(
       title: const Text('Create / Update card'),
@@ -78,7 +78,7 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
             SizedBox(
               width: 300,
               child: TextField(
-                readOnly: typeIsTO,
+                readOnly: false, // typeIsTO,
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(), labelText: "Card name"),
                 onChanged: (value) {
@@ -125,7 +125,7 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
                 controller: TextEditingController(text: cardTextAfterOr),
               ),
             ),
-            Row(
+            /*Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text("Card type: "),
@@ -149,7 +149,7 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
                   },
                 ),
               ],
-            ),
+            ),*/
           ],
         ),
       ),
@@ -165,7 +165,7 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
             backgroundColor: WidgetStateProperty.all(Colors.green),
           ),
           onPressed: () {
-            if (cardType == "Turn order") cardName = "";
+            //if (cardType == "Turn order") cardName = "";
             print("DialogCreateCard create card");
 
             context.read<CRUDStackBloc>().add(CRUDStackNewCardEvent(
@@ -174,7 +174,7 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
                 isOptional,
                 cardTextBeforeOr,
                 cardTextAfterOr,
-                cardType));
+                "" /*cardType*/));
             context.read<CRUDStackBloc>().add(CRUDStackInitialEvent());
             Navigator.of(context).pop();
           },

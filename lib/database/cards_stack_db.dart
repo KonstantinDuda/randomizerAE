@@ -3,19 +3,15 @@ import 'dart:ui';
 import 'cards_stack.dart';
 
 /// class CardsStackDB {
-///
 ///   final int id;
-///
 ///   final String name;
-///
 ///   final bool isStandart;
-///
 ///   final StackType stackType;
-///
 ///   final Color stackColor;
-///
 ///   final List<int> cardsId;
-
+///
+/// It is used to store the data of the CardsStack class in the database. It is used to convert the data from the database to the CardsStack class and vice versa.
+/// It is stored in the database as a List of id-value.
 
 class CardsStackDB {
   final int id;
@@ -35,15 +31,6 @@ class CardsStackDB {
   });
 
   factory CardsStackDB.fromMap(Map<String, dynamic> map) {
-    // return CardsStackDB(
-    //   id: map['id'] as int,
-    //   name: map['name'] as String,
-    //   isStandart: map['is_standart'] == 1 ? true : false,
-    //   stackType: _parseStackType(map['stack_type']),
-    //   stackColor: Color(map['stack_color']),
-    //   cardsId: (map['cards'] as String?)?.split(',').map((e) => int.parse(e)).toList() ?? [],
-    // );
-
     var id = map['id'] as int;
     var name = map['name'] as String;
     var isStandart = map['is_standart'] == 1 ? true : false;
@@ -84,15 +71,11 @@ class CardsStackDB {
   static StackType _parseStackType(String type) {
     switch (type) {
       case 'StackType.turnOrder':
-        return StackType.turnOrder; // StackType.turnOrder
-      //case 'StackType.friendFoe': return StackType.friendFoe;
+        return StackType.turnOrder;
       case 'StackType.friend':
         return StackType.friend;
       case 'StackType.foe':
         return StackType.foe;
-      // case 'StackType.gravehold': return StackType.gravehold;
-      // case 'StackType.hero': return StackType.hero;
-      // case 'StackType.nemesis': return StackType.nemesis;
       default:
         return StackType.turnOrder;
     }
@@ -103,8 +86,6 @@ class CardsStackDB {
     for (var element in list) {
       listInt.add(element.id);
     }
-
-    //print("CardsStackDB fromAECardToListInt listId == $listInt");
     return listInt;
   }
 

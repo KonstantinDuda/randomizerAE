@@ -1,13 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'cards_stack.dart';
+import 'cards_stack_db.dart';
 import 'db_provider.dart';
 
 class DefaultData {
   final _db = DBProvider();
   List<AECard> _cards = [];
   List<CardsStack> _stacks = [];
-  List<HeroStack> friendFoeList = [];
+  //List<HeroStack> friendFoeList = [];
 
   List<AECard> _ffCards = [];
 
@@ -28,13 +32,28 @@ class DefaultData {
       return _cards;
     }
   }
+
+  getCardsById(List<int> ids) {
+    List<AECard> result = [];
+    for (var id in ids) {
+      var card = _cards.firstWhere((card) => card.id == id,
+          orElse: () => AECard(id: 0, name: '', text: ''));
+      if (card.id != 0) {
+        result.add(card);
+      }
+    }
+    return result;
+  }
+
   setCards(List<AECard> newCards) {
     _cards = newCards;
   }
+
   newCard(AECard card) {
     _cards.add(card);
     _db.createCard(card);
   }
+
   updateCard(AECard card) {
     for (var i = 0; i < _cards.length; i++) {
       if (_cards[i].id == card.id) {
@@ -45,6 +64,7 @@ class DefaultData {
       }
     }
   }
+
   deleteCard(int id) {
     _db.deleteCard(id);
     _cards.removeWhere((card) => card.id == id);
@@ -59,13 +79,16 @@ class DefaultData {
       return _stacks;
     }
   }
+
   newStack(CardsStack stack) async {
     await _db.createStack(stack);
     _stacks = await _db.getAllStacks();
   }
+
   setStacks(List<CardsStack> newStacks) {
     _stacks = newStacks;
   }
+
   updateStack(CardsStack stack) {
     for (var i = 0; i < _stacks.length; i++) {
       if (_stacks[i].id == stack.id) {
@@ -77,13 +100,14 @@ class DefaultData {
     }
     return _stacks;
   }
+
   deleteStack(int id) {
     _db.deleteStack(id);
     _stacks.removeWhere((stack) => stack.id == id);
   }
 
 // Heroes
-  Future<List<HeroStack>> getHeroes() async {
+  /*Future<List<HeroStack>> getHeroes() async {
     if (friendFoeList.isNotEmpty) {
       return friendFoeList;
     } else {
@@ -93,15 +117,8 @@ class DefaultData {
   }
   HeroStack getHeroByStackId(int stackId) {
     for (var element in friendFoeList) {
-      // if (element.heroStacks.isNotEmpty) {
-      //   if (element.heroStacks[0].id == stackId) {
       if (element.heroStack.id == stackId) {
-        // print(
-          //  "DefaultData getHeroByStackId element.heroStack.id == ${element.heroStack.id}");
-        return element;
-        //}
-      } else {
-        // print("getHeroByStackId element.heroStacks.isEmpty");
+         return element;
       }
     }
     return const HeroStack.empty();
@@ -129,79 +146,97 @@ class DefaultData {
   }
   setHeroes(List<HeroStack> newHeroes) {
     friendFoeList = newHeroes;
-  }
+  }*/
 
 // Default Data
   createDefaultData() async {
     var firstRunCards = await _db.getAllCards();
     if (firstRunCards.isEmpty) {
-      // print("DefaultData createDefaultData firstRun = true");
-      createTurnOrderData();
-      //checkCards();
-      createCards();
+      // If the database is empty, create default data
+      final String responseCards = await rootBundle.loadString(
+        'lib/assets/cards.json',
+      );
+      final jsonCards = await json.decode(responseCards);
+      _cards = (jsonCards as List).map((e) => AECard.fromMap(e)).toList();
 
-      createFriendFoeHeroes();
-      //checkStacks();
-      createStacks();
+      final String responseStacks = await rootBundle.loadString(
+        'lib/assets/stacks.json',
+      );
+      final jsonStacks = await json.decode(responseStacks);
+      var dbStacks =
+          (jsonStacks as List).map((e) => CardsStackDB.fromMap(e)).toList();
+
+      for (var element in dbStacks) {
+        var cardsId = getCardsById(element.cardsId);
+        CardsStack stack = const CardsStack.empty();
+        stack = stack.csDBToCS(element, cardsId);
+        _stacks.add(stack);
+      }
+
+      // createTurnOrderData();
+      // createCards();
+
+      //createFriendFoeHeroes();
+      //createStacks();
     } else {
       _cards = firstRunCards;
     }
   }
 
   createTurnOrderData() {
-    var cardOne = AECard(
-      id: 1,
-      text: '1',
-      imgPath: 'assets/images/turn order/card1.png',
-    );
-    var cardTwo = AECard(
-      id: 2,
-      text: '2',
-      imgPath: 'assets/images/turn order/card2.png',
-    );
-    var cardThree = AECard(
-      id: 3,
-      text: '3',
-      imgPath: 'assets/images/turn order/card3.png',
-    );
-    var cardFour = AECard(
-      id: 4,
-      text: '4',
-      imgPath: 'assets/images/turn order/card4.png',
-    );
-    var cardWild = AECard(
-      id: 5,
-      text: 'Wild',
-      imgPath: 'assets/images/turn order/wild.png',
-    );
-    var cardNemesis = AECard(
-      id: 6,
-      text: 'Nemesis',
-      imgPath: 'assets/images/turn order/nemesis.png',
-    );
-    var cardFoe = AECard(
-      id: 7,
-      text: 'Foe',
-      imgPath: 'assets/images/turn order/foe.png',
-    );
-    var cardFriend = AECard(
-      id: 8,
-      text: 'Friend',
-      imgPath: 'assets/images/turn order/friend.png',
-    );
-    var cardBliz = AECard(
-      id: 9,
-      text: 'Blitz',
-      imgPath: 'assets/images/turn order/blitz.png',
-    );
+    // var cardOne = AECard(
+    //   id: 1,
+    //   text: '1',
+    //   imgPath: 'assets/images/turn order/card1.png',
+    // );
+    // var cardTwo = AECard(
+    //   id: 2,
+    //   text: '2',
+    //   imgPath: 'assets/images/turn order/card2.png',
+    // );
+    // var cardThree = AECard(
+    //   id: 3,
+    //   text: '3',
+    //   imgPath: 'assets/images/turn order/card3.png',
+    // );
+    // var cardFour = AECard(
+    //   id: 4,
+    //   text: '4',
+    //   imgPath: 'assets/images/turn order/card4.png',
+    // );
+    // var cardWild = AECard(
+    //   id: 5,
+    //   text: 'Wild',
+    //   imgPath: 'assets/images/turn order/wild.png',
+    // );
+    // var cardNemesis = AECard(
+    //   id: 6,
+    //   text: 'Nemesis',
+    //   imgPath: 'assets/images/turn order/nemesis.png',
+    // );
+    // var cardFoe = AECard(
+    //   id: 7,
+    //   text: 'Foe',
+    //   imgPath: 'assets/images/turn order/foe.png',
+    // );
+    // var cardFriend = AECard(
+    //   id: 8,
+    //   text: 'Friend',
+    //   imgPath: 'assets/images/turn order/friend.png',
+    // );
+    // var cardBliz = AECard(
+    //   id: 9,
+    //   text: 'Blitz',
+    //   imgPath: 'assets/images/turn order/blitz.png',
+    // );
 
-    var cardNemesisSpecific = AECard(
-      id: 10,
-      text: 'Nemesis specific card',
-      imgPath: 'assets/images/turn order/nemesis specific.png',
-    );
+    // var cardNemesisSpecific = AECard(
+    //   id: 10,
+    //   text: 'Nemesis specific card',
+    //   imgPath: 'assets/images/turn order/nemesis specific.png',
+    // );
 
-    _db.createCard(cardOne);
+    /*_db.createCard(cardOne);
     _db.createCard(cardTwo);
     _db.createCard(cardThree);
     _db.createCard(cardFour);
@@ -268,10 +303,10 @@ class DefaultData {
     _db.createStack(turnOrderThree);
     _db.createStack(turnOrderThreeBliz);
     _stacks.add(turnOrderThree);
-    _stacks.add(turnOrderThreeBliz);
+    _stacks.add(turnOrderThreeBliz);*/
   }
 
-  createFriendFoeHeroes() async {
+  /*createFriendFoeHeroes() async {
     if (friendFoeList.isEmpty) {
       //var dalanaStack = await _db.getStackById(3);
       HeroStack dalanaTheHealer = HeroStack(
@@ -386,7 +421,7 @@ class DefaultData {
       friendFoeList.clear();
       createFriendFoeHeroes();
     }
-  }
+  }*/
 
 // Friend Foe Cards
   void addCardsToDB() async {
@@ -397,272 +432,272 @@ class DefaultData {
   }
 
   createCards() {
-    var cardDE = AECard(
-      id: 11,
-      text:
-          'Energize: \n Dalana, the Healer gains 2 charges. OR Any player gains 1 charge',
-      imgPath: 'assets/images/friend foe/friend/dalana energize.png',
-    );
-    var cardDS = AECard(
-      id: 12,
-      text:
-          'Soothing Aura: \n Any player draws a card. OR Any player gains 2 money tokens',
-      imgPath: 'assets/images/friend foe/friend/dalana soothing aura.png',
-    );
-    var cardDEn = AECard(
-      id: 13,
-      text:
-          'Enhance: \n Any player focuses a breach. OR Any player discards a prepped spell. '
-          'If they do. Dalana, the Healer gains 3 charges',
-      imgPath: 'assets/images/friend foe/friend/dalana enhance.png',
-    );
-    var cardDR = AECard(
-      id: 14,
-      text:
-          'Restore: \n Dalana, the Healer gains 2 charges. OR Any player returns a card '
-          'from their discard pile to their hand',
-      imgPath: 'assets/images/friend foe/friend/dalana restore.png',
-    );
-    var cardSCC = AECard(
-      id: 15,
-      text:
-          'Carrion Claw: \n The Scavenger gains 2 charges. OR Any player loses 2 charges',
-      imgPath: 'assets/images/friend foe/foe/scavenger carrion claw.png',
-    );
-    var cardSSW = AECard(
-      id: 16,
-      text:
-          'Screeching Wail: \n The Scavenger gains 1 charge. Any player may discard a prepped spell '
-          'that costs 3 money or more. If they dont, the Scavenger gains an additional 2 charges',
-      imgPath: 'assets/images/friend foe/foe/scavenger screeching wail.png',
-    );
-    var cardSR = AECard(
-      id: 17,
-      text:
-          'Reclaim: \n Any player discards their two most expensive cards in hand and then '
-          'draws a card. OR Gravehold suffers 3 damage',
-      imgPath: 'assets/images/friend foe/foe/scavenger reclaim.png',
-    );
-    var cardSSS = AECard(
-      id: 18,
-      text:
-          'Shadow Slash: \n Gravehold suffers 3 damage. OR The Scavenger gains 3 charges and the '
-          'friend gains 1 charge',
-      imgPath: 'assets/images/friend foe/foe/scavenger shadow slash.png',
-    );
-    var cardAA = AECard(
-      id: 19,
-      text:
-          'Amplify: \n Adelheim, the Blacksmith gains 2 charges. OR Any player destroys a Spark '
-          'in hand or discard pile and gains a Forged Spark',
-      imgPath: 'assets/images/friend foe/friend/adelheim amplify.png',
-    );
-    var cardABF = AECard(
-      id: 20,
-      text:
-          'Blazing Furnace: \n Any player destroys a Crystal in hand or discard pile and gains a Forged '
-          'Crystal. OR Any player returns up to two cards from their discard pile '
-          'that cost 0 money to their hand',
-      imgPath: 'assets/images/friend foe/friend/adelheim blazing funrance.png',
-    );
-    var cardAB = AECard(
-      id: 21,
-      text:
-          'Burnish: \n Any player destroys a Crystal or Spark in hand. That player gains the '
-          'corresponding Forged card and places it into their hand. OR Any player '
-          'loses 2 charges. If they do, Adelheim, the Blacksmith gains 4 charges',
-      imgPath: 'assets/images/friend foe/friend/adelheim burnish.png',
-    );
-    var cardAPS = AECard(
-      id: 22,
-      text:
-          'Polished steel: \n Adelheim, the Blacksmith gains 2 charges. OR Any player discards a '
-          'card in hand that cost 2 money or more. If they do, they gains 3 charges',
-      imgPath: 'assets/images/friend foe/friend/adelheim polished steel.png',
-    );
-    var cardAFC = AECard(
-      id: 23,
-      text: 'Forged Crystal: \n Gain 2 money',
-      imgPath: 'assets/images/friend foe/friend/adelheim forged crystal.png',
-    );
-    var cardAFS = AECard(
-      id: 24,
-      text: 'Forged Spark: \n Cast: Deal 2 damage',
-      imgPath: 'assets/images/friend foe/friend/adelheim forged spark.png',
-    );
-    var cardMAS = AECard(
-      id: 25,
-      text:
-          'Ancient Secrets: \n Myrna, the Scholar gains 2 charges. OR Myrna, the Scholar loses 1 Knowledge. '
-          'If she does, reveal the turn order deck and return it in any order',
-      imgPath: 'assets/images/friend foe/friend/myrna ancient secret.png',
-    );
-    var cardMA = AECard(
-      id: 26,
-      text:
-          'Archive: \n Any player draws three cards and discards any cards drawn this way that '
-          'cost 3 money or more. OR Myrna loses any amount of Knowledge. The players '
-          'collectively draw cards equal to the Knowledge lost this way',
-      imgPath: 'assets/images/friend foe/friend/myrna archive.png',
-    );
-    var cardMD = AECard(
-      id: 27,
-      text:
-          'Delve: \n Myrna, the Scholar gains 2 charges. OR Myrna, the Scholar loses 1 Knowledge. '
-          'if she does, any player gains 4 money tokens',
-      imgPath: 'assets/images/friend foe/friend/myrna delve.png',
-    );
-    var cardMS = AECard(
-      id: 28,
-      text:
-          'Study: \n Myrna, the Scholar gains 1 charge. You may have the foe gain 1 charge. '
-          'If you do, Myrna gains an additional 2 charges. OR Myrna, the Scholar '
-          'loses 2 knowledge. If she does, any player casts a prepped spell '
-          'without discarding it',
-      imgPath: 'assets/images/friend foe/friend/myrna study.png',
-    );
-    var cardFAI = AECard(
-      id: 29,
-      text:
-          'Arcane Infusion: Any player may gain an Incendiary Catalyst and place it on top of their deck. '
-          'OR Any player casts a prepped spell. That spell deals an additional 1 damage',
-      imgPath: 'assets/images/friend foe/friend/fawn arcane infusion.png',
-    );
-    var cardFBB = AECard(
-      id: 30,
-      text:
-          'Bubbling Brew: Fawn, the Alchemist gains 2 charges. OR Any player places a spell that costs '
-          '2 money or more from their hand into the Cauldron and draws a card',
-      imgPath: 'assets/images/friend foe/friend/fawn bubbling brew.png',
-    );
-    var cardFGI = AECard(
-      id: 31,
-      text:
-          'Gather Ingredients: Any player gains a spell that costs 5 money or less from the supply. OR '
-          'Any player gains 1 charge',
-      imgPath: 'assets/images/friend foe/friend/fawn gather ingredients.png',
-    );
-    var cardFP = AECard(
-      id: 32,
-      text:
-          'Prepare: Fawn, the Alchemist gains 2 charges. OR Any player gains an Incendiary'
-          'Catalyst and an money token',
-      imgPath: 'assets/images/friend foe/friend/fawn prepare.png',
-    );
-    var cardFIC = AECard(
-      id: 33,
-      text:
-          'Incendiary Catalyst: Cast: Deal 3 damage. You may place a spell that costs 2 money or more from'
-          'your hand or discard pile into the Cauldron',
-      imgPath: 'assets/images/friend foe/friend/fawn incendiary catalyst.png',
-    );
-    var cardCL = AECard(
-      id: 34,
-      text:
-          'Leech: The Corrosion gains 2 charges. OR Any player discards a gem in hand that '
-          'costs 3 money or more',
-      imgPath: 'assets/images/friend foe/foe/corrosion leech.png',
-    );
-    var cardCE = AECard(
-      id: 35,
-      text:
-          'Empower: Remove 1 power token from each power in play, and the nemesis gains 6 life '
-          'OR Place a Draining Sign into lpay',
-      imgPath: 'assets/images/friend foe/foe/corrosion empower.png',
-    );
-    var cardCII = AECard(
-      id: 36,
-      text:
-          'Imbue Inevitability: The Corrosion gains 2 charges. OR Place the bottommost power card from '
-          'the nemesis discard pile into play. Any player gains 2 charges',
-      imgPath: 'assets/images/friend foe/foe/corrosion imbue inevitability.png',
-    );
-    var cardCD = AECard(
-      id: 37,
-      text: 'Diminish: Place a Draining Sign into play',
-      imgPath: 'assets/images/friend foe/foe/corrosion diminish.png',
-    );
-    var cardCDS = AECard(
-      id: 38,
-      text:
-          'Draining Sign: TO DISCARD: Spend 5 money. Return this card to the Draining Sign Pile '
-          'POWER 3: Any player suffers 4 damage. Return this to the Draining Sign pile',
-      imgPath: 'assets/images/friend foe/foe/corrosion draining sign.png',
-    );
-    var cardSwW = AECard(
-      id: 39,
-      text: 'Wriggle: The Swarm gains 2 charges. OR Gravehold suffers 3 damage',
-      imgPath: 'assets/images/friend foe/foe/swarm wriggle.png',
-    );
-    var cardSwSS = AECard(
-      id: 40,
-      text:
-          'Summoning Screech: Place a Broodling into play with 4 life. OR Any player discards a relic '
-          'in hand that costs 2 money or more',
-      imgPath: 'assets/images/friend foe/foe/swarm summoning screech.png',
-    );
-    var cardSwDD = AECard(
-      id: 41,
-      text:
-          'Descend and Devour: Place a Broodling into play. The swarm gains 1 charge',
-      imgPath: 'assets/images/friend foe/foe/swarm descend and devour.png',
-    );
-    var cardSwBF = AECard(
-      id: 42,
-      text:
-          'Blistered Flesh: Place a Broodling into play and gravehold suffers 2 damage. OR The Swarm '
-          'gains 3 charges and the friend gains 1 charge',
-      imgPath: 'assets/images/friend foe/foe/swarm blistered flesh.png',
-    );
-    var cardSwB = AECard(
-      id: 43,
-      text:
-          'Broodling: When this is discarded, return it to the Broodling deck. PERSISTENT: '
-          'Any player suffers 1 damage and discards a card HEALTH: 3',
-      imgPath: 'assets/images/friend foe/foe/swarm broodling.png',
-    );
-    var cardCuBB = AECard(
-      id: 44,
-      text:
-          'Burn Bright: The Cultist gains 2 charges. OR Volatile Pylon gains 4 life',
-      imgPath: 'assets/images/friend foe/foe/cultist burn bright.png',
-    );
-    var cardCuM = AECard(
-      id: 45,
-      text:
-          'Melt: If Volatile Pylon has 5 or more life, any player discards two cards in '
-          'hand. Otherwise, Volatile Pylon gains 4 life',
-      imgPath: 'assets/images/friend foe/foe/cultist melt.png',
-    );
-    var cardCuFF = AECard(
-      id: 46,
-      text:
-          'Feed the Flames: The Cultist gains 1 charge. Any player may discard a gem in hand that '
-          'costs a 3 money or more. If they dont Volatile Pylon gains 3 life',
-      imgPath: 'assets/images/friend foe/foe/cultist feed the flames.png',
-    );
-    var cardCuSS = AECard(
-      id: 47,
-      text:
-          'Smothering Smog: Volatile Pylon gains 2 life and any player loses 1 charge. OR The Cultist '
-          'gains 3 charges and the gains 1 charge',
-      imgPath: 'assets/images/friend foe/foe/cultist smothering smog.png',
-    );
-    var cardCuRofF = AECard(
-      id: 48,
-      text:
-          'Ritual of flame: POWER 5: Any player or Gravehold suffers damage equal to thelife of '
-          'Volatile Pylon minus 1. Place 5 power tokens on this instead of discarding it',
-      imgPath: 'assets/images/friend foe/foe/cultist ritual of flame.png',
-    );
-    var cardCuVP = AECard(
-      id: 49,
-      text:
-          'Volatile Pylon: This enters play with 4 life. This minion has no maximum life. '
-          'This minions life cannot be reduced below 1',
-      imgPath: 'assets/images/friend foe/foe/cultist volatile pylon.png',
-    );
-    _ffCards.add(cardDE);
+    // var cardDE = AECard(
+    //   id: 11,
+    //   text:
+    //       'Energize: \n Dalana, the Healer gains 2 charges. OR Any player gains 1 charge',
+    //   imgPath: 'assets/images/friend foe/friend/dalana energize.png',
+    // );
+    // var cardDS = AECard(
+    //   id: 12,
+    //   text:
+    //       'Soothing Aura: \n Any player draws a card. OR Any player gains 2 money tokens',
+    //   imgPath: 'assets/images/friend foe/friend/dalana soothing aura.png',
+    // );
+    // var cardDEn = AECard(
+    //   id: 13,
+    //   text:
+    //       'Enhance: \n Any player focuses a breach. OR Any player discards a prepped spell. '
+    //       'If they do. Dalana, the Healer gains 3 charges',
+    //   imgPath: 'assets/images/friend foe/friend/dalana enhance.png',
+    // );
+    // var cardDR = AECard(
+    //   id: 14,
+    //   text:
+    //       'Restore: \n Dalana, the Healer gains 2 charges. OR Any player returns a card '
+    //       'from their discard pile to their hand',
+    //   imgPath: 'assets/images/friend foe/friend/dalana restore.png',
+    // );
+    // var cardSCC = AECard(
+    //   id: 15,
+    //   text:
+    //       'Carrion Claw: \n The Scavenger gains 2 charges. OR Any player loses 2 charges',
+    //   imgPath: 'assets/images/friend foe/foe/scavenger carrion claw.png',
+    // );
+    // var cardSSW = AECard(
+    //   id: 16,
+    //   text:
+    //       'Screeching Wail: \n The Scavenger gains 1 charge. Any player may discard a prepped spell '
+    //       'that costs 3 money or more. If they dont, the Scavenger gains an additional 2 charges',
+    //   imgPath: 'assets/images/friend foe/foe/scavenger screeching wail.png',
+    // );
+    // var cardSR = AECard(
+    //   id: 17,
+    //   text:
+    //       'Reclaim: \n Any player discards their two most expensive cards in hand and then '
+    //       'draws a card. OR Gravehold suffers 3 damage',
+    //   imgPath: 'assets/images/friend foe/foe/scavenger reclaim.png',
+    // );
+    // var cardSSS = AECard(
+    //   id: 18,
+    //   text:
+    //       'Shadow Slash: \n Gravehold suffers 3 damage. OR The Scavenger gains 3 charges and the '
+    //       'friend gains 1 charge',
+    //   imgPath: 'assets/images/friend foe/foe/scavenger shadow slash.png',
+    // );
+    // var cardAA = AECard(
+    //   id: 19,
+    //   text:
+    //       'Amplify: \n Adelheim, the Blacksmith gains 2 charges. OR Any player destroys a Spark '
+    //       'in hand or discard pile and gains a Forged Spark',
+    //   imgPath: 'assets/images/friend foe/friend/adelheim amplify.png',
+    // );
+    // var cardABF = AECard(
+    //   id: 20,
+    //   text:
+    //       'Blazing Furnace: \n Any player destroys a Crystal in hand or discard pile and gains a Forged '
+    //       'Crystal. OR Any player returns up to two cards from their discard pile '
+    //       'that cost 0 money to their hand',
+    //   imgPath: 'assets/images/friend foe/friend/adelheim blazing funrance.png',
+    // );
+    // var cardAB = AECard(
+    //   id: 21,
+    //   text:
+    //       'Burnish: \n Any player destroys a Crystal or Spark in hand. That player gains the '
+    //       'corresponding Forged card and places it into their hand. OR Any player '
+    //       'loses 2 charges. If they do, Adelheim, the Blacksmith gains 4 charges',
+    //   imgPath: 'assets/images/friend foe/friend/adelheim burnish.png',
+    // );
+    // var cardAPS = AECard(
+    //   id: 22,
+    //   text:
+    //       'Polished steel: \n Adelheim, the Blacksmith gains 2 charges. OR Any player discards a '
+    //       'card in hand that cost 2 money or more. If they do, they gains 3 charges',
+    //   imgPath: 'assets/images/friend foe/friend/adelheim polished steel.png',
+    // );
+    // var cardAFC = AECard(
+    //   id: 23,
+    //   text: 'Forged Crystal: \n Gain 2 money',
+    //   imgPath: 'assets/images/friend foe/friend/adelheim forged crystal.png',
+    // );
+    // var cardAFS = AECard(
+    //   id: 24,
+    //   text: 'Forged Spark: \n Cast: Deal 2 damage',
+    //   imgPath: 'assets/images/friend foe/friend/adelheim forged spark.png',
+    // );
+    // var cardMAS = AECard(
+    //   id: 25,
+    //   text:
+    //       'Ancient Secrets: \n Myrna, the Scholar gains 2 charges. OR Myrna, the Scholar loses 1 Knowledge. '
+    //       'If she does, reveal the turn order deck and return it in any order',
+    //   imgPath: 'assets/images/friend foe/friend/myrna ancient secret.png',
+    // );
+    // var cardMA = AECard(
+    //   id: 26,
+    //   text:
+    //       'Archive: \n Any player draws three cards and discards any cards drawn this way that '
+    //       'cost 3 money or more. OR Myrna loses any amount of Knowledge. The players '
+    //       'collectively draw cards equal to the Knowledge lost this way',
+    //   imgPath: 'assets/images/friend foe/friend/myrna archive.png',
+    // );
+    // var cardMD = AECard(
+    //   id: 27,
+    //   text:
+    //       'Delve: \n Myrna, the Scholar gains 2 charges. OR Myrna, the Scholar loses 1 Knowledge. '
+    //       'if she does, any player gains 4 money tokens',
+    //   imgPath: 'assets/images/friend foe/friend/myrna delve.png',
+    // );
+    // var cardMS = AECard(
+    //   id: 28,
+    //   text:
+    //       'Study: \n Myrna, the Scholar gains 1 charge. You may have the foe gain 1 charge. '
+    //       'If you do, Myrna gains an additional 2 charges. OR Myrna, the Scholar '
+    //       'loses 2 knowledge. If she does, any player casts a prepped spell '
+    //       'without discarding it',
+    //   imgPath: 'assets/images/friend foe/friend/myrna study.png',
+    // );
+    // var cardFAI = AECard(
+    //   id: 29,
+    //   text:
+    //       'Arcane Infusion: Any player may gain an Incendiary Catalyst and place it on top of their deck. '
+    //       'OR Any player casts a prepped spell. That spell deals an additional 1 damage',
+    //   imgPath: 'assets/images/friend foe/friend/fawn arcane infusion.png',
+    // );
+    // var cardFBB = AECard(
+    //   id: 30,
+    //   text:
+    //       'Bubbling Brew: Fawn, the Alchemist gains 2 charges. OR Any player places a spell that costs '
+    //       '2 money or more from their hand into the Cauldron and draws a card',
+    //   imgPath: 'assets/images/friend foe/friend/fawn bubbling brew.png',
+    // );
+    // var cardFGI = AECard(
+    //   id: 31,
+    //   text:
+    //       'Gather Ingredients: Any player gains a spell that costs 5 money or less from the supply. OR '
+    //       'Any player gains 1 charge',
+    //   imgPath: 'assets/images/friend foe/friend/fawn gather ingredients.png',
+    // );
+    // var cardFP = AECard(
+    //   id: 32,
+    //   text:
+    //       'Prepare: Fawn, the Alchemist gains 2 charges. OR Any player gains an Incendiary'
+    //       'Catalyst and an money token',
+    //   imgPath: 'assets/images/friend foe/friend/fawn prepare.png',
+    // );
+    // var cardFIC = AECard(
+    //   id: 33,
+    //   text:
+    //       'Incendiary Catalyst: Cast: Deal 3 damage. You may place a spell that costs 2 money or more from'
+    //       'your hand or discard pile into the Cauldron',
+    //   imgPath: 'assets/images/friend foe/friend/fawn incendiary catalyst.png',
+    // );
+    // var cardCL = AECard(
+    //   id: 34,
+    //   text:
+    //       'Leech: The Corrosion gains 2 charges. OR Any player discards a gem in hand that '
+    //       'costs 3 money or more',
+    //   imgPath: 'assets/images/friend foe/foe/corrosion leech.png',
+    // );
+    // var cardCE = AECard(
+    //   id: 35,
+    //   text:
+    //       'Empower: Remove 1 power token from each power in play, and the nemesis gains 6 life '
+    //       'OR Place a Draining Sign into lpay',
+    //   imgPath: 'assets/images/friend foe/foe/corrosion empower.png',
+    // );
+    // var cardCII = AECard(
+    //   id: 36,
+    //   text:
+    //       'Imbue Inevitability: The Corrosion gains 2 charges. OR Place the bottommost power card from '
+    //       'the nemesis discard pile into play. Any player gains 2 charges',
+    //   imgPath: 'assets/images/friend foe/foe/corrosion imbue inevitability.png',
+    // );
+    // var cardCD = AECard(
+    //   id: 37,
+    //   text: 'Diminish: Place a Draining Sign into play',
+    //   imgPath: 'assets/images/friend foe/foe/corrosion diminish.png',
+    // );
+    // var cardCDS = AECard(
+    //   id: 38,
+    //   text:
+    //       'Draining Sign: TO DISCARD: Spend 5 money. Return this card to the Draining Sign Pile '
+    //       'POWER 3: Any player suffers 4 damage. Return this to the Draining Sign pile',
+    //   imgPath: 'assets/images/friend foe/foe/corrosion draining sign.png',
+    // );
+    // var cardSwW = AECard(
+    //   id: 39,
+    //   text: 'Wriggle: The Swarm gains 2 charges. OR Gravehold suffers 3 damage',
+    //   imgPath: 'assets/images/friend foe/foe/swarm wriggle.png',
+    // );
+    // var cardSwSS = AECard(
+    //   id: 40,
+    //   text:
+    //       'Summoning Screech: Place a Broodling into play with 4 life. OR Any player discards a relic '
+    //       'in hand that costs 2 money or more',
+    //   imgPath: 'assets/images/friend foe/foe/swarm summoning screech.png',
+    // );
+    // var cardSwDD = AECard(
+    //   id: 41,
+    //   text:
+    //       'Descend and Devour: Place a Broodling into play. The swarm gains 1 charge',
+    //   imgPath: 'assets/images/friend foe/foe/swarm descend and devour.png',
+    // );
+    // var cardSwBF = AECard(
+    //   id: 42,
+    //   text:
+    //       'Blistered Flesh: Place a Broodling into play and gravehold suffers 2 damage. OR The Swarm '
+    //       'gains 3 charges and the friend gains 1 charge',
+    //   imgPath: 'assets/images/friend foe/foe/swarm blistered flesh.png',
+    // );
+    // var cardSwB = AECard(
+    //   id: 43,
+    //   text:
+    //       'Broodling: When this is discarded, return it to the Broodling deck. PERSISTENT: '
+    //       'Any player suffers 1 damage and discards a card HEALTH: 3',
+    //   imgPath: 'assets/images/friend foe/foe/swarm broodling.png',
+    // );
+    // var cardCuBB = AECard(
+    //   id: 44,
+    //   text:
+    //       'Burn Bright: The Cultist gains 2 charges. OR Volatile Pylon gains 4 life',
+    //   imgPath: 'assets/images/friend foe/foe/cultist burn bright.png',
+    // );
+    // var cardCuM = AECard(
+    //   id: 45,
+    //   text:
+    //       'Melt: If Volatile Pylon has 5 or more life, any player discards two cards in '
+    //       'hand. Otherwise, Volatile Pylon gains 4 life',
+    //   imgPath: 'assets/images/friend foe/foe/cultist melt.png',
+    // );
+    // var cardCuFF = AECard(
+    //   id: 46,
+    //   text:
+    //       'Feed the Flames: The Cultist gains 1 charge. Any player may discard a gem in hand that '
+    //       'costs a 3 money or more. If they dont Volatile Pylon gains 3 life',
+    //   imgPath: 'assets/images/friend foe/foe/cultist feed the flames.png',
+    // );
+    // var cardCuSS = AECard(
+    //   id: 47,
+    //   text:
+    //       'Smothering Smog: Volatile Pylon gains 2 life and any player loses 1 charge. OR The Cultist '
+    //       'gains 3 charges and the gains 1 charge',
+    //   imgPath: 'assets/images/friend foe/foe/cultist smothering smog.png',
+    // );
+    // var cardCuRofF = AECard(
+    //   id: 48,
+    //   text:
+    //       'Ritual of flame: POWER 5: Any player or Gravehold suffers damage equal to thelife of '
+    //       'Volatile Pylon minus 1. Place 5 power tokens on this instead of discarding it',
+    //   imgPath: 'assets/images/friend foe/foe/cultist ritual of flame.png',
+    // );
+    // var cardCuVP = AECard(
+    //   id: 49,
+    //   text:
+    //       'Volatile Pylon: This enters play with 4 life. This minion has no maximum life. '
+    //       'This minions life cannot be reduced below 1',
+    //   imgPath: 'assets/images/friend foe/foe/cultist volatile pylon.png',
+    // );
+    /*_ffCards.add(cardDE);
     _ffCards.add(cardDS);
     _ffCards.add(cardDEn);
     _ffCards.add(cardDR);
@@ -674,7 +709,7 @@ class DefaultData {
     _ffCards.add(cardABF);
     _ffCards.add(cardAB);
     _ffCards.add(cardAPS);
-    
+
     _ffCards.add(cardMAS);
     _ffCards.add(cardMA);
     _ffCards.add(cardMD);
@@ -705,11 +740,11 @@ class DefaultData {
     _ffCards.add(cardCuVP);
 
     _cards.addAll(_ffCards);
-    addCardsToDB();
+    addCardsToDB();*/
   }
 
   // Friend Foe Stacks
-  void checkStacks() async {
+  /*void checkStacks() async {
     var listFDB = await _db.getFriendFoeStacks();
     if (listFDB.length <= 12) {
       // print("DefaultData FriendFoeData checkStacks listFDB.length <= 7");
@@ -727,11 +762,6 @@ class DefaultData {
       }
     }
   }
-
-  // Future<List<CardsStack>> _getFFStacksFromDB() async {
-  //   var list = await _db.getFriendFoeStacks();
-  //   return list;
-  // }
 
   createStacks() {
     //checkCards();
@@ -973,7 +1003,7 @@ class DefaultData {
     _db.createHero(friendFoeList[5]);
     _db.createHero(friendFoeList[6]);
     _db.createHero(friendFoeList[7]);
-  }
+  }*/
 
   addCardToStory(AECard card, bool isNewTurn) {
     if (isNewTurn) {

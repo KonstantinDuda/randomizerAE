@@ -30,35 +30,35 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
     var stackToReturn = const CardsStack.empty();
     //Map<HeroStack, CardsStack> dataToReturn = {};
 
-    var allHeroes = await defaultData.getHeroes();
+    //var allHeroes = await defaultData.getHeroes();
 
     Future<HeroStack> heroCheck(
         HeroStack hero, CardsStack alreadyPlayed, bool isFriend) async {
 // print("FriendFoeBodyBloc _onInit heroCheck hero == $hero");
       if (hero.id == 0) {
-        var first = allHeroes.firstWhere((el) =>
-            el.heroStack.id != 0 &&
-            el.heroStack.isActive &&
-            el.isFriend == isFriend);
-        if (first.heroStack.cards.isNotEmpty) {
-          hero = first;
-          // print("\t FriendFoeBodyBloc _onInit heroCheck "
-          //     "first.heroStack.cards == ${hero.heroStack.cards} \n");
-          hero.heroStack.cards.shuffle();
-          hero.heroStack.cards.shuffle();
-          // print("\t FriendFoeBodyBloc _onInit heroCheck "
-          //     "first.heroStack.cards == ${hero.heroStack.cards} \n");
-        } else {
-          var stack = await db.getStackById(first.heroStack.id);
-          stack.cards.shuffle();
-          hero = HeroStack(
-              id: first.id,
-              name: first.name,
-              isFriend: first.isFriend,
-              heroStack: stack,
-              energyClosetCount: first.energyClosetCount,
-              ability: first.ability);
-        }
+        // var first = allHeroes.firstWhere((el) =>
+        //     el.heroStack.id != 0 &&
+        //     el.heroStack.isActive &&
+        //     el.isFriend == isFriend);
+        // if (first.heroStack.cards.isNotEmpty) {
+        //   hero = first;
+        //   // print("\t FriendFoeBodyBloc _onInit heroCheck "
+        //   //     "first.heroStack.cards == ${hero.heroStack.cards} \n");
+        //   hero.heroStack.cards.shuffle();
+        //   hero.heroStack.cards.shuffle();
+        //   // print("\t FriendFoeBodyBloc _onInit heroCheck "
+        //   //     "first.heroStack.cards == ${hero.heroStack.cards} \n");
+        // } else {
+        //   var stack = await db.getStackById(first.heroStack.id);
+        //   stack.cards.shuffle();
+        //   hero = HeroStack(
+        //       id: first.id,
+        //       name: first.name,
+        //       isFriend: first.isFriend,
+        //       heroStack: stack,
+        //       energyClosetCount: first.energyClosetCount,
+        //       ability: first.ability);
+        // }
       }
 
       return hero;
@@ -67,7 +67,6 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
     friend = await heroCheck(friend, friendAlreadyPlayed, true);
     foe = await heroCheck(foe, foeAlreadyPlayed, false);
 
-    
     // Friend and Foe ids != 0
     stackCheck(HeroStack hero, CardsStack alreadyPlayed) async {
       if (hero.id != 0) {
@@ -102,7 +101,7 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
     }
 
     await stackCheck(friend, friendAlreadyPlayed);
-    if(heroToReturn.id != 0) {
+    if (heroToReturn.id != 0) {
       friend = heroToReturn;
       friendAlreadyPlayed = stackToReturn;
     } else {
@@ -214,7 +213,7 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
     var allHeroes = []; // await defaultData.getHeroes();
 
     checkAllHeroes(CardsStack alreadyPlayed) async {
-      allHeroes = await defaultData.getHeroes();
+      //allHeroes = await defaultData.getHeroes();
       // print(
       //     "FriendFoeBodyBloc _onChangeActiveStack checkAllHeroes allHeroes.length == ${allHeroes.length} \n");
       var hero = allHeroes
@@ -270,7 +269,6 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
     // print("FriendFoeBodyBloc _onChangeActiveStack after checks "
     //     "friend == $friend, \n \t foe == $foe");
 
-
 // Check if we came here from Turn order page by toching the Friend or Foe card
     if (event.stackId == -1) {
       // print("came here from Turn order page by toching the Friend card");
@@ -295,7 +293,7 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
         }
       }
       if (heroToReturn.id == 0) {
-        allHeroes = await defaultData.getHeroes();
+        //allHeroes = await defaultData.getHeroes();
         for (var element in allHeroes) {
           if (element.heroStack.id != 0) {
             if (element.heroStack.id == event.stackId) {

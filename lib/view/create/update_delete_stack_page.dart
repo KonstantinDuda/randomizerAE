@@ -110,15 +110,14 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
 
     void changeName() {
       print("ChangeName in $curentName stack");
-      
     }
 
     void addCard() {
       print("Add card in $curentName stack");
       showDialog(
           context: context,
-          builder: (BuildContext context) => AddCardToStackDialog(stack: stacks[index])
-              );
+          builder: (BuildContext context) =>
+              AddCardToStackDialog(stack: stacks[index]));
     }
 
     void checkboxChange(bool value) {
@@ -132,12 +131,12 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
       // context.read<CRUDStackBloc>().add(
       //       CRUDStackUpdateStackEvent(newStack),
       //     );
-      if(mounted) {
-      setState(() {
-        stacks.removeAt(index);
-        stacks.insert(index, newStack);
-        checkboxState = !checkboxState;
-      });
+      if (mounted) {
+        setState(() {
+          stacks.removeAt(index);
+          stacks.insert(index, newStack);
+          checkboxState = !checkboxState;
+        });
       }
       print(
           "UpdateDeleteStackPage stackWidget checkboxChange $value, ${stacks[index].isActive}");
@@ -161,12 +160,13 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
             stackType: newStackType,
             stackColor: stacks[index].stackColor,
             cards: stacks[index].cards);
-            if(mounted) {
-        setState(() {
-          stacks.removeAt(index);
-          stacks.insert(index, newStack);
-          typesList[index] = value;
-        });}
+        if (mounted) {
+          setState(() {
+            stacks.removeAt(index);
+            stacks.insert(index, newStack);
+            typesList[index] = value;
+          });
+        }
       } else {
         print("${stacks[index].id} Stack type not changed");
       }
@@ -183,12 +183,13 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
             stackType: stacks[index].stackType,
             stackColor: value,
             cards: stacks[index].cards);
-            if(mounted) {
-        setState(() {
-          stacks.removeAt(index);
-          stacks.insert(index, newStack);
-          colorsList[index] = value;
-        });}
+        if (mounted) {
+          setState(() {
+            stacks.removeAt(index);
+            stacks.insert(index, newStack);
+            colorsList[index] = value;
+          });
+        }
       } else {
         print("${stacks[index].id} Stack color not changed");
       }
@@ -258,7 +259,7 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
 
   void createCard(BuildContext context) {
     print("UpdateDeleteStack createCard");
-    AECard card = AECard(id: 0, text: "", imgPath: "");
+    AECard card = AECard(id: 0, text: "", name: "");
     showDialog(
         context: context,
         builder: (BuildContext context) => CreateCardDialog(card));
@@ -353,13 +354,13 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
               () => createStack(),
             ),
             ElevatedButton(
-                  onPressed: () {
-                    print("UpdateDeleteStackPage: Go to Hero List button pressed");
-                    context.read<HeroBloc>().add(HeroInitEvent());
-                    context.read<ProviderBloc>().add(HeroListEvent());
-                  },
-                  child: const Text("Go to Heroes", style: TextStyle(fontSize: 20)),
-                ),
+              onPressed: () {
+                print("UpdateDeleteStackPage: Go to Hero List button pressed");
+                context.read<HeroBloc>().add(HeroInitEvent());
+                context.read<ProviderBloc>().add(HeroListEvent());
+              },
+              child: const Text("Go to Heroes", style: TextStyle(fontSize: 20)),
+            ),
           ],
         ),
       );
