@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+//import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'cards_stack.dart';
@@ -13,7 +13,7 @@ class DefaultData {
   List<CardsStack> _stacks = [];
   //List<HeroStack> friendFoeList = [];
 
-  List<AECard> _ffCards = [];
+  //List<AECard> _ffCards = [];
 
   List<List<AECard>> story = [];
 
@@ -153,25 +153,37 @@ class DefaultData {
     var firstRunCards = await _db.getAllCards();
     if (firstRunCards.isEmpty) {
       // If the database is empty, create default data
+      //Cards
       final String responseCards = await rootBundle.loadString(
         'lib/assets/cards.json',
       );
       final jsonCards = await json.decode(responseCards);
-      _cards = (jsonCards as List).map((e) => AECard.fromMap(e)).toList();
+      _cards =
+          (jsonCards['cards'] as List).map((e) => AECard.fromMap(e)).toList();
 
-      final String responseStacks = await rootBundle.loadString(
-        'lib/assets/stacks.json',
-      );
-      final jsonStacks = await json.decode(responseStacks);
-      var dbStacks =
-          (jsonStacks as List).map((e) => CardsStackDB.fromMap(e)).toList();
+      // for (var element in _cards) {
+      //   _db.createCard(element);
+      // }
 
-      for (var element in dbStacks) {
-        var cardsId = getCardsById(element.cardsId);
-        CardsStack stack = const CardsStack.empty();
-        stack = stack.csDBToCS(element, cardsId);
-        _stacks.add(stack);
-      }
+// Stacks
+      // final String responseStacks = await rootBundle.loadString(
+      //   'lib/assets/stacks.json',
+      // );
+      // final jsonStacks = await json.decode(responseStacks);
+      // var dbStacks =
+      //     (jsonStacks as List).map((e) => CardsStackDB.fromMap(e)).toList();
+
+      // for (var element in dbStacks) {
+      //   var cardsId = getCardsById(element.cardsId);
+      //   CardsStack stack = const CardsStack.empty();
+      //   stack = stack.csDBToCS(element, cardsId);
+      //   _stacks.add(stack);
+      //   _db.createStack(stack);
+      // }
+      var cardsLength = _db.getAllCards().then((value) => value.length);
+      print("cardsLength: $cardsLength");
+      // var stacksLength = _db.getAllStacks().then((value) => value.length);
+      // print("stacksLength: $stacksLength");
 
       // createTurnOrderData();
       // createCards();

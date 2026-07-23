@@ -55,12 +55,12 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
     void isOptionalFunc(String type) {
       print("CRUDStackBlock _onNewCard isOptionalFunc type == $type");
 
-      var resultType = "";
-      if (type == "Friend" || type == "Foe") {
-        resultType = "friend foe/${type.toLowerCase()}/";
-      } else {
-        resultType = "${type.toLowerCase()}/";
-      }
+      // var resultType = "";
+      // if (type == "Friend" || type == "Foe") {
+      //   resultType = "friend foe/${type.toLowerCase()}/";
+      // } else {
+      //   resultType = "${type.toLowerCase()}/";
+      // }
 
       if (cardIsOptional) {
         print("CRUDStackBlock _onNewCard isOptionalFunc event.isOptional \n");

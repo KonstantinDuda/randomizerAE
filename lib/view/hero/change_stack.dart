@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:randomizer_new/bloc/event_state/hero_es.dart';
 
+import '../../bloc/event_state/hero_es.dart';
 import '../../bloc/crud_stack_bloc.dart';
 import '../../bloc/event_state/crud_stack_es.dart';
 import '../../bloc/hero_bloc.dart';
@@ -40,7 +40,8 @@ class _ChangeStackDialogState extends State<ChangeStackDialog> {
                     title: Center(child: Text(stacks[index].name)),
                     onTap: () {
                       print("Selected stack: ${stacks[index].name}");
-                      context.read<HeroBloc>().add(HeroChangeStackEvent(widget.hero, stacks[index]));
+                      context.read<HeroBloc>().add(
+                          HeroChangeStackEvent(widget.hero, stacks[index]));
                       Navigator.of(context).pop();
                     },
                   ),

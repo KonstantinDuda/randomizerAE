@@ -51,22 +51,22 @@ class _RootAppBarState extends State<RootAppBar> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Aeons End Randomizer'),
-                  Container(
-                    margin: const EdgeInsets.only(left: 10),
-                    child: Stack(children: [
-                      const Icon(Icons.circle_outlined),
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(4, 3, 0, 0),
-                        child: const Icon(Icons.question_mark, size: 16),
-                      ),
-                    ]),
-                  ),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     const Text('Aeons End Randomizer'),
+              //     Container(
+              //       margin: const EdgeInsets.only(left: 10),
+              //       child: Stack(children: [
+              //         const Icon(Icons.circle_outlined),
+              //         Container(
+              //           margin: const EdgeInsets.fromLTRB(4, 3, 0, 0),
+              //           child: const Icon(Icons.question_mark, size: 16),
+              //         ),
+              //       ]),
+              //     ),
+              //   ],
+              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
