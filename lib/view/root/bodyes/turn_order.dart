@@ -300,6 +300,43 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
 
                     // Change sequance
                     Positioned(
+                      bottom: 80,
+                      left: 2,
+                      child: GestureDetector(
+                        child: Container(
+                          width: 100,
+                          height: 70,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 2,
+                            ),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(18)),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              "About Stack",
+                              style: TextStyle(fontSize: 18),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        onTap: () {
+                          print("About Stack was tapped");
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return ChangeSequanceDialog(list: stack.cards);
+                            },
+                          );
+                        },
+                      ),
+                    ),
+
+                    // Change sequance
+                    Positioned(
                       bottom: 2,
                       left: 2,
                       child: GestureDetector(
@@ -382,7 +419,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                       ),
                     ),
 
-// Discard wild
+                    // Discard wild
                     Positioned(
                       bottom: 2,
                       right: 2,

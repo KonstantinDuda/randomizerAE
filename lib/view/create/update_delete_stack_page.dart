@@ -45,6 +45,7 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
         MyCard(
           Center(
             child: Text(
+              // TODO: додати назву карти
               cards[index].text,
               textAlign: TextAlign.center,
               maxLines: 9,
@@ -244,7 +245,6 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
                 ElevatedButton(
                   onPressed: () {
                     create();
-                    // Add your stack creation logic here
                   },
                   child: Text(buttonText, style: const TextStyle(fontSize: 20)),
                 ),

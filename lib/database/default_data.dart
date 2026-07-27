@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 
 import 'cards_stack.dart';
-import 'cards_stack_db.dart';
+//import 'cards_stack_db.dart';
 import 'db_provider.dart';
 
 class DefaultData {
@@ -155,15 +155,25 @@ class DefaultData {
       // If the database is empty, create default data
       //Cards
       final String responseCards = await rootBundle.loadString(
-        'lib/assets/cards.json',
+        'assets/json/cards.json',
       );
       final jsonCards = await json.decode(responseCards);
       _cards =
           (jsonCards['cards'] as List).map((e) => AECard.fromMap(e)).toList();
 
-      // for (var element in _cards) {
-      //   _db.createCard(element);
-      // }
+      final String responseFfCards = await rootBundle.loadString(
+        'assets/json/ff_cards.json',
+      );
+      final jsonFfCards = await json.decode(responseFfCards);
+      var fFcards = (jsonFfCards['ff_cards'] as List)
+          .map((e) => AECard.fromMap(e))
+          .toList();
+      _cards.addAll(fFcards);
+      print("default_data. createDD: _cards.length == ${_cards.length}");
+
+      for (var element in _cards) {
+        _db.createCard(element);
+      }
 
 // Stacks
       // final String responseStacks = await rootBundle.loadString(
