@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import 'cards_stack_db.dart';
+import 'default_data.dart';
 
 /// AECard represents a card in the game with an id, text, and image path.
 class AECard {
@@ -53,6 +56,7 @@ enum StackType {
   turnOrder,
   friend,
   foe,
+  other,
   //friendFoe,
   //gravehold,
   //hero,
@@ -87,6 +91,55 @@ class CardsStack {
     this.cards = const [],
     //this.cardsId = const [],
   });
+
+  Map<String, dynamic> toJson() {
+    var cardIds = cards.map((e) => e.id).toList();
+    var json = <String, Object?>{
+      'name': name,
+      'is_standart': isActive ? 1 : 0,
+      'stack_type': stackType.toString(),
+      'stack_color': stackColor.toARGB32(),
+      'cards': jsonEncode(cardIds),
+    };
+    if (id != 0) {
+      json['id'] = id;
+    }
+
+    return json;
+  }
+
+  factory CardsStack.fromJson(Map<String, dynamic> json) {
+    var stackType = _parseStackType(json["stack_type"]);
+    var ids = json["cards"];
+    final List<int> parsedCardIds =
+        ids is String ? List<int>.from(jsonDecode(ids)) : List<int>.from(ids);
+
+    var db = DefaultData();
+    var cards = db.getCardsById(parsedCardIds);
+
+    return CardsStack(
+        id: json["id"] as int,
+        name: json["name"] as String,
+        isActive: json['is_standart'] == 1 ? true : false,
+        stackType: stackType,
+        stackColor: Color(json['stack_color']),
+        cards: cards);
+  }
+
+  static StackType _parseStackType(String type) {
+    switch (type) {
+      case 'StackType.turnOrder':
+        return StackType.turnOrder;
+      case 'StackType.friend':
+        return StackType.friend;
+      case 'StackType.foe':
+        return StackType.foe;
+      case 'StackType.other':
+        return StackType.other;
+      default:
+        return StackType.turnOrder;
+    }
+  }
 
   CardsStack csDBToCS(CardsStackDB stackDB, List<AECard> list) {
     return CardsStack(

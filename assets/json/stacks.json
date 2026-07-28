@@ -1,7 +1,80 @@
 {
     "to_stacks": [
         {
-            
+            "id": 1,
+            "name": "TO 2",
+            "is_standart": 0,
+            "stack_type": "StackType.turnOrder",
+            "//": "Green:  4283215696, Blue:  4280391411", 
+            "//": "Red:    4294198070, Gray:  4288585370",
+            "//": "Yellow: 4294953223, Black: 4278190080",
+            "//": "White:  4294967295",
+            "stack_color": 4294967295,
+            "cards": [1, 1, 2, 2, 6, 6, 8, 9],
+            "description": ""
+        },
+        {   
+            "id": 2,
+            "name": "TO 2 Bliz",
+            "is_standart": 0,
+            "stack_type": "StackType.turnOrder",
+            "stack_color": 4288585370,
+            "cards": [1, 1, 2, 2, 6, 7, 8, 9],
+            "description": ""
+        },
+        {   
+            "id": 3,
+            "name": "TO 2 without friend",
+            "is_standart": 0,
+            "stack_type": "StackType.turnOrder",
+            "stack_color": 4294967295,
+            "cards": [1, 1, 2, 2, 6, 6, 9],
+            "description": ""
+        },
+        {   
+            "id": 4,
+            "name": "AK 2",
+            "is_standart": 0,
+            "stack_type": "StackType.turnOrder",
+            "stack_color": 4278190080,
+            "cards": [1, 1, 2, 2, 6, 6],
+            "description": ""
+        },
+        {   
+            "id": 5,
+            "name": "TO 3",
+            "is_standart": 1,
+            "stack_type": "StackType.turnOrder",
+            "stack_color": 4294967295,
+            "cards": [1, 2, 3, 5, 6, 6, 8, 9],
+            "description": ""
+        },
+        {   
+            "id": 6,
+            "name": "TO 3 Bliz",
+            "is_standart": 0,
+            "stack_type": "StackType.turnOrder",
+            "stack_color": 4288585370,
+            "cards": [1, 2, 3, 5, 6, 7, 8, 9],
+            "description": ""
+        },
+        {   
+            "id": 7,
+            "name": "TO 3 without friend",
+            "is_standart": 0,
+            "stack_type": "StackType.turnOrder",
+            "stack_color": 4294967295,
+            "cards": [1, 2, 3, 5, 6, 6, 9],
+            "description": ""
+        },
+        {   
+            "id": 8,
+            "name": "AK 3",
+            "is_standart": 1,
+            "stack_type": "StackType.turnOrder",
+            "stack_color": 4278190080,
+            "cards": [1, 2, 3, 5, 6, 6],
+            "description": ""
         }
     ]
 }

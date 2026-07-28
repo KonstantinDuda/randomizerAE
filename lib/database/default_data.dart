@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import 'cards_stack.dart';
 //import 'cards_stack_db.dart';
+import 'cards_stack_db.dart';
 import 'db_provider.dart';
 
 class DefaultData {
@@ -174,26 +175,35 @@ class DefaultData {
       for (var element in _cards) {
         _db.createCard(element);
       }
-
-// Stacks
-      // final String responseStacks = await rootBundle.loadString(
-      //   'lib/assets/stacks.json',
-      // );
-      // final jsonStacks = await json.decode(responseStacks);
-      // var dbStacks =
-      //     (jsonStacks as List).map((e) => CardsStackDB.fromMap(e)).toList();
-
-      // for (var element in dbStacks) {
-      //   var cardsId = getCardsById(element.cardsId);
-      //   CardsStack stack = const CardsStack.empty();
-      //   stack = stack.csDBToCS(element, cardsId);
-      //   _stacks.add(stack);
-      //   _db.createStack(stack);
-      // }
       var cardsLength = _db.getAllCards().then((value) => value.length);
       print("cardsLength: $cardsLength");
+    } else {
+      print("default_data. firstRunCards.isNotEmpty");
+      _cards = firstRunCards;
+    }
+
+// Stacks
+    var firstRunStacks = await _db.getAllStacks();
+    if (firstRunStacks.isEmpty) {
+      final String responseStacks = await rootBundle.loadString(
+        'assets/json/stacks.json',
+      );
+      final jsonStacks = await json.decode(responseStacks);
+      var dbStacks = (jsonStacks['to_stacks'] as List<dynamic>)
+          .map((e) => CardsStackDB.fromMap(e))
+          .toList();
+      print("default_data. createDD: dbStacks.length: ${dbStacks.length}");
+
+      for (var element in dbStacks) {
+        var cardsId = getCardsById(element.cardsId);
+        CardsStack stack = const CardsStack.empty();
+        stack = stack.csDBToCS(element, cardsId);
+        _stacks.add(stack);
+        _db.createStack(stack);
+      }
+
       // var stacksLength = _db.getAllStacks().then((value) => value.length);
-      // print("stacksLength: $stacksLength");
+      print("default_data. createDD: _stacks.length: ${_stacks.length}");
 
       // createTurnOrderData();
       // createCards();
@@ -201,7 +211,8 @@ class DefaultData {
       //createFriendFoeHeroes();
       //createStacks();
     } else {
-      _cards = firstRunCards;
+      print("default_data. firstRunStacks.isNotEmpty");
+      _stacks = firstRunStacks;
     }
   }
 

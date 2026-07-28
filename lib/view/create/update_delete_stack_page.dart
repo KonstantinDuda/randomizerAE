@@ -353,14 +353,14 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
               ),
               () => createStack(),
             ),
-            ElevatedButton(
-              onPressed: () {
-                print("UpdateDeleteStackPage: Go to Hero List button pressed");
-                context.read<HeroBloc>().add(HeroInitEvent());
-                context.read<ProviderBloc>().add(HeroListEvent());
-              },
-              child: const Text("Go to Heroes", style: TextStyle(fontSize: 20)),
-            ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     print("UpdateDeleteStackPage: Go to Hero List button pressed");
+            //     context.read<HeroBloc>().add(HeroInitEvent());
+            //     context.read<ProviderBloc>().add(HeroListEvent());
+            //   },
+            //   child: const Text("Go to Heroes", style: TextStyle(fontSize: 20)),
+            // ),
           ],
         ),
       );
