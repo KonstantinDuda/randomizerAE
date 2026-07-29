@@ -165,6 +165,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
           stackType: StackType.turnOrder,
           stackColor: stack.stackColor,
           cards: [],
+          description: stack.description,
         );
       }
       alreadyPlayed.cards.add(stack.cards.last);
@@ -185,6 +186,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
       stackType: StackType.turnOrder,
       stackColor: stack.stackColor,
       cards: stack.cards,
+      description: stack.description,
     );
 
     var newAlreadyPlayed = CardsStack(
@@ -194,6 +196,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
       stackType: StackType.turnOrder,
       stackColor: alreadyPlayed.stackColor,
       cards: alreadyPlayed.cards,
+      description: alreadyPlayed.description,
     );
 
     emit(TurnOrderBodySuccessActionState(newStack, newAlreadyPlayed));
@@ -222,6 +225,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
       stackType: StackType.turnOrder,
       stackColor: stack.stackColor,
       cards: newAlreadyCards,
+      description: stack.description,
     );
 
     List<AECard> newCardsList = stack.cards;
@@ -232,6 +236,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
       stackType: StackType.turnOrder,
       stackColor: stack.stackColor,
       cards: newCardsList,
+      description: stack.description,
     ); // Something is wrong here
 
     var newAlreadyPlayed = CardsStack(
@@ -241,6 +246,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
       stackType: StackType.turnOrder,
       stackColor: alreadyPlayed.stackColor,
       cards: newAlreadyCards,
+      description: alreadyPlayed.description,
     );
 
     emit(TurnOrderBodySuccessActionState(newStack, newAlreadyPlayed));
@@ -310,6 +316,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
       stackType: stack.stackType,
       stackColor: stack.stackColor,
       cards: newCardsList,
+      description: stack.description,
     );
     stack = newStack;
     print("TurnOrderBodyBlock _onChangeSequence "
@@ -341,19 +348,23 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
   void _onClearStack(TurnOrderBodyClearStackEvent event,
       Emitter<TurnOrderBodyState> emit) async {
     stack = CardsStack(
-        id: stack.id,
-        name: stack.name,
-        isActive: stack.isActive,
-        stackType: stack.stackType,
-        stackColor: stack.stackColor,
-        cards: []);
+      id: stack.id,
+      name: stack.name,
+      isActive: stack.isActive,
+      stackType: stack.stackType,
+      stackColor: stack.stackColor,
+      cards: [],
+      description: stack.description,
+    );
     alreadyPlayed = CardsStack(
-        id: stack.id,
-        name: stack.name,
-        isActive: stack.isActive,
-        stackType: stack.stackType,
-        stackColor: stack.stackColor,
-        cards: []);
+      id: stack.id,
+      name: stack.name,
+      isActive: stack.isActive,
+      stackType: stack.stackType,
+      stackColor: stack.stackColor,
+      cards: [],
+      description: stack.description,
+    );
     emit(TurnOrderBodySuccessActionState(stack, alreadyPlayed));
   }
 }

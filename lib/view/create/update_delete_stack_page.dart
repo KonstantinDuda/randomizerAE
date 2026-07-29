@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../bloc/event_state/hero_es.dart';
-import '../../bloc/hero_bloc.dart';
 import '../root/bodyes/my_card.dart';
 import '/bloc/providers/provider_bloc.dart';
 import '../../bloc/crud_stack_bloc.dart';
@@ -123,12 +121,14 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
 
     void checkboxChange(bool value) {
       var newStack = CardsStack(
-          id: stacks[index].id,
-          name: stacks[index].name,
-          isActive: !stacks[index].isActive,
-          stackType: stacks[index].stackType,
-          stackColor: stacks[index].stackColor,
-          cards: stacks[index].cards);
+        id: stacks[index].id,
+        name: stacks[index].name,
+        isActive: !stacks[index].isActive,
+        stackType: stacks[index].stackType,
+        stackColor: stacks[index].stackColor,
+        cards: stacks[index].cards,
+        description: stacks[index].description,
+      );
       // context.read<CRUDStackBloc>().add(
       //       CRUDStackUpdateStackEvent(newStack),
       //     );
@@ -155,12 +155,14 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
           newStackType = StackType.foe;
         }
         var newStack = CardsStack(
-            id: stacks[index].id,
-            name: stacks[index].name,
-            isActive: stacks[index].isActive,
-            stackType: newStackType,
-            stackColor: stacks[index].stackColor,
-            cards: stacks[index].cards);
+          id: stacks[index].id,
+          name: stacks[index].name,
+          isActive: stacks[index].isActive,
+          stackType: newStackType,
+          stackColor: stacks[index].stackColor,
+          cards: stacks[index].cards,
+          description: stacks[index].description,
+        );
         if (mounted) {
           setState(() {
             stacks.removeAt(index);
@@ -175,15 +177,18 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
 
     changeColor(Color value) {
       if (value != colorsList[index]) {
-        print("${stacks[index].name} Stack color changed to $value");
+        print(
+            "${stacks[index].name} Stack color changed to ${value.toARGB32()}");
         //var newStackColor = const Color.fromARGB(255, 158, 158, 158);
         var newStack = CardsStack(
-            id: stacks[index].id,
-            name: stacks[index].name,
-            isActive: stacks[index].isActive,
-            stackType: stacks[index].stackType,
-            stackColor: value,
-            cards: stacks[index].cards);
+          id: stacks[index].id,
+          name: stacks[index].name,
+          isActive: stacks[index].isActive,
+          stackType: stacks[index].stackType,
+          stackColor: value,
+          cards: stacks[index].cards,
+          description: stacks[index].description,
+        );
         if (mounted) {
           setState(() {
             stacks.removeAt(index);

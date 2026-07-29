@@ -33,8 +33,7 @@ class _AddCardToStackDialogState extends State<AddCardToStackDialog> {
     return BlocBuilder<CRUDStackBloc, CRUDStackState>(
         builder: (context, state) {
       if (state is CRUDStackSuccessActionState) {
-        allCards = state
-            .cards;
+        allCards = state.cards;
 
         var counter = 0;
         for (var i in allCards) {
@@ -144,11 +143,14 @@ class _AddCardToStackDialogState extends State<AddCardToStackDialog> {
                   isActive: widget.stack.isActive,
                   stackType: widget.stack.stackType,
                   stackColor: widget.stack.stackColor,
-                  cards: newCardsList);
+                  cards: newCardsList,
+                  description: widget.stack.description);
               context
                   .read<CRUDStackBloc>()
                   .add(CRUDStackUpdateStackEvent(newStack));
-              context.read<CRUDStackBloc>().add(CRUDStackInitialEvent()); // Addad 08.09.2025
+              context
+                  .read<CRUDStackBloc>()
+                  .add(CRUDStackInitialEvent()); // Addad 08.09.2025
               Navigator.of(context).pop();
             },
             style: TextButton.styleFrom(

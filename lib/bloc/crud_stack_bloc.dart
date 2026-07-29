@@ -220,12 +220,14 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
           //     "CRUDStackBloc _onUpdateAvailableList ddStacks[$i].id == event.id[$j]");
 
           localStack = CardsStack(
-              id: ddStacks[i].id,
-              name: ddStacks[i].name,
-              isActive: ddStacks[i].isActive == true ? false : true,
-              stackType: ddStacks[i].stackType,
-              stackColor: ddStacks[i].stackColor,
-              cards: ddStacks[i].cards);
+            id: ddStacks[i].id,
+            name: ddStacks[i].name,
+            isActive: ddStacks[i].isActive == true ? false : true,
+            stackType: ddStacks[i].stackType,
+            stackColor: ddStacks[i].stackColor,
+            cards: ddStacks[i].cards,
+            description: ddStacks[i].description,
+          );
           defaultData
               .updateStack(localStack); // Added to update the stack in DB
         }

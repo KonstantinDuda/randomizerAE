@@ -90,7 +90,9 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
               isActive: hero.heroStack.isActive,
               stackType: hero.heroStack.stackType,
               stackColor: hero.heroStack.stackColor,
-              cards: []);
+              cards: [],
+              //
+              description: "");
         } else {
           print("FriendFoeBodyBloc _onInit stackCheck "
               "hero.heroStack.id != event.stackId \n");
@@ -171,7 +173,9 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
             isActive: hero.heroStack.isActive,
             stackType: hero.heroStack.stackType,
             stackColor: hero.heroStack.stackColor,
-            cards: cards);
+            cards: cards,
+            //
+            description: "");
         print("FriendFoeBodyBloc _onNext eventCheck \n"
             "\t heroToReturn == $heroToReturn \n"
             "\t alreadyStackToReturn == $alreadyStackToReturn");
@@ -232,7 +236,9 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
           isActive: hero.heroStack.isActive,
           stackType: hero.heroStack.stackType,
           stackColor: hero.heroStack.stackColor,
-          cards: []);
+          cards: [],
+          //
+          description: "");
       if (hero.heroStack.id == event.stackId) {
         heroToReturn = hero;
         stackToReturn = alreadyPlayed;
@@ -259,7 +265,9 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
               isActive: hero.heroStack.isActive,
               stackType: hero.heroStack.stackType,
               stackColor: hero.heroStack.stackColor,
-              cards: []);
+              cards: [],
+              //
+              description: "");
         }
       }
     }
@@ -305,7 +313,9 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
                     isActive: friend.heroStack.isActive,
                     stackType: friend.heroStack.stackType,
                     stackColor: friend.heroStack.stackColor,
-                    cards: []);
+                    cards: [],
+                    //
+                    description: "");
                 heroToReturn = friend;
                 stackToReturn = friendAlreadyPlayed;
               } else {
@@ -316,7 +326,9 @@ class FriendFoeBodyBloc extends Bloc<FriendFoeBodyEvent, FriendFoeBodyState> {
                     isActive: foe.heroStack.isActive,
                     stackType: foe.heroStack.stackType,
                     stackColor: foe.heroStack.stackColor,
-                    cards: []);
+                    cards: [],
+                    //
+                    description: "");
                 heroToReturn = foe;
                 stackToReturn = foeAlreadyPlayed;
               }

@@ -6,8 +6,8 @@
             "is_standart": 0,
             "stack_type": "StackType.turnOrder",
             "//": "Green:  4283215696, Blue:  4280391411", 
-            "//": "Red:    4294198070, Gray:  4288585370",
-            "//": "Yellow: 4294953223, Black: 4278190080",
+            "//": "Red:    4294198070, Gray:  4288585374",
+            "//": "Yellow: 4294951175, Black: 4278190080",
             "//": "White:  4294967295",
             "stack_color": 4294967295,
             "cards": [1, 1, 2, 2, 6, 6, 8, 9],
@@ -18,7 +18,7 @@
             "name": "TO 2 Bliz",
             "is_standart": 0,
             "stack_type": "StackType.turnOrder",
-            "stack_color": 4288585370,
+            "stack_color": 4288585374,
             "cards": [1, 1, 2, 2, 6, 7, 8, 9],
             "description": ""
         },
@@ -54,7 +54,7 @@
             "name": "TO 3 Bliz",
             "is_standart": 0,
             "stack_type": "StackType.turnOrder",
-            "stack_color": 4288585370,
+            "stack_color": 4288585374,
             "cards": [1, 2, 3, 5, 6, 7, 8, 9],
             "description": ""
         },

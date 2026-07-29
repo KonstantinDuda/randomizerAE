@@ -159,8 +159,9 @@ class DefaultData {
         'assets/json/cards.json',
       );
       final jsonCards = await json.decode(responseCards);
-      _cards =
+      var toCards =
           (jsonCards['cards'] as List).map((e) => AECard.fromMap(e)).toList();
+      _cards.addAll(toCards);
 
       final String responseFfCards = await rootBundle.loadString(
         'assets/json/ff_cards.json',
@@ -190,16 +191,17 @@ class DefaultData {
       );
       final jsonStacks = await json.decode(responseStacks);
       var dbStacks = (jsonStacks['to_stacks'] as List<dynamic>)
-          .map((e) => CardsStackDB.fromMap(e))
+          .map((e) => CardsStack.fromJson(e))
           .toList();
       print("default_data. createDD: dbStacks.length: ${dbStacks.length}");
 
+      _stacks.addAll(dbStacks);
       for (var element in dbStacks) {
-        var cardsId = getCardsById(element.cardsId);
-        CardsStack stack = const CardsStack.empty();
-        stack = stack.csDBToCS(element, cardsId);
-        _stacks.add(stack);
-        _db.createStack(stack);
+        //   var cardsId = getCardsById(element.cardsId);
+        //   CardsStack stack = const CardsStack.empty();
+        //   stack = stack.csDBToCS(element, cardsId);
+        //   _stacks.add(stack);
+        _db.createStack(element);
       }
 
       // var stacksLength = _db.getAllStacks().then((value) => value.length);

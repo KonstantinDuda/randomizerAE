@@ -70,6 +70,7 @@ class CardsStack {
   final StackType stackType;
   final Color stackColor;
   final List<AECard> cards;
+  final String description;
   //final List<int> cardsId;
 
   CardsStack({
@@ -79,6 +80,7 @@ class CardsStack {
     required this.stackType,
     required this.stackColor,
     required this.cards,
+    required this.description,
     //required this.cardsId
   });
 
@@ -87,8 +89,9 @@ class CardsStack {
     this.name = '',
     this.isActive = false,
     this.stackType = StackType.turnOrder,
-    this.stackColor = Colors.white,
+    this.stackColor = const Color.fromARGB(255, 255, 255, 255), //Colors.white,
     this.cards = const [],
+    this.description = "",
     //this.cardsId = const [],
   });
 
@@ -100,6 +103,7 @@ class CardsStack {
       'stack_type': stackType.toString(),
       'stack_color': stackColor.toARGB32(),
       'cards': jsonEncode(cardIds),
+      'description': description,
     };
     if (id != 0) {
       json['id'] = id;
@@ -123,7 +127,8 @@ class CardsStack {
         isActive: json['is_standart'] == 1 ? true : false,
         stackType: stackType,
         stackColor: Color(json['stack_color']),
-        cards: cards);
+        cards: cards,
+        description: json["description"]);
   }
 
   static StackType _parseStackType(String type) {
@@ -149,6 +154,7 @@ class CardsStack {
       stackType: stackDB.stackType,
       stackColor: stackDB.stackColor,
       cards: list,
+      description: "",
     );
   }
 

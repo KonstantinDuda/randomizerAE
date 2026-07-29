@@ -46,7 +46,8 @@ class DBProvider {
             "is_standart INTEGER, "
             "stack_type TEXT, "
             "stack_color INTEGER, "
-            "cards TEXT)");
+            "cards TEXT, "
+            "description TEXT)");
         await db.execute("CREATE TABLE IF NOT EXISTS $heroTableName ("
             "id INTEGER PRIMARY KEY, "
             "name TEXT, "

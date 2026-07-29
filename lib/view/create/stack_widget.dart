@@ -45,7 +45,7 @@ class _StackWidgetState extends State<StackWidget> {
 //  List<CardsStack> stacks = [];
   List<String> stackTypes = const [
     "Turn order",
-    "Friend", 
+    "Friend",
     "Foe",
   ];
   List<Color> stackColors = const [
@@ -152,29 +152,42 @@ class _StackWidgetState extends State<StackWidget> {
                             SizedBox(
                               //width: 60,
                               //height: 25,
-                              child: DropdownButton<Color>(
-                                iconSize: 35,
-                                value: widget.curentColor, //colorsList[index],
-                                items: stackColors.map((Color type) {
-                                  return DropdownMenuItem<Color>(
-                                    alignment: AlignmentDirectional.center,
-                                    value: type, //type,
-                                    child: Container(
-                                        width: 70,
-                                        height: 25,
-                                        decoration: BoxDecoration(
-                                          color: type,
-                                          border: Border.all(
-                                            color: Colors.black,
-                                            width: 1,
-                                          ),
-                                        )),
-                                  );
-                                }).toList(),
-                                onChanged: (value) {
-                                  widget.changeColor(value);
-                                },
-                              ),
+                              child: Builder(builder: (context) {
+                                Color? matchedColor;
+                                for (final c in stackColors) {
+                                  if (c.toARGB32() ==
+                                      widget.curentColor.toARGB32()) {
+                                    matchedColor = c;
+                                    break;
+                                  }
+                                }
+                                return DropdownButton<Color>(
+                                  iconSize: 35,
+                                  value: matchedColor, // widget.curentColor,
+                                  hint: const Text("Select color"),
+                                  items: stackColors.map((Color type) {
+                                    return DropdownMenuItem<Color>(
+                                      alignment: AlignmentDirectional.center,
+                                      value: type,
+                                      child: Container(
+                                          width: 70,
+                                          height: 25,
+                                          decoration: BoxDecoration(
+                                            color: type,
+                                            border: Border.all(
+                                              color: Colors.black,
+                                              width: 1,
+                                            ),
+                                          )),
+                                    );
+                                  }).toList(),
+                                  onChanged: (Color? value) {
+                                    if (value != null) {
+                                      widget.changeColor(value);
+                                    }
+                                  },
+                                );
+                              }),
                             ),
                           ],
                         ),
@@ -214,5 +227,4 @@ class _StackWidgetState extends State<StackWidget> {
       Size(screenSize.width - 50, 320),
     );
   }
-
 }
