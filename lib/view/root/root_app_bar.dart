@@ -3,10 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc/crud_stack_bloc.dart';
 import '../../bloc/event_state/crud_stack_es.dart';
-import '../../bloc/event_state/friend_foe_body_es.dart';
 import '../../bloc/event_state/turn_order_body_es.dart';
-import '../../bloc/friend_foe_body_bloc.dart';
-// import '../../bloc/providers/provider_bloc.dart';
 import '../../bloc/providers/root_body_provider.dart';
 import '../../bloc/turn_order_body_bloc.dart';
 import '../../database/cards_stack.dart';
@@ -152,9 +149,6 @@ class _RootAppBarState extends State<RootAppBar> {
                               context
                                   .read<RootBodyProviderBloc>()
                                   .add(RootBodyFriendFoeEvent());
-
-                              context.read<FriendFoeBodyBloc>().add(
-                                  FriendFoeChangeActiveStackEvent(stack.id));
                             } else {
                               context
                                   .read<RootBodyProviderBloc>()

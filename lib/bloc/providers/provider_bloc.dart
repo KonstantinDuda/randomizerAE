@@ -23,7 +23,7 @@ class CreateEvent extends ProviderEvent {
 
 class HistoryProviderEvent extends ProviderEvent {}
 
-class HeroListEvent extends ProviderEvent {}
+//class HeroListEvent extends ProviderEvent {}
 
 // States
 class ProviderState extends Equatable {
@@ -56,16 +56,15 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
     on<UpdateDeleteEvent>((event, emit) => emit(UpdateDeleteState()));
     on<CreateEvent>((event, emit) => emit(CreateState(event.id)));
     on<HistoryProviderEvent>((event, emit) => emit(HistoryProviderState()));
-    on<HeroListEvent>((event, emit) => emit(HeroListState()));
+    //on<HeroListEvent>((event, emit) => emit(HeroListState()));
   }
 
   _onLoad(LoadingEvent event, Emitter<ProviderState> emit) {
     print("ProviderBloc _onLoad");
     try {
-    emit(LoadingState());  
+      emit(LoadingState());
     } catch (e) {
       print("Error in ProviderBloc _onLoad: $e");
     }
-    
   }
 }

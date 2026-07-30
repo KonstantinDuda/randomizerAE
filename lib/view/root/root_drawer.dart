@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc/crud_stack_bloc.dart';
 import '../../bloc/event_state/crud_stack_es.dart';
-import '../../bloc/event_state/friend_foe_body_es.dart';
-import '../../bloc/friend_foe_body_bloc.dart';
 import '../../bloc/providers/provider_bloc.dart';
 import '../../database/cards_stack.dart';
 
@@ -114,9 +112,9 @@ class _RootDrawerState extends State<RootDrawer> {
                           stacks[i].isActive == false) {
                         print(
                             "RootDrawer stack ${stacks[i].name} send to FriendFoeChangeActiveStackEvent with stacks[i].id ${stacks[i].id} \n");
-                        context
-                            .read<FriendFoeBodyBloc>()
-                            .add(FriendFoeChangeActiveStackEvent(stacks[i].id));
+                        // context
+                        //     .read<FriendFoeBodyBloc>()
+                        //     .add(FriendFoeChangeActiveStackEvent(stacks[i].id));
                       }
                     }
                   }

@@ -6,10 +6,6 @@ import 'event_state/history_es.dart';
 
 class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   final defaultData = DefaultData();
-  // final db = DBProvider();
-
-  // List<AECard> cards = [];
-  // List<CardsStack> stacks = [];
 
   List<List<String>> story = [];
   List<String> columns = [];
@@ -42,7 +38,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
           for (var j = 0; j < allData[i].length; j++) {
             turnList.add(allData[i][j].text);
           }
-          if(allData[i].length > maxLength) {
+          if (allData[i].length > maxLength) {
             maxLength = allData[i].length;
             List<AECard> sortedCards = allData[i];
             List<AECard> beforeSortedCards = allData[i];
@@ -61,15 +57,10 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
           // Fill missing cells with empty strings
           element.addAll(List.generate(maxLength - element.length, (_) => ""));
         }
-        
       }
 
       story = storyToReturn;
       columns = columnsToReturn;
-
-      // for (var i in story) {
-      //   print(i);
-      // }
 
       emit(HistorySuccessState(columnsToReturn, storyToReturn));
     } catch (e) {
@@ -78,25 +69,18 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     }
   }
 
-  void _getCardHistory(HistoryGetCardEvent event, Emitter<HistoryState> emit) async {
+  void _getCardHistory(
+      HistoryGetCardEvent event, Emitter<HistoryState> emit) async {
     print("HistoryBloc getCardHistory event: ${event.cardId}");
   }
 
-  void _clearHistory(HistoryClearEvent event, Emitter<HistoryState> emit) async {
+  void _clearHistory(
+      HistoryClearEvent event, Emitter<HistoryState> emit) async {
     print("HistoryBloc clearHistory");
 
-    // var historyLaststack = defaultData.story.last;
-    // if(historyLaststack.isNotEmpty) {
-    //   for (var element in historyLaststack) {
-    //     element = AECard(id: element.id, text: "...", imgPath: "");
-    //   }
-    // }
     defaultData.story.clear();
     story.clear();
     columns.clear();
-    //defaultData.story.add(historyLaststack);
-    //story.add(historyLaststack.map((e) => e.text).toList());
-    //columns = story[0];
 
     emit(const HistorySuccessState([], []));
   }

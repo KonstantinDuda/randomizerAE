@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '/view/root/bodyes/dialog_shuffle_put.dart';
-import '../../../bloc/event_state/friend_foe_body_es.dart';
+//import '/view/root/bodyes/dialog_shuffle_put.dart';
 import '../../../bloc/event_state/history_es.dart';
 import '../../../bloc/event_state/turn_order_body_es.dart';
-import '../../../bloc/friend_foe_body_bloc.dart';
 import '../../../bloc/providers/provider_bloc.dart';
-import '../../../bloc/providers/root_body_provider.dart';
+//import '../../../bloc/providers/root_body_provider.dart';
 import '../../../bloc/history_bloc.dart';
 import '../../../bloc/turn_order_body_bloc.dart';
 import '../../../database/cards_stack.dart';
@@ -22,8 +20,28 @@ class TurnOrderBody extends StatefulWidget {
   State<TurnOrderBody> createState() => _TurnOrderBodyState();
 }
 
-class _TurnOrderBodyState extends State<TurnOrderBody> {
+class _TurnOrderBodyState extends State<TurnOrderBody>
+    with SingleTickerProviderStateMixin {
   ScrollController myController = ScrollController();
+
+  late AnimationController? _lastPlayedController;
+  late Animation<double>? _lastPlayedOpacity;
+
+  @override
+  void initState() {
+    super.initState();
+    _lastPlayedController =
+        AnimationController(duration: const Duration(seconds: 2), vsync: this);
+    _lastPlayedOpacity = Tween<double>(begin: 0.1, end: 10).animate(
+        CurvedAnimation(parent: _lastPlayedController!, curve: Curves.easeIn));
+  }
+
+  @override
+  void dispose() {
+    _lastPlayedController?.dispose();
+    myController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,177 +49,16 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
       MediaQuery.of(context).size.width,
       MediaQuery.of(context).size.height - 104.5,
     );
-    final Size contentContainerSize = Size(
-      bodyContainerSize.width - 20,
-      bodyContainerSize.height - 60,
-    );
     const Size mainObjSize = Size(130, 220);
-    final contetnBodySize = Size(
-      contentContainerSize.width - 10,
-      contentContainerSize.height - mainObjSize.height - 5,
-    );
 
     return BlocBuilder<TurnOrderBodyBloc, TurnOrderBodyState>(
         builder: (context, state) {
       Color stackColor;
       late CardsStack stack;
       late CardsStack alreadyPlayed;
-      late List<AECard> even = [];
-      late List<AECard> odd = [];
-      List<Widget> varGridList = [];
-      //late Widget gridListSecondObj;
 
-      gridObj(String text, bool newObj) {
-        //print("root_body.dart gridObj()");
-        return GestureDetector(
-          child: MyCard(
-            Center(
-              child: Text(
-                text,
-                style: const TextStyle(fontSize: 23),
-              ),
-            ),
-            Size(contetnBodySize.height / 3 - 10,
-                contetnBodySize.height / 2 - 10),
-            borderWidth: newObj ? 4 : 2,
-            borderColor: newObj ? Colors.lightGreen : Colors.black,
-          ),
-          onTap: () {
-            if (text.isNotEmpty) {
-              if (text == "Friend" || text == "friend") {
-                context
-                    .read<FriendFoeBodyBloc>()
-                    .add(const FriendFoeChangeActiveStackEvent(-1));
-                context
-                    .read<RootBodyProviderBloc>()
-                    .add(RootBodyFriendFoeEvent());
-              } else if (text == "Foe" || text == "foe") {
-                context
-                    .read<FriendFoeBodyBloc>()
-                    .add(const FriendFoeChangeActiveStackEvent(-2));
-                context
-                    .read<RootBodyProviderBloc>()
-                    .add(RootBodyFriendFoeEvent());
-              }
-            }
-          },
-          onLongPress: () {
-            //var first = alreadyPlayed.cards.firstWhere((card) => card.text == text);
-            if (alreadyPlayed.cards.last.text == text) {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return ShufflePutBackDialog(text);
-                },
-              );
-            } else {
-              context
-                  .read<TurnOrderBodyBloc>()
-                  .add(TurnOrderBodyShuffleInStackEvent(text));
-            }
-
-            // context
-            //     .read<TurnOrderBodyBloc>()
-            //     .add(TurnOrderBodyShuffleInStackEvent(text));
-            if (mounted) {
-              setState(() {});
-            }
-          },
-        );
-      }
-
-      gridObjLimiterNew(String text, bool isObjNew) {
-        return Column(
-          children: [
-            gridObj(text, isObjNew),
-            Container(
-              height: contetnBodySize.height / 2 - 10,
-              width: contetnBodySize.height / 3 - 10,
-              margin: const EdgeInsets.only(top: 5, left: 10),
-            ),
-          ],
-        );
-      }
-
-      gridColumnObjNew() {
-        var firstText = '';
-        var secondText = '';
-        if (even.isNotEmpty) {
-          if (even.length > 1) {
-            firstText = even[even.length - 2].text;
-          } else {
-            firstText = even.last.text;
-          }
-        }
-        if (odd.isNotEmpty) {
-          if (odd.length > 1) {
-            secondText = odd[odd.length - 1].text;
-          } else {
-            secondText = odd.last.text;
-          }
-        }
-
-        if (state is TurnOrderBodySuccessActionState) {
-          return Container(
-            //color: Colors.green,
-            //padding: const EdgeInsets.only(right: 10, left: 10),
-            child: Column(
-              children: [
-                gridObj(secondText, false),
-                gridObj(firstText, false),
-              ],
-            ),
-          );
-        }
-
-        return const SizedBox(
-          width: 0,
-          height: 0,
-        );
-      }
-
-      gridListNew() {
-        if (alreadyPlayed.id != 0) {
-          for (var i = 0; i < alreadyPlayed.cards.length; i++) {
-            if (i % 2 == 0) {
-              even.add(alreadyPlayed.cards[i]);
-              if (i > 1) {
-                varGridList.removeLast();
-                varGridList.removeLast();
-                varGridList.add(gridColumnObjNew(
-                    /*alreadyPlayed.cards[i].id, false, false*/));
-              }
-              varGridList
-                  .add(gridObjLimiterNew(alreadyPlayed.cards[i].text, true));
-            } else {
-              odd.add(alreadyPlayed.cards[i]);
-              varGridList.removeLast();
-              varGridList.add(gridObjLimiterNew(even.last.text, false));
-              varGridList
-                  .add(gridObjLimiterNew(alreadyPlayed.cards[i].text, true));
-            }
-          }
-        }
-
-        if (myController.hasClients) {
-          var listViewWidth = varGridList.length * (contetnBodySize.height / 3);
-          // var jumpToValue = myController.position.maxScrollExtent +
-          //     contetnBodySize.height / 3;
-          var jumpNewTry = listViewWidth -
-              bodyContainerSize.width +
-              30; // +30 щоб не обрізало останній елемент
-          //(contetnBodySize.height / 3);
-          if (listViewWidth > bodyContainerSize.width) {
-            // print("varGridList.width == $listViewWidth "
-            //     " bodyContainerSize.width == ${bodyContainerSize.width} "
-            //     " jumpNewTry == $jumpNewTry "
-            //     " jumpToValue == $jumpToValue");
-            myController.jumpTo(jumpNewTry);
-          }
-        }
-
-        return varGridList;
-      }
+      var clickCounter = 0;
+      Widget lastPlayedCard = const Text("");
 
       if (state is TurnOrderBodySuccessActionState) {
         //print("TurnOrderBody Page state IS TurnOrderBodySuccessActionState");
@@ -216,6 +73,39 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
         if (mounted) {
           setState(() {});
         }
+      }
+
+      Widget lastPlayedAlreadyCard() {
+        AECard lastPlayed = AECard(id: 0, name: "", text: "");
+        if (alreadyPlayed.id != 0) {
+          lastPlayed = alreadyPlayed.cards.last;
+        }
+        TextStyle nameStyle = const TextStyle(
+          fontSize: 30.0,
+        );
+
+        lastPlayedCard = Column(
+          children: [
+            Text(
+              lastPlayed.name,
+              style: nameStyle,
+            ),
+            const Divider(
+              height: 1,
+            ),
+            Text(lastPlayed.text),
+          ],
+        );
+        if (lastPlayed.text == "") {
+          lastPlayedCard = Center(
+            child: Text(
+              lastPlayed.name,
+              style: nameStyle,
+            ),
+          );
+        }
+
+        return lastPlayedCard;
       }
 
       return Expanded(
@@ -268,24 +158,73 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                   //child: Container(
                   children: <Widget>[
                     Container(
-                      margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(
-                          color: Colors.black,
-                          width: 2,
+                        margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Stack(
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width - 20,
+                          height: MediaQuery.of(context).size.height - 20,
+                          child: Row(
+                            children: [
+                              // Last played Card
+                              Container(
+                                width: (MediaQuery.of(context).size.width / 2) -
+                                    30,
+                                height:
+                                    MediaQuery.of(context).size.height / 2.5,
+                                margin: EdgeInsets.fromLTRB(2, 0, 2,
+                                    MediaQuery.of(context).size.height / 5),
+                                decoration: BoxDecoration(
+                                  //color: Colors.blue,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: Colors.black,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: FadeTransition(
+                                  opacity: _lastPlayedOpacity ??
+                                      const AlwaysStoppedAnimation(1.0),
+                                  key: ValueKey(clickCounter),
+                                  child: lastPlayedAlreadyCard(),
+                                ), //Center(child: lastPlayedAlreadyCard()),
+                              ),
+                              // Divider
+                              Container(
+                                margin:
+                                    const EdgeInsets.only(top: 20, bottom: 240),
+                                width: 1.5,
+                                color: Colors.black,
+                              ),
+                              // Already played List
+                              Expanded(
+                                child: Container(
+                                  width:
+                                      (MediaQuery.of(context).size.width / 2) -
+                                          30,
+                                  height: MediaQuery.of(context).size.height,
+                                  margin:
+                                      const EdgeInsets.fromLTRB(2, 10, 2, 200),
+                                  //color: Colors.amber,
+                                  child: const Text("already played ListView"),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                        /*Stack(
                         children: [
                           Container(
                             margin: const EdgeInsets.only(
-                                left: 5, right: 5, bottom: 220),
+                                left: 0, right: 0, bottom: 200),
                             alignment: Alignment.center,
                             child: ListView(
-                              //shrinkWrap: true,
-                              //physics: ClampingScrollPhysics(),
                               controller: myController,
                               scrollDirection: Axis.horizontal,
                               children: <Widget>[
@@ -295,10 +234,10 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                             ),
                           ),
                         ],
-                      ),
-                    ),
+                      ),*/
+                        ),
 
-                    // Change sequance
+                    // About Stack
                     Positioned(
                       bottom: 80,
                       left: 2,
@@ -325,12 +264,12 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                         ),
                         onTap: () {
                           print("About Stack was tapped");
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return ChangeSequanceDialog(list: stack.cards);
-                            },
-                          );
+                          // showDialog(
+                          //   context: context,
+                          //   builder: (BuildContext context) {
+                          //     return ChangeSequanceDialog(list: stack.cards);
+                          //   },
+                          // );
                         },
                       ),
                     ),
@@ -393,7 +332,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                           margin: const EdgeInsets.all(0),
                         ),
                         onTap: () {
-                          //print("Main object tapped");
+                          print("Main object tapped");
                           if (stack.cards.isEmpty) {
                             context
                                 .read<TurnOrderBodyBloc>()
@@ -403,6 +342,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                                 .read<TurnOrderBodyBloc>()
                                 .add(const TurnOrderBodyNextEvent());
                           }
+                          _lastPlayedController?.forward(from: 0);
                         },
                         onLongPress: () {
                           //print("Main object long pressed");
@@ -419,7 +359,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody> {
                       ),
                     ),
 
-                    // Discard wild
+                    // Discard wild TODO: make it Discard a card
                     Positioned(
                       bottom: 2,
                       right: 2,

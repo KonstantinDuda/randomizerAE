@@ -14,7 +14,7 @@ class DBProvider {
 
   static const String cardsTableName = "Cards_Table";
   static const String stackTableName = "Stack_Table";
-  static const String heroTableName = "Hero_Table";
+  //static const String heroTableName = "Hero_Table";
 
   DBProvider() {
     initDatabase();
@@ -48,16 +48,16 @@ class DBProvider {
             "stack_color INTEGER, "
             "cards TEXT, "
             "description TEXT)");
-        await db.execute("CREATE TABLE IF NOT EXISTS $heroTableName ("
-            "id INTEGER PRIMARY KEY, "
-            "name TEXT, "
-            "is_friend INTEGER, "
-            "ec_count INTEGER, "
-            "ability TEXT, "
-            "feature TEXT, "
-            "description TEXT, "
-            //"stacks TEXT)");
-            "stack_id INTEGER)");
+        // await db.execute("CREATE TABLE IF NOT EXISTS $heroTableName ("
+        //     "id INTEGER PRIMARY KEY, "
+        //     "name TEXT, "
+        //     "is_friend INTEGER, "
+        //     "ec_count INTEGER, "
+        //     "ability TEXT, "
+        //     "feature TEXT, "
+        //     "description TEXT, "
+        //     //"stacks TEXT)");
+        //     "stack_id INTEGER)");
       },
     );
   }
@@ -321,7 +321,7 @@ class DBProvider {
   }
 
   // CRUD for Hero
-  void createHero(HeroStack hero) async {
+  /*void createHero(HeroStack hero) async {
     final db = await getDatabase;
     //await db.insert(stackTableName, stack.toMap());
 
@@ -456,5 +456,5 @@ class DBProvider {
     }
 
     return availableList;
-  }
+  }*/
 }

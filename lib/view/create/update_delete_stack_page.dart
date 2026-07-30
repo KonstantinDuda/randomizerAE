@@ -21,7 +21,7 @@ class UpdateDeleteStackPage extends StatefulWidget {
 class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
   List<AECard> cards = [];
   List<CardsStack> stacks = [];
-  List<HeroStack> heroStacks = [];
+  //List<HeroStack> heroStacks = [];
   Size screenSize = const Size(0, 0);
 
   List<String> typesList = [];
@@ -43,8 +43,8 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
         MyCard(
           Center(
             child: Text(
-              // TODO: додати назву карти
-              cards[index].text,
+              // TODO: додати текст карти
+              cards[index].name,
               textAlign: TextAlign.center,
               maxLines: 9,
               overflow: TextOverflow.ellipsis,
@@ -82,11 +82,20 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
   stackWidget(int index) {
     String cardNames = "\n";
     curentColor = colorsList[index];
+    int nCounter = 0;
+    String tooManyCards = "";
     if (stacks[index].cards.isNotEmpty) {
       for (var element in stacks[index].cards) {
-        if (element.text.isNotEmpty) {
-          var cardName = element.text.split(":");
-          cardNames += "${cardName[0]}, \n";
+        if (element.name.isNotEmpty && nCounter < 7) {
+          cardNames += "${element.name} \n";
+          nCounter++;
+        } else if (element.name.isNotEmpty && nCounter == 7) {
+          tooManyCards = cardNames;
+          cardNames += "${element.name} \n";
+          nCounter++;
+        } else if (element.name.isNotEmpty && nCounter >= 8) {
+          cardNames = "$tooManyCards And others ...";
+          nCounter++;
         }
       }
     }
@@ -153,6 +162,8 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
           newStackType = StackType.friend;
         } else if (value == "Foe") {
           newStackType = StackType.foe;
+        } else if (value == "Other") {
+          newStackType = StackType.other;
         }
         var newStack = CardsStack(
           id: stacks[index].id,
@@ -293,6 +304,8 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
             stackType = "Friend";
           } else if (element.stackType == StackType.foe) {
             stackType = "Foe";
+          } else if (element.stackType == StackType.other) {
+            stackType = "Other";
           }
           if (stackType != "" && stacks.length > typesList.length) {
             typesList.add(stackType);
@@ -312,7 +325,7 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Create / Update Stack'),
+              const Text('Create / Update page'),
               ElevatedButton(
                 onPressed: () {
                   context.read<ProviderBloc>().add(RootEvent());
@@ -358,14 +371,6 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
               ),
               () => createStack(),
             ),
-            // ElevatedButton(
-            //   onPressed: () {
-            //     print("UpdateDeleteStackPage: Go to Hero List button pressed");
-            //     context.read<HeroBloc>().add(HeroInitEvent());
-            //     context.read<ProviderBloc>().add(HeroListEvent());
-            //   },
-            //   child: const Text("Go to Heroes", style: TextStyle(fontSize: 20)),
-            // ),
           ],
         ),
       );

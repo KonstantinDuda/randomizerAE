@@ -43,11 +43,7 @@ class StackWidget extends StatefulWidget {
 
 class _StackWidgetState extends State<StackWidget> {
 //  List<CardsStack> stacks = [];
-  List<String> stackTypes = const [
-    "Turn order",
-    "Friend",
-    "Foe",
-  ];
+  List<String> stackTypes = const ["Turn order", "Friend", "Foe", "Other"];
   List<Color> stackColors = const [
     Color.fromARGB(255, 76, 175, 80),
     Color.fromARGB(255, 33, 150, 243),
@@ -60,7 +56,8 @@ class _StackWidgetState extends State<StackWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context).size;
+    var screenSize = Size(
+        400, MediaQuery.of(context).size.height); //MediaQuery.of(context).size;
     return MyCard(
       Column(
         //mainAxisAlignment: MainAxisAlignment.start,
@@ -99,13 +96,13 @@ class _StackWidgetState extends State<StackWidget> {
                         )
                       ],
                     ),
-                    const Size(100, 270),
-                    margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                    const Size(130, 270),
+                    margin: const EdgeInsets.fromLTRB(0, 0, 2, 0),
                   ),
                 ],
               ),
               Container(
-                width: screenSize.width - 170,
+                width: screenSize.width - 200,
                 height: 270,
                 alignment: Alignment.center,
                 child: Column(
