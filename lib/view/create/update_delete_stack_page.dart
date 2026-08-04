@@ -41,15 +41,7 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
     return Column(
       children: [
         MyCard(
-          Center(
-            child: Text(
-              // TODO: додати текст карти
-              cards[index].name,
-              textAlign: TextAlign.center,
-              maxLines: 9,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
+          cards[index],
           const Size(150, 220),
         ),
         ElevatedButton(

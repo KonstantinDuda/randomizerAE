@@ -158,26 +158,31 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                   //child: Container(
                   children: <Widget>[
                     Container(
-                        margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(20),
+                      margin: const EdgeInsets.fromLTRB(2, 0, 2, 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 2,
                         ),
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width - 20,
-                          height: MediaQuery.of(context).size.height - 20,
-                          child: Row(
-                            children: [
-                              // Last played Card
-                              Container(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width - 10,
+                        height: MediaQuery.of(context).size.height - 20,
+                        child: Row(
+                          children: [
+                            // Last played Card
+                            FadeTransition(
+                              opacity: _lastPlayedOpacity ??
+                                  const AlwaysStoppedAnimation(1.0),
+                              key: ValueKey(clickCounter),
+                              // TODO: change to MyCard widget
+                              child: Container(
                                 width: (MediaQuery.of(context).size.width / 2) -
                                     30,
                                 height:
-                                    MediaQuery.of(context).size.height / 2.5,
+                                    MediaQuery.of(context).size.height / 2.8,
                                 margin: EdgeInsets.fromLTRB(2, 0, 2,
                                     MediaQuery.of(context).size.height / 5),
                                 decoration: BoxDecoration(
@@ -188,54 +193,32 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                     width: 2,
                                   ),
                                 ),
-                                child: FadeTransition(
-                                  opacity: _lastPlayedOpacity ??
-                                      const AlwaysStoppedAnimation(1.0),
-                                  key: ValueKey(clickCounter),
-                                  child: lastPlayedAlreadyCard(),
-                                ), //Center(child: lastPlayedAlreadyCard()),
-                              ),
-                              // Divider
-                              Container(
-                                margin:
-                                    const EdgeInsets.only(top: 20, bottom: 240),
-                                width: 1.5,
-                                color: Colors.black,
-                              ),
-                              // Already played List
-                              Expanded(
-                                child: Container(
-                                  width:
-                                      (MediaQuery.of(context).size.width / 2) -
-                                          30,
-                                  height: MediaQuery.of(context).size.height,
-                                  margin:
-                                      const EdgeInsets.fromLTRB(2, 10, 2, 200),
-                                  //color: Colors.amber,
-                                  child: const Text("already played ListView"),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                        /*Stack(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(
-                                left: 0, right: 0, bottom: 200),
-                            alignment: Alignment.center,
-                            child: ListView(
-                              controller: myController,
-                              scrollDirection: Axis.horizontal,
-                              children: <Widget>[
-                                // ...gridList(),
-                                ...gridListNew(),
-                              ],
+                                child: lastPlayedAlreadyCard(),
+                              ), //Center(child: lastPlayedAlreadyCard()),
                             ),
-                          ),
-                        ],
-                      ),*/
+                            // Divider
+                            Container(
+                              margin:
+                                  const EdgeInsets.only(top: 20, bottom: 240),
+                              width: 1.5,
+                              color: Colors.black,
+                            ),
+                            // Already played List
+                            Expanded(
+                              child: Container(
+                                width: (MediaQuery.of(context).size.width / 2) -
+                                    30,
+                                height: MediaQuery.of(context).size.height,
+                                margin:
+                                    const EdgeInsets.fromLTRB(2, 10, 2, 200),
+                                //color: Colors.amber,
+                                child: const Text("already played ListView"),
+                              ),
+                            ),
+                          ],
                         ),
+                      ),
+                    ),
 
                     // About Stack
                     Positioned(
@@ -316,20 +299,32 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                       bottom: -15,
                       left: (bodyContainerSize.width - mainObjSize.width) / 2,
                       child: GestureDetector(
-                        child: MyCard(
-                          Center(
-                              child: Text(
-                            textAlign: TextAlign.center,
-                            stack.cards.isNotEmpty ? stack.name : "X",
-                            style: TextStyle(
-                                fontSize: 30,
-                                color: stackColor == Colors.black
-                                    ? Colors.white
-                                    : Colors.black),
-                          )),
-                          Size(mainObjSize.width, mainObjSize.height),
-                          bodyColor: stack.stackColor,
+                        child: Container(
+                          width: mainObjSize.width,
+                          height: mainObjSize.height,
+                          decoration: BoxDecoration(
+                            color: stack.stackColor,
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 2,
+                            ),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(18)),
+                          ),
                           margin: const EdgeInsets.all(0),
+                          child: Center(
+                            child: Text(
+                              stack.cards.isEmpty ? "X" : stack.name,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: stack.stackColor == Colors.black
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                            ),
+                          ),
                         ),
                         onTap: () {
                           print("Main object tapped");
@@ -381,7 +376,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                             margin: const EdgeInsets.only(top: 2),
                             child: const Center(
                               child: Text(
-                                "Discard wild",
+                                "Discard a card",
                                 style: TextStyle(fontSize: 18),
                               ),
                             ),
@@ -393,7 +388,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                 .read<TurnOrderBodyBloc>()
                                 .add(const TurnOrderBodyDelWildEvent());
                           }
-                          print("Discard wild tapped");
+                          print("Discard a card tapped");
                         },
                       ),
                     ),

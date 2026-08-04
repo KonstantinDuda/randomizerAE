@@ -58,8 +58,19 @@ class _StackWidgetState extends State<StackWidget> {
   Widget build(BuildContext context) {
     var screenSize = Size(
         400, MediaQuery.of(context).size.height); //MediaQuery.of(context).size;
-    return MyCard(
-      Column(
+    return Container(
+      width: screenSize.width,
+      height: screenSize.height,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(
+          color: Colors.black,
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      margin: const EdgeInsets.all(5),
+      child: Column(
         //mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -74,8 +85,19 @@ class _StackWidgetState extends State<StackWidget> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  MyCard(
-                    Column(
+                  Container(
+                    width: 130,
+                    height: screenSize.height / 3.3,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    margin: const EdgeInsets.fromLTRB(0, 0, 2, 0),
+                    child: Column(
                       children: [
                         Expanded(
                           child: Text(
@@ -96,132 +118,131 @@ class _StackWidgetState extends State<StackWidget> {
                         )
                       ],
                     ),
-                    const Size(130, 270),
-                    margin: const EdgeInsets.fromLTRB(0, 0, 2, 0),
                   ),
                 ],
               ),
-              Container(
-                width: screenSize.width - 200,
-                height: 270,
-                alignment: Alignment.center,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text("Is Active: "),
-                            Checkbox(
-                                value:
-                                    widget.checkbox, //stacks[index].isActive,
-                                onChanged: (value) {
-                                  widget.checkboxChange(value);
-                                }),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text("Stack Type: "),
-                            DropdownButton<String>(
-                              iconSize: 35,
-                              value: widget.curentType, //typesList[index],
-                              items: stackTypes.map((String type) {
-                                return DropdownMenuItem<String>(
-                                  alignment: AlignmentDirectional.center,
-                                  value: type,
-                                  child: Text(type),
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                widget.changeType(value);
-                              },
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text("Stack color: "),
-                            SizedBox(
-                              //width: 60,
-                              //height: 25,
-                              child: Builder(builder: (context) {
-                                Color? matchedColor;
-                                for (final c in stackColors) {
-                                  if (c.toARGB32() ==
-                                      widget.curentColor.toARGB32()) {
-                                    matchedColor = c;
-                                    break;
-                                  }
-                                }
-                                return DropdownButton<Color>(
-                                  iconSize: 35,
-                                  value: matchedColor, // widget.curentColor,
-                                  hint: const Text("Select color"),
-                                  items: stackColors.map((Color type) {
-                                    return DropdownMenuItem<Color>(
-                                      alignment: AlignmentDirectional.center,
-                                      value: type,
-                                      child: Container(
-                                          width: 70,
-                                          height: 25,
-                                          decoration: BoxDecoration(
-                                            color: type,
-                                            border: Border.all(
-                                              color: Colors.black,
-                                              width: 1,
-                                            ),
-                                          )),
-                                    );
-                                  }).toList(),
-                                  onChanged: (Color? value) {
-                                    if (value != null) {
-                                      widget.changeColor(value);
-                                    }
-                                  },
-                                );
-                              }),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const Expanded(child: SizedBox()),
-                    Container(
-                      alignment: Alignment.bottomRight,
-                      margin: const EdgeInsets.only(right: 5),
-                      child: Column(
+              Expanded(
+                child: Container(
+                  width: screenSize.width - 200,
+                  height: 270,
+                  alignment: Alignment.center,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Column(
                         children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              widget.saveStack();
-                            },
-                            child: const Text("Save"),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text("Is Active: "),
+                              Checkbox(
+                                  value:
+                                      widget.checkbox, //stacks[index].isActive,
+                                  onChanged: (value) {
+                                    widget.checkboxChange(value);
+                                  }),
+                            ],
                           ),
-                          ElevatedButton(
-                            onPressed: () {
-                              widget.deleteStack();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                            ),
-                            child: const Text("Delete stack"),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text("Stack Type: "),
+                              DropdownButton<String>(
+                                iconSize: 35,
+                                value: widget.curentType, //typesList[index],
+                                items: stackTypes.map((String type) {
+                                  return DropdownMenuItem<String>(
+                                    alignment: AlignmentDirectional.center,
+                                    value: type,
+                                    child: Text(type),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  widget.changeType(value);
+                                },
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text("Stack color: "),
+                              SizedBox(
+                                //width: 60,
+                                //height: 25,
+                                child: Builder(builder: (context) {
+                                  Color? matchedColor;
+                                  for (final c in stackColors) {
+                                    if (c.toARGB32() ==
+                                        widget.curentColor.toARGB32()) {
+                                      matchedColor = c;
+                                      break;
+                                    }
+                                  }
+                                  return DropdownButton<Color>(
+                                    iconSize: 35,
+                                    value: matchedColor, // widget.curentColor,
+                                    hint: const Text("Select color"),
+                                    items: stackColors.map((Color type) {
+                                      return DropdownMenuItem<Color>(
+                                        alignment: AlignmentDirectional.center,
+                                        value: type,
+                                        child: Container(
+                                            width: 70,
+                                            height: 25,
+                                            decoration: BoxDecoration(
+                                              color: type,
+                                              border: Border.all(
+                                                color: Colors.black,
+                                                width: 1,
+                                              ),
+                                            )),
+                                      );
+                                    }).toList(),
+                                    onChanged: (Color? value) {
+                                      if (value != null) {
+                                        widget.changeColor(value);
+                                      }
+                                    },
+                                  );
+                                }),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                      const Expanded(child: SizedBox()),
+                      Container(
+                        alignment: Alignment.bottomRight,
+                        margin: const EdgeInsets.only(right: 5),
+                        child: Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                widget.saveStack();
+                              },
+                              child: const Text("Save"),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                widget.deleteStack();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                              ),
+                              child: const Text("Delete stack"),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
         ],
       ),
-      Size(screenSize.width - 50, 320),
     );
   }
 }

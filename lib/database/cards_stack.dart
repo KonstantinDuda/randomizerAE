@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-import 'cards_stack_db.dart';
 import 'default_data.dart';
 
 /// AECard represents a card in the game with an id, text, and image path.
@@ -34,6 +33,12 @@ class AECard {
 
     return map;
   }
+
+  AECard.empty({
+    this.id = 0,
+    this.name = "",
+    this.text = "",
+  });
 
   @override
   bool operator ==(Object other) {
@@ -144,18 +149,6 @@ class CardsStack {
       default:
         return StackType.turnOrder;
     }
-  }
-
-  CardsStack csDBToCS(CardsStackDB stackDB, List<AECard> list) {
-    return CardsStack(
-      id: stackDB.id,
-      name: stackDB.name,
-      isActive: stackDB.isStandart,
-      stackType: stackDB.stackType,
-      stackColor: stackDB.stackColor,
-      cards: list,
-      description: "",
-    );
   }
 
   @override
