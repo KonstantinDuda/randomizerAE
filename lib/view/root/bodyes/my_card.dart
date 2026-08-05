@@ -20,7 +20,8 @@ class MyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String text = card.text == "" ? card.name : "${card.name}: ${card.text}";
+    String name = card.name == "" ? "" : '<h1>${card.name}</h1>';
+    String text = card.text == "" ? name : "${card.name}: ${card.text}";
     return Container(
       width: size.width,
       height: size.height,
@@ -34,16 +35,16 @@ class MyCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       child: Center(
-        child: Html(data: text),
-        /*Text(
-          text,
+          child: Html(data: text, style: {
+        "body": Style(
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),*/
-      ),
+          fontSize: FontSize(20),
+        ),
+        "h1": Style(
+          textAlign: TextAlign.center,
+          fontSize: FontSize(30),
+        ),
+      })),
     );
   }
 }

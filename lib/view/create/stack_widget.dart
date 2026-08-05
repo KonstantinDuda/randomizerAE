@@ -1,10 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-
-// import '../../bloc/create_stack_bloc.dart';
-// import '../../bloc/event_state/create_stack_es.dart';
-// import '../../database/cards_stack.dart';
-import '../root/bodyes/my_card.dart';
 
 class StackWidget extends StatefulWidget {
   final Widget stackName;

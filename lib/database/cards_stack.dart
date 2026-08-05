@@ -151,6 +151,26 @@ class CardsStack {
     }
   }
 
+  CardsStack copyWith({
+    int? id,
+    String? name,
+    bool? isActive,
+    StackType? stackType,
+    Color? stackColor,
+    List<AECard>? cards,
+    String? description,
+  }) {
+    return CardsStack(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      isActive: isActive ?? this.isActive,
+      stackType: stackType ?? this.stackType,
+      stackColor: stackColor ?? this.stackColor,
+      cards: cards ?? this.cards,
+      description: description ?? this.description,
+    );
+  }
+
   @override
   String toString() {
     var result =

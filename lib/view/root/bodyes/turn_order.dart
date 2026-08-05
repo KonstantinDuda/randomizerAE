@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 
-//import '/view/root/bodyes/dialog_shuffle_put.dart';
 import '../../../bloc/event_state/history_es.dart';
 import '../../../bloc/event_state/turn_order_body_es.dart';
 import '../../../bloc/providers/provider_bloc.dart';
-//import '../../../bloc/providers/root_body_provider.dart';
 import '../../../bloc/history_bloc.dart';
 import '../../../bloc/turn_order_body_bloc.dart';
 import '../../../database/cards_stack.dart';
@@ -53,7 +52,6 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
 
     return BlocBuilder<TurnOrderBodyBloc, TurnOrderBodyState>(
         builder: (context, state) {
-      Color stackColor;
       late CardsStack stack;
       late CardsStack alreadyPlayed;
 
@@ -61,51 +59,14 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
       Widget lastPlayedCard = const Text("");
 
       if (state is TurnOrderBodySuccessActionState) {
-        //print("TurnOrderBody Page state IS TurnOrderBodySuccessActionState");
-        stackColor = state.stack.stackColor;
         stack = state.stack;
         alreadyPlayed = state.alreadyPlayed;
       } else {
-        //print("TurnOrderBody Page state is NOT TurnOrderBodySuccessActionState");
-        stackColor = Colors.white;
         stack = const CardsStack.empty();
         alreadyPlayed = const CardsStack.empty();
         if (mounted) {
           setState(() {});
         }
-      }
-
-      Widget lastPlayedAlreadyCard() {
-        AECard lastPlayed = AECard(id: 0, name: "", text: "");
-        if (alreadyPlayed.id != 0) {
-          lastPlayed = alreadyPlayed.cards.last;
-        }
-        TextStyle nameStyle = const TextStyle(
-          fontSize: 30.0,
-        );
-
-        lastPlayedCard = Column(
-          children: [
-            Text(
-              lastPlayed.name,
-              style: nameStyle,
-            ),
-            const Divider(
-              height: 1,
-            ),
-            Text(lastPlayed.text),
-          ],
-        );
-        if (lastPlayed.text == "") {
-          lastPlayedCard = Center(
-            child: Text(
-              lastPlayed.name,
-              style: nameStyle,
-            ),
-          );
-        }
-
-        return lastPlayedCard;
       }
 
       return Expanded(
@@ -167,66 +128,146 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                         ),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width - 10,
-                        height: MediaQuery.of(context).size.height - 20,
-                        child: Row(
-                          children: [
-                            // Last played Card
-                            FadeTransition(
-                              opacity: _lastPlayedOpacity ??
-                                  const AlwaysStoppedAnimation(1.0),
-                              key: ValueKey(clickCounter),
-                              // TODO: change to MyCard widget
-                              child: Container(
-                                width: (MediaQuery.of(context).size.width / 2) -
-                                    30,
-                                height:
-                                    MediaQuery.of(context).size.height / 2.8,
-                                margin: EdgeInsets.fromLTRB(2, 0, 2,
-                                    MediaQuery.of(context).size.height / 5),
-                                decoration: BoxDecoration(
-                                  //color: Colors.blue,
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(
-                                    color: Colors.black,
-                                    width: 2,
+                      child: LayoutBuilder(
+                        builder: ((context, constraints) {
+                          double width = constraints.maxWidth;
+                          double height = constraints.maxHeight;
+
+                          return Row(
+                            children: [
+                              // Last played Card
+                              FadeTransition(
+                                opacity: _lastPlayedOpacity ??
+                                    const AlwaysStoppedAnimation(1.0),
+                                key: ValueKey(clickCounter),
+                                child: GestureDetector(
+                                  child: MyCard(
+                                      alreadyPlayed.cards.isNotEmpty
+                                          ? alreadyPlayed.cards.first
+                                          : AECard(id: 0, name: "", text: ""),
+                                      Size(width / 2.2, height / 2.5),
+                                      bodyColor: Colors.white,
+                                      borderColor: Colors.black,
+                                      borderWidth: 2,
+                                      margin: EdgeInsets.fromLTRB(
+                                          2, 0, 2, height / 5)),
+                                  // TODO: add Functions to onTap and onLongPress, to this card and cards in the already played list
+                                  onTap: () {},
+                                  onLongPress: () {},
+                                ),
+                              ),
+                              // Divider. Don't sure I need it
+                              Container(
+                                margin:
+                                    const EdgeInsets.only(top: 20, bottom: 240),
+                                width: 1.5,
+                                color: Colors.black,
+                              ),
+                              // Already played List
+                              Expanded(
+                                child: Container(
+                                  width:
+                                      (MediaQuery.of(context).size.width / 2) -
+                                          30,
+                                  height: MediaQuery.of(context).size.height,
+                                  margin:
+                                      const EdgeInsets.fromLTRB(2, 20, 2, 200),
+                                  //color: Colors.amber,
+                                  child: ListView.builder(
+                                    controller: myController,
+                                    //reverse: true,
+                                    itemCount: alreadyPlayed.cards.isNotEmpty
+                                        ? alreadyPlayed.cards.length
+                                        : 0,
+                                    itemBuilder: (context, index) {
+                                      var text =
+                                          alreadyPlayed.cards[index].name;
+                                      return GestureDetector(
+                                        child: Container(
+                                          margin: const EdgeInsets.fromLTRB(
+                                              2, 0, 2, 5),
+                                          padding: const EdgeInsets.only(
+                                              top: 5, bottom: 5),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            border: Border.all(
+                                              color: Colors.black,
+                                              width: 2,
+                                            ),
+                                          ),
+                                          child: Center(
+                                              child: Text(text,
+                                                  style: const TextStyle(
+                                                      fontSize: 20))),
+                                        ),
+                                        onTap: () {
+                                          print(
+                                              "Already played card tapped: ${alreadyPlayed.cards[index].name}");
+                                          // TODO: move to linked Stack, if it is linked, or show dialog to chose the Stack to link it
+                                        },
+                                        onLongPress: () {
+                                          print(
+                                              "Already played card long pressed: ${alreadyPlayed.cards[index].name}");
+                                          // TODO: show dialog with options: Shufle in stack, Put on top of stack, Put on bottom of stack, Link card to stack
+                                        },
+                                      );
+                                    },
                                   ),
                                 ),
-                                child: lastPlayedAlreadyCard(),
-                              ), //Center(child: lastPlayedAlreadyCard()),
-                            ),
-                            // Divider
-                            Container(
-                              margin:
-                                  const EdgeInsets.only(top: 20, bottom: 240),
-                              width: 1.5,
-                              color: Colors.black,
-                            ),
-                            // Already played List
-                            Expanded(
-                              child: Container(
-                                width: (MediaQuery.of(context).size.width / 2) -
-                                    30,
-                                height: MediaQuery.of(context).size.height,
-                                margin:
-                                    const EdgeInsets.fromLTRB(2, 10, 2, 200),
-                                //color: Colors.amber,
-                                child: const Text("already played ListView"),
                               ),
+                            ],
+                          );
+                        }),
+                      ),
+                    ),
+
+                    // To the Main Stack
+                    Positioned(
+                      bottom: 74,
+                      left: 22,
+                      child: GestureDetector(
+                        child: Container(
+                          width: 140,
+                          height: 70,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 2,
                             ),
-                          ],
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(18)),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              "To the Main stack",
+                              style: TextStyle(fontSize: 18),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                         ),
+                        onTap: () {
+                          print("To Main Stack was tapped");
+                          // TODO: if id is 0, show dialog with all stacks
+                          // showDialog(
+                          //   context: context,
+                          //   builder: (BuildContext context) {
+                          //     return ChangeSequanceDialog(list: stack.cards);
+                          //   },
+                          // );
+                        },
                       ),
                     ),
 
                     // About Stack
                     Positioned(
-                      bottom: 80,
+                      bottom: 2,
                       left: 2,
                       child: GestureDetector(
                         child: Container(
-                          width: 100,
+                          width: 90,
                           height: 70,
                           decoration: BoxDecoration(
                             color: Colors.white,
@@ -247,6 +288,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                         ),
                         onTap: () {
                           print("About Stack was tapped");
+                          // TODO: send stack id to show dialog with stack info
                           // showDialog(
                           //   context: context,
                           //   builder: (BuildContext context) {
@@ -257,13 +299,17 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                       ),
                     ),
 
+// TODO: Move Change sequence, About Stack, History, Discard a card to More options button
+// and make them as a list in a dialog, to save space on the screen
+// To the main stack change on 3 buttons like To the stack ... Where user can select the stacks to fast access them,
+// and if user want to select another stack, he can select it from the list in the dialog by long press
                     // Change sequance
                     Positioned(
                       bottom: 2,
-                      left: 2,
+                      left: 94,
                       child: GestureDetector(
                         child: Container(
-                          width: 100,
+                          width: 90,
                           height: 70,
                           decoration: BoxDecoration(
                             color: Colors.white,
@@ -284,6 +330,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                         ),
                         onTap: () {
                           print("Change sequance tapped");
+                          // TODO: sequence showing from end to start, change it to show from start to end
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -297,7 +344,8 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                     // Main object
                     Positioned(
                       bottom: -15,
-                      left: (bodyContainerSize.width - mainObjSize.width) / 2,
+                      right:
+                          94, //(bodyContainerSize.width - mainObjSize.width) / 2,
                       child: GestureDetector(
                         child: Container(
                           width: mainObjSize.width,
@@ -360,7 +408,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                       right: 2,
                       child: GestureDetector(
                         child: Container(
-                          width: 100,
+                          width: 90,
                           height: 70,
                           decoration: BoxDecoration(
                             color: Colors.white,
@@ -376,13 +424,14 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                             margin: const EdgeInsets.only(top: 2),
                             child: const Center(
                               child: Text(
-                                "Discard a card",
+                                "Discard \na card",
                                 style: TextStyle(fontSize: 18),
                               ),
                             ),
                           ),
                         ),
                         onTap: () {
+                          // TODO: show dialog with all cards in curent stack, and allow user to select a card to discard
                           if (alreadyPlayed.cards.isEmpty) {
                             context
                                 .read<TurnOrderBodyBloc>()
@@ -395,12 +444,12 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
 
                     // Watch story
                     Positioned(
-                      bottom: 80,
+                      bottom: 74,
                       right: 2,
                       child: GestureDetector(
                         child: Container(
                           //color: Colors.white,
-                          width: 100,
+                          width: 90,
                           height: 70,
                           //margin: const EdgeInsets.only(bottom: 80),
                           decoration: BoxDecoration(

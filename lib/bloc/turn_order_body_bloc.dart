@@ -168,7 +168,8 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
           description: stack.description,
         );
       }
-      alreadyPlayed.cards.add(stack.cards.last);
+      //alreadyPlayed.cards.add(stack.cards.last);
+      alreadyPlayed.cards.insert(0, stack.cards.last);
       stack.cards.removeLast();
 
       // Creating story to statistic
@@ -179,27 +180,28 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
       }
     }
 
-    var newStack = CardsStack(
-      id: -1,
-      name: stack.name,
-      isActive: stack.isActive,
-      stackType: StackType.turnOrder,
-      stackColor: stack.stackColor,
-      cards: stack.cards,
-      description: stack.description,
-    );
+    // var newStack = CardsStack(
+    //   id: -1,
+    //   name: stack.name,
+    //   isActive: stack.isActive,
+    //   stackType: StackType.turnOrder,
+    //   stackColor: stack.stackColor,
+    //   cards: stack.cards,
+    //   description: stack.description,
+    // );
 
-    var newAlreadyPlayed = CardsStack(
-      id: -2,
-      name: alreadyPlayed.name,
-      isActive: alreadyPlayed.isActive,
-      stackType: StackType.turnOrder,
-      stackColor: alreadyPlayed.stackColor,
-      cards: alreadyPlayed.cards,
-      description: alreadyPlayed.description,
-    );
+    // var newAlreadyPlayed = CardsStack(
+    //   id: -2,
+    //   name: alreadyPlayed.name,
+    //   isActive: alreadyPlayed.isActive,
+    //   stackType: StackType.turnOrder,
+    //   stackColor: alreadyPlayed.stackColor,
+    //   cards: alreadyPlayed.cards,
+    //   description: alreadyPlayed.description,
+    // );
 
-    emit(TurnOrderBodySuccessActionState(newStack, newAlreadyPlayed));
+    emit(TurnOrderBodySuccessActionState(stack.copyWith(cards: stack.cards),
+        alreadyPlayed.copyWith(cards: alreadyPlayed.cards)));
   }
 
   void _onDelWild(
