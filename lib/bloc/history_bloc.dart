@@ -36,14 +36,14 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
         List<String> turnList = [];
         for (var i = 0; i < allData.length; i++) {
           for (var j = 0; j < allData[i].length; j++) {
-            turnList.add(allData[i][j].text);
+            turnList.add(allData[i][j].name);
           }
           if (allData[i].length > maxLength) {
             maxLength = allData[i].length;
             List<AECard> sortedCards = allData[i];
             List<AECard> beforeSortedCards = allData[i];
-            sortedCards.sort((a, b) => a.text.compareTo(b.text));
-            columnsToReturn = sortedCards.map((e) => e.text).toList();
+            sortedCards.sort((a, b) => a.name.compareTo(b.name));
+            columnsToReturn = sortedCards.map((e) => e.name).toList();
             allData.removeAt(i);
             allData.insert(i, beforeSortedCards);
           }

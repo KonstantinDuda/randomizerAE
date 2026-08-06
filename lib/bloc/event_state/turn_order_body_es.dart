@@ -42,7 +42,7 @@ class TurnOrderBodyPutInButtom extends TurnOrderBodyEvent {
 
 class TurnOrderBodyChangeSequenceEvent extends TurnOrderBodyEvent {
   final List<AECard> list;
-  
+
   const TurnOrderBodyChangeSequenceEvent([this.list = const []]);
 
   @override
@@ -59,6 +59,15 @@ class TurnOrderBodyChangeActiveStackEvent extends TurnOrderBodyEvent {
 
 class TurnOrderBodyClearStackEvent extends TurnOrderBodyEvent {}
 
+class TurnOrderBodyLinkDiscardEvent extends TurnOrderBodyEvent {
+  final String name;
+  final List<String> list;
+  final bool isDiscard;
+  const TurnOrderBodyLinkDiscardEvent(this.name, this.list, this.isDiscard);
+
+  @override
+  List<Object> get props => [name, list, isDiscard];
+}
 
 // States
 class TurnOrderBodyState extends Equatable {
@@ -72,9 +81,9 @@ class TurnOrderBodySuccessActionState extends TurnOrderBodyState {
   final CardsStack stack;
   final CardsStack alreadyPlayed;
 
-  const TurnOrderBodySuccessActionState([
-    this.stack = const CardsStack.empty(), 
-    this.alreadyPlayed = const CardsStack.empty()]);
+  const TurnOrderBodySuccessActionState(
+      [this.stack = const CardsStack.empty(),
+      this.alreadyPlayed = const CardsStack.empty()]);
 
   @override
   List<Object> get props => [stack, alreadyPlayed];

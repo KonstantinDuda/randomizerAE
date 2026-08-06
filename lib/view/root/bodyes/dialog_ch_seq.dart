@@ -28,7 +28,7 @@ class _ChangeSequanceDialogState extends State<ChangeSequanceDialog> {
 
     newSequance = widget.list;
     for (var _ in widget.list) {
-      isShown.add(false);      
+      isShown.add(false);
     }
   }
 
@@ -38,7 +38,7 @@ class _ChangeSequanceDialogState extends State<ChangeSequanceDialog> {
       title: const Text('Change Sequence'),
       content: SizedBox(
         width: 300,
-        height: 300,
+        height: 400,
         child: ListView.builder(
           itemCount: widget.list.length,
           itemBuilder: (context, index) {
@@ -64,17 +64,18 @@ class _ChangeSequanceDialogState extends State<ChangeSequanceDialog> {
                       ),
                       child: index < widget.list.length - 1
                           ? const Icon(Icons.arrow_downward)
-                          : const Text("")
-                    ),
+                          : const Text("")),
                   Expanded(
                     child: Stack(
                       children: [
                         Container(
-                          alignment: Alignment.center,
-                          child: isShown[index] ? const Text("") : const Icon(Icons.remove_red_eye_outlined)),
+                            alignment: Alignment.center,
+                            child: isShown[index]
+                                ? const Text("")
+                                : const Icon(Icons.remove_red_eye_outlined)),
                         ListTile(
                           title: Text(
-                            isShown[index] ? widget.list[index].text : "",
+                            isShown[index] ? widget.list[index].name : "",
                             textAlign: TextAlign.center,
                           ),
                           onTap: () {

@@ -9,6 +9,8 @@ import '../database/cards_stack.dart';
 class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
   late CardsStack stack = const CardsStack.empty();
   late CardsStack alreadyPlayed = const CardsStack.empty();
+  Map<String, int> links =
+      {}; // Map to store links between cards, buttons and stacks
   final db = DBProvider();
   final data = DefaultData();
 
@@ -16,6 +18,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     on<TurnOrderInitialEvent>(_onInit);
     on<TurnOrderBodyNextEvent>(_onNext);
     on<TurnOrderBodyDelWildEvent>(_onDelWild);
+    on<TurnOrderBodyLinkDiscardEvent>(_onLinkDiscard);
     on<TurnOrderBodyShuffleEvent>(_onShuffle);
     on<TurnOrderBodyShuffleInStackEvent>(_onShuffleIn);
     on<TurnOrderBodyPutInButtom>(_onPutInTheButtom);
@@ -174,9 +177,9 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
       // Creating story to statistic
       if (alreadyPlayed.cards.length > 1) {
-        data.addCardToStory(alreadyPlayed.cards.last, false);
+        data.addCardToStory(alreadyPlayed.cards.first, false);
       } else {
-        data.addCardToStory(alreadyPlayed.cards.last, true);
+        data.addCardToStory(alreadyPlayed.cards.first, true);
       }
     }
 
@@ -230,28 +233,60 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
       description: stack.description,
     );
 
-    List<AECard> newCardsList = stack.cards;
-    var newStack = CardsStack(
-      id: -1, //stack.id,
-      name: stack.name,
-      isActive: stack.isActive,
-      stackType: StackType.turnOrder,
-      stackColor: stack.stackColor,
-      cards: newCardsList,
-      description: stack.description,
-    ); // Something is wrong here
+    // List<AECard> newCardsList = stack.cards;
+    // var newStack = CardsStack(
+    //   id: -1, //stack.id,
+    //   name: stack.name,
+    //   isActive: stack.isActive,
+    //   stackType: StackType.turnOrder,
+    //   stackColor: stack.stackColor,
+    //   cards: newCardsList,
+    //   description: stack.description,
+    // ); // Something is wrong here
 
-    var newAlreadyPlayed = CardsStack(
-      id: -2, // alreadyPlayed.id,
-      name: alreadyPlayed.name,
-      isActive: alreadyPlayed.isActive,
-      stackType: StackType.turnOrder,
-      stackColor: alreadyPlayed.stackColor,
-      cards: newAlreadyCards,
-      description: alreadyPlayed.description,
-    );
+    // var newAlreadyPlayed = CardsStack(
+    //   id: -2, // alreadyPlayed.id,
+    //   name: alreadyPlayed.name,
+    //   isActive: alreadyPlayed.isActive,
+    //   stackType: StackType.turnOrder,
+    //   stackColor: alreadyPlayed.stackColor,
+    //   cards: newAlreadyCards,
+    //   description: alreadyPlayed.description,
+    // );
 
-    emit(TurnOrderBodySuccessActionState(newStack, newAlreadyPlayed));
+    emit(TurnOrderBodySuccessActionState(
+        /*newStack, newAlreadyPlayed*/ stack.copyWith(cards: stack.cards),
+        alreadyPlayed.copyWith(cards: alreadyPlayed.cards)));
+  }
+
+  _onLinkDiscard(
+      TurnOrderBodyLinkDiscardEvent event, Emitter<TurnOrderBodyState> emit) {
+    print("TurnOrderBodyBloc _onLinkDiscard event.name == ${event.name} \n");
+    print("TurnOrderBodyBloc _onLinkDiscard event.list == ${event.list} \n");
+    print(
+        "TurnOrderBodyBloc _onLinkDiscard event.isDiscard == ${event.isDiscard} \n");
+
+    if (event.isDiscard) {
+      List<AECard> newAlreadyCards = [];
+      for (var i = 0; i < stack.cards.length; i++) {
+        if (event.list.contains(stack.cards[i].name)) {
+          newAlreadyCards.add(stack.cards[i]);
+          stack.cards.removeAt(i);
+          i--; // Adjust index after removal
+        }
+      }
+      newAlreadyCards.addAll(alreadyPlayed.cards);
+      alreadyPlayed =
+          alreadyPlayed.copyWith(cards: newAlreadyCards, id: stack.id);
+    }
+
+    // Here you can implement the logic for linking or discarding based on the event data
+    // For example, you might want to update the stack or alreadyPlayed based on the event
+
+    // After processing, emit a new state if necessary
+
+    emit(TurnOrderBodySuccessActionState(stack.copyWith(cards: stack.cards),
+        alreadyPlayed.copyWith(cards: alreadyPlayed.cards)));
   }
 
   void _onShuffle(
@@ -311,21 +346,21 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
       Emitter<TurnOrderBodyState> emit) {
     var newCardsList = event.list;
 
-    var newStack = CardsStack(
-      id: stack.id,
-      name: stack.name,
-      isActive: stack.isActive,
-      stackType: stack.stackType,
-      stackColor: stack.stackColor,
-      cards: newCardsList,
-      description: stack.description,
-    );
-    stack = newStack;
+    // var newStack = CardsStack(
+    //   id: stack.id,
+    //   name: stack.name,
+    //   isActive: stack.isActive,
+    //   stackType: stack.stackType,
+    //   stackColor: stack.stackColor,
+    //   cards: newCardsList,
+    //   description: stack.description,
+    // );
+    stack = stack.copyWith(cards: newCardsList);
     print("TurnOrderBodyBlock _onChangeSequence "
         "stack == $stack \n "
-        "newStack.cards == ${newStack.cards} \n ");
+        "newStack.cards == ${newCardsList} \n ");
 
-    emit(TurnOrderBodySuccessActionState(newStack, alreadyPlayed));
+    emit(TurnOrderBodySuccessActionState(stack, alreadyPlayed));
   }
 
   void _onChangeActiveStack(TurnOrderBodyChangeActiveStackEvent event,
@@ -349,24 +384,25 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
   void _onClearStack(TurnOrderBodyClearStackEvent event,
       Emitter<TurnOrderBodyState> emit) async {
-    stack = CardsStack(
-      id: stack.id,
-      name: stack.name,
-      isActive: stack.isActive,
-      stackType: stack.stackType,
-      stackColor: stack.stackColor,
-      cards: [],
-      description: stack.description,
-    );
-    alreadyPlayed = CardsStack(
-      id: stack.id,
-      name: stack.name,
-      isActive: stack.isActive,
-      stackType: stack.stackType,
-      stackColor: stack.stackColor,
-      cards: [],
-      description: stack.description,
-    );
-    emit(TurnOrderBodySuccessActionState(stack, alreadyPlayed));
+    // stack = CardsStack(
+    //   id: stack.id,
+    //   name: stack.name,
+    //   isActive: stack.isActive,
+    //   stackType: stack.stackType,
+    //   stackColor: stack.stackColor,
+    //   cards: [],
+    //   description: stack.description,
+    // );
+    // alreadyPlayed = CardsStack(
+    //   id: stack.id,
+    //   name: stack.name,
+    //   isActive: stack.isActive,
+    //   stackType: stack.stackType,
+    //   stackColor: stack.stackColor,
+    //   cards: [],
+    //   description: stack.description,
+    // );
+    emit(TurnOrderBodySuccessActionState(
+        stack.copyWith(cards: []), alreadyPlayed.copyWith(cards: [])));
   }
 }

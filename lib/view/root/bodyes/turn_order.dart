@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_html/flutter_html.dart';
 
 import '../../../bloc/event_state/history_es.dart';
 import '../../../bloc/event_state/turn_order_body_es.dart';
@@ -10,6 +9,7 @@ import '../../../bloc/turn_order_body_bloc.dart';
 import '../../../database/cards_stack.dart';
 import 'dialog_ch_seq.dart';
 import 'dialog_top_card.dart';
+import 'dialog_link.dart';
 import 'my_card.dart';
 
 class TurnOrderBody extends StatefulWidget {
@@ -44,10 +44,6 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
 
   @override
   Widget build(BuildContext context) {
-    final Size bodyContainerSize = Size(
-      MediaQuery.of(context).size.width,
-      MediaQuery.of(context).size.height - 104.5,
-    );
     const Size mainObjSize = Size(130, 220);
 
     return BlocBuilder<TurnOrderBodyBloc, TurnOrderBodyState>(
@@ -56,7 +52,6 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
       late CardsStack alreadyPlayed;
 
       var clickCounter = 0;
-      Widget lastPlayedCard = const Text("");
 
       if (state is TurnOrderBodySuccessActionState) {
         stack = state.stack;
@@ -166,12 +161,14 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                               // Already played List
                               Expanded(
                                 child: Container(
-                                  width:
-                                      (MediaQuery.of(context).size.width / 2) -
-                                          30,
-                                  height: MediaQuery.of(context).size.height,
+                                  //color: Colors.yellow,
+                                  //width: width / 2 - 30,
+                                  // (MediaQuery.of(context).size.width / 2) -
+                                  //     30,
+                                  // height:
+                                  //     height, //MediaQuery.of(context).size.height,
                                   margin:
-                                      const EdgeInsets.fromLTRB(2, 20, 2, 200),
+                                      const EdgeInsets.fromLTRB(2, 10, 2, 200),
                                   //color: Colors.amber,
                                   child: ListView.builder(
                                     controller: myController,
@@ -224,6 +221,9 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                     ),
 
                     // To the Main Stack
+                    // TODO: Move other buttons to the left of the screen,
+                    // and make here ListView and button to add buttons to the list
+                    // Each button may be linked to a stack from the list in the dialog by long press
                     Positioned(
                       bottom: 74,
                       left: 22,
@@ -250,7 +250,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                         ),
                         onTap: () {
                           print("To Main Stack was tapped");
-                          // TODO: if id is 0, show dialog with all stacks
+                          // TODO: if id is 0, show dialog with all stacks names
                           // showDialog(
                           //   context: context,
                           //   builder: (BuildContext context) {
@@ -424,19 +424,23 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                             margin: const EdgeInsets.only(top: 2),
                             child: const Center(
                               child: Text(
-                                "Discard \na card",
+                                "Discard \n(a) card(s)",
                                 style: TextStyle(fontSize: 18),
                               ),
                             ),
                           ),
                         ),
                         onTap: () {
-                          // TODO: show dialog with all cards in curent stack, and allow user to select a card to discard
-                          if (alreadyPlayed.cards.isEmpty) {
-                            context
-                                .read<TurnOrderBodyBloc>()
-                                .add(const TurnOrderBodyDelWildEvent());
-                          }
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return LinkDialog(
+                                list: stack.cards.map((e) => e.name).toList(),
+                                name: stack.name,
+                                discard: true,
+                              );
+                            },
+                          );
                           print("Discard a card tapped");
                         },
                       ),
