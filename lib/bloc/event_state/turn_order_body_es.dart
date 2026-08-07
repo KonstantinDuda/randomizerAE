@@ -13,7 +13,11 @@ class TurnOrderBodyEvent extends Equatable {
 class TurnOrderInitialEvent extends TurnOrderBodyEvent {}
 
 class TurnOrderBodyNextEvent extends TurnOrderBodyEvent {
-  const TurnOrderBodyNextEvent();
+  final int id;
+  const TurnOrderBodyNextEvent(this.id);
+
+  @override
+  List<Object> get props => [id];
 }
 
 class TurnOrderBodyDelWildEvent extends TurnOrderBodyEvent {
@@ -21,49 +25,62 @@ class TurnOrderBodyDelWildEvent extends TurnOrderBodyEvent {
 }
 
 class TurnOrderBodyShuffleEvent extends TurnOrderBodyEvent {
-  const TurnOrderBodyShuffleEvent();
+  final int stackId;
+  const TurnOrderBodyShuffleEvent(this.stackId);
+
+  @override
+  List<Object> get props => [stackId];
 }
 
 class TurnOrderBodyShuffleInStackEvent extends TurnOrderBodyEvent {
+  final int stackId;
   final String text;
-  const TurnOrderBodyShuffleInStackEvent(this.text);
+  const TurnOrderBodyShuffleInStackEvent(this.stackId, this.text);
 
   @override
-  List<Object> get props => [text];
+  List<Object> get props => [stackId, text];
 }
 
 class TurnOrderBodyPutInButtom extends TurnOrderBodyEvent {
+  final int stackId;
   final String text;
-  const TurnOrderBodyPutInButtom(this.text);
+  const TurnOrderBodyPutInButtom(this.stackId, this.text);
 
   @override
-  List<Object> get props => [text];
+  List<Object> get props => [stackId, text];
 }
 
 class TurnOrderBodyChangeSequenceEvent extends TurnOrderBodyEvent {
+  final int stackId;
   final List<AECard> list;
 
-  const TurnOrderBodyChangeSequenceEvent([this.list = const []]);
+  const TurnOrderBodyChangeSequenceEvent(this.stackId, [this.list = const []]);
 
   @override
-  List<Object> get props => [list];
+  List<Object> get props => [stackId, list];
 }
 
 class TurnOrderBodyChangeActiveStackEvent extends TurnOrderBodyEvent {
-  final int id;
-  const TurnOrderBodyChangeActiveStackEvent(this.id);
+  final int stackId;
+  const TurnOrderBodyChangeActiveStackEvent(this.stackId);
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [stackId];
 }
 
-class TurnOrderBodyClearStackEvent extends TurnOrderBodyEvent {}
+// class TurnOrderBodyClearStackEvent extends TurnOrderBodyEvent {
+//   final int id;
+//   const TurnOrderBodyClearStackEvent(this.id);
 
-class TurnOrderBodyLinkDiscardEvent extends TurnOrderBodyEvent {
+//   @override
+//   List<Object> get props => [id];
+// }
+
+class TurnOrderBodyDiscardEvent extends TurnOrderBodyEvent {
   final String name;
   final List<String> list;
   final bool isDiscard;
-  const TurnOrderBodyLinkDiscardEvent(this.name, this.list, this.isDiscard);
+  const TurnOrderBodyDiscardEvent(this.name, this.list, this.isDiscard);
 
   @override
   List<Object> get props => [name, list, isDiscard];

@@ -7,12 +7,14 @@ import '../../../database/cards_stack.dart';
 
 class TopCardDialog extends StatefulWidget {
   final List<AECard> list;
-  final int id;
+  final int cardId;
+  final int stackId;
 
   const TopCardDialog({
     super.key,
     required this.list,
-    required this.id,
+    required this.cardId,
+    required this.stackId,
   });
 
   @override
@@ -20,7 +22,6 @@ class TopCardDialog extends StatefulWidget {
 }
 
 class _TopCardDialogState extends State<TopCardDialog> {
-
   List<AECard> newSequance = [];
   late AECard topCard;
   late int topCardIndex;
@@ -32,7 +33,7 @@ class _TopCardDialogState extends State<TopCardDialog> {
 
     newSequance = widget.list;
     for (var i = 0; i < newSequance.length; i++) {
-      if (newSequance[i].id == widget.id) {
+      if (newSequance[i].id == widget.cardId) {
         topCard = newSequance[i];
         topCardIndex = i;
       }
@@ -47,21 +48,21 @@ class _TopCardDialogState extends State<TopCardDialog> {
         height: 300,
         width: 90,
         alignment: Alignment.center,
-          margin: const EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color:Colors.black,
-              width: 2,
-            ),
-          ),
-          child: Text(
-            topCard.text,
-            style: const TextStyle(
-              fontSize: 20,
-            ),
+        margin: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: Colors.black,
+            width: 2,
           ),
         ),
+        child: Text(
+          topCard.text,
+          style: const TextStyle(
+            fontSize: 20,
+          ),
+        ),
+      ),
       actions: [
         TextButton(
           onPressed: () {
@@ -70,10 +71,8 @@ class _TopCardDialogState extends State<TopCardDialog> {
             newSequance.insert(0, topCard);
             print("Dialog_Top_Card newSequance AFTER changes == $newSequance");
             context.read<TurnOrderBodyBloc>().add(
-              TurnOrderBodyChangeSequenceEvent(
-                newSequance
-              ),
-            );
+                  TurnOrderBodyChangeSequenceEvent(widget.stackId, newSequance),
+                );
             Navigator.of(context).pop();
           },
           child: const Text('On Bottom'),

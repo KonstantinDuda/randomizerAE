@@ -63,8 +63,8 @@ class HistoryPage extends StatelessWidget {
 
         listRows() {
           print("HistoryPage _listRows $rows");
-          for(int i = 0; i < rows.length; i++) {
-            rows[i].insert(0, "Turn ${i+1}");
+          for (int i = 0; i < rows.length; i++) {
+            rows[i].insert(0, "Turn ${i + 1}");
           }
           for (var i = 0; i < rows.length; i++) {
             List<DataCell> cells = [];
@@ -73,11 +73,13 @@ class HistoryPage extends StatelessWidget {
               var splitedCell = cell.split(" ");
               cells.add(
                 DataCell(
-                  splitedCell[0] == "Turn" ? 
-                  Text(
-                    cell,
-                    style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 18),
-                  ) : Center(child: Text(cell)),
+                  splitedCell[0] == "Turn"
+                      ? Text(
+                          cell,
+                          style: const TextStyle(
+                              fontStyle: FontStyle.italic, fontSize: 18),
+                        )
+                      : Center(child: Text(cell)),
                   // Text(
                   //   cell,
                   //   style: splitedCell[0] == "Turn" ? const TextStyle(fontStyle: FontStyle.italic, fontSize: 18) : const TextStyle(),
@@ -146,9 +148,9 @@ class HistoryPage extends StatelessWidget {
                 columns.clear();
                 rows.clear();
                 context.read<HistoryBloc>().add(HistoryClearEvent());
-                context
-                    .read<TurnOrderBodyBloc>()
-                    .add(TurnOrderBodyClearStackEvent());
+                // context
+                //     .read<TurnOrderBodyBloc>()
+                //     .add(TurnOrderBodyClearStackEvent()); // TODO: This need to know stack id
                 context.read<ProviderBloc>().add(RootEvent());
               },
               style: ElevatedButton.styleFrom(

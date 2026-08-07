@@ -334,7 +334,8 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
-                              return ChangeSequanceDialog(list: stack.cards);
+                              return ChangeSequanceDialog(
+                                  stackId: stack.id, list: stack.cards);
                             },
                           );
                         },
@@ -379,11 +380,11 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                           if (stack.cards.isEmpty) {
                             context
                                 .read<TurnOrderBodyBloc>()
-                                .add(const TurnOrderBodyShuffleEvent());
+                                .add(TurnOrderBodyShuffleEvent(stack.id));
                           } else {
                             context
                                 .read<TurnOrderBodyBloc>()
-                                .add(const TurnOrderBodyNextEvent());
+                                .add(TurnOrderBodyNextEvent(stack.id));
                           }
                           _lastPlayedController?.forward(from: 0);
                         },
@@ -394,7 +395,9 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                               context: context,
                               builder: (BuildContext context) {
                                 return TopCardDialog(
-                                    id: stack.cards.last.id, list: stack.cards);
+                                    cardId: stack.cards.last.id,
+                                    list: stack.cards,
+                                    stackId: stack.id);
                               },
                             );
                           }
@@ -402,7 +405,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                       ),
                     ),
 
-                    // Discard wild TODO: make it Discard a card
+                    // Discard wild
                     Positioned(
                       bottom: 2,
                       right: 2,

@@ -5,8 +5,9 @@ import '../../../bloc/event_state/turn_order_body_es.dart';
 import '../../../bloc/turn_order_body_bloc.dart';
 
 class ShufflePutBackDialog extends StatelessWidget {
+  final int stackId;
   final String text;
-  const ShufflePutBackDialog(this.text, {super.key});
+  const ShufflePutBackDialog(this.stackId, this.text, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class ShufflePutBackDialog extends StatelessWidget {
           onPressed: () {
             context
                 .read<TurnOrderBodyBloc>()
-                .add(TurnOrderBodyShuffleInStackEvent(text));
+                .add(TurnOrderBodyShuffleInStackEvent(stackId, text));
             Navigator.of(context).pop();
           },
           child: const Text('Suffle card in stack'),
@@ -27,7 +28,7 @@ class ShufflePutBackDialog extends StatelessWidget {
           onPressed: () {
             context
                 .read<TurnOrderBodyBloc>()
-                .add(TurnOrderBodyPutInButtom(text));
+                .add(TurnOrderBodyPutInButtom(stackId, text));
             Navigator.of(context).pop();
           },
           child: const Text('Put card in the bottom'),

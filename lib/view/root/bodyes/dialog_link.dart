@@ -44,7 +44,6 @@ class _LinkDialogState extends State<LinkDialog> {
     return AlertDialog(
       title: const Text('Change Sequence'),
       content: SizedBox(
-        // TODO: Make it responsive to BLOC state, so I can use stacks names
         width: 300,
         height: 400,
         child: ListView.builder(
@@ -83,8 +82,8 @@ class _LinkDialogState extends State<LinkDialog> {
                 selectedItems.add(stateList[i]);
               }
             }
-            context.read<TurnOrderBodyBloc>().add(TurnOrderBodyLinkDiscardEvent(
-                objName, selectedItems, isDiscard));
+            context.read<TurnOrderBodyBloc>().add(
+                TurnOrderBodyDiscardEvent(objName, selectedItems, isDiscard));
 
             Navigator.of(context).pop();
           },

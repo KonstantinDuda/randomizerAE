@@ -6,10 +6,12 @@ import '../../../bloc/turn_order_body_bloc.dart';
 import '../../../database/cards_stack.dart';
 
 class ChangeSequanceDialog extends StatefulWidget {
+  final int stackId;
   final List<AECard> list;
 
   const ChangeSequanceDialog({
     super.key,
+    required this.stackId,
     required this.list,
   });
 
@@ -26,7 +28,11 @@ class _ChangeSequanceDialogState extends State<ChangeSequanceDialog> {
     // TODO: implement initState
     super.initState();
 
-    newSequance = widget.list;
+    for (int i = widget.list.length - 1; i > -1; i--) {
+      print("DChSeq initState: widget.list[i] == ${widget.list[i]}");
+      newSequance.add(widget.list[i]);
+    }
+
     for (var _ in widget.list) {
       isShown.add(false);
     }
@@ -75,7 +81,9 @@ class _ChangeSequanceDialogState extends State<ChangeSequanceDialog> {
                                 : const Icon(Icons.remove_red_eye_outlined)),
                         ListTile(
                           title: Text(
-                            isShown[index] ? widget.list[index].name : "",
+                            isShown[index]
+                                ? newSequance[index].name
+                                : "", //widget.list[index].name : "",
                             textAlign: TextAlign.center,
                           ),
                           onTap: () {
@@ -118,12 +126,16 @@ class _ChangeSequanceDialogState extends State<ChangeSequanceDialog> {
             newSequance = newSequance.reversed.toList();
             context.read<TurnOrderBodyBloc>().add(
                   TurnOrderBodyChangeSequenceEvent(
+                    widget.stackId,
                     newSequance,
                   ),
                 );
             Navigator.of(context).pop();
           },
-          child: const Text('Save'),
+          child: const Text(
+            'Save',
+            style: TextStyle(fontSize: 25, color: Colors.black),
+          ),
         ),
       ],
     );

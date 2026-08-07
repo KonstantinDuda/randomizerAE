@@ -50,7 +50,7 @@ class AECard {
 
   @override
   String toString() {
-    var result = 'AECard text: $text';
+    var result = 'AECard name: $name';
     return result;
   }
 }
@@ -68,6 +68,17 @@ enum StackType {
   //nemesis,
 }
 
+/// ```
+/// class CardsStack {
+///   final int id;
+///   final String name;
+///   final bool isActive;
+///   final StackType stackType;
+///   final Color stackColor;
+///   final List<AECard> cards;
+///   final String description;
+/// }
+/// ```
 class CardsStack {
   final int id;
   final String name;
@@ -166,7 +177,9 @@ class CardsStack {
       isActive: isActive ?? this.isActive,
       stackType: stackType ?? this.stackType,
       stackColor: stackColor ?? this.stackColor,
-      cards: cards ?? this.cards,
+      cards: cards != null
+          ? List<AECard>.from(cards)
+          : List<AECard>.from(this.cards),
       description: description ?? this.description,
     );
   }
