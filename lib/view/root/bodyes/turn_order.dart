@@ -44,7 +44,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
 
   @override
   Widget build(BuildContext context) {
-    const Size mainObjSize = Size(130, 220);
+    //const Size mainObjSize = Size(130, 220);
 
     return BlocBuilder<TurnOrderBodyBloc, TurnOrderBodyState>(
         builder: (context, state) {
@@ -65,70 +65,72 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
       }
 
       return Expanded(
-        child: Container(
-          color: Colors.blue,
-          //height: bodyContainerSize.height,
-          padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-          child: Column(
-            children: <Widget>[
-              ColoredBox(
-                color: Colors.blue,
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          stack.name,
-                          style: const TextStyle(fontSize: 30),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 28,
-                      width: 80,
-                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                      margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                      //alignment: Alignment.topRight,
-                      decoration: BoxDecoration(
-                        color: stack.stackColor, //stackColor,
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: const Align(
-                        //alignment: Alignment.topCenter,
-                        child: Text(
-                          'stack color',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                            height: -0.7,
+        child: LayoutBuilder(
+          builder: ((context, constraints) {
+            double lbWidth = constraints.maxWidth;
+            double lbHeight = constraints.maxHeight;
+
+            Size mainObjSize = const Size(120, 200);
+
+            return Container(
+              color: Colors.blue,
+              //height: bodyContainerSize.height,
+              padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+              child: Column(
+                children: <Widget>[
+                  ColoredBox(
+                    color: Colors.blue,
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              stack.name,
+                              style: const TextStyle(fontSize: 30),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Stack(
-                  //child: Container(
-                  children: <Widget>[
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(2, 0, 2, 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(
-                          color: Colors.black,
-                          width: 2,
+                        Container(
+                          height: 28,
+                          width: 80,
+                          padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                          margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                          //alignment: Alignment.topRight,
+                          decoration: BoxDecoration(
+                            color: stack.stackColor, //stackColor,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: const Align(
+                            //alignment: Alignment.topCenter,
+                            child: Text(
+                              'stack color',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black,
+                                height: -0.7,
+                              ),
+                            ),
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: LayoutBuilder(
-                        builder: ((context, constraints) {
-                          double width = constraints.maxWidth;
-                          double height = constraints.maxHeight;
-
-                          return Row(
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Stack(
+                      //child: Container(
+                      children: <Widget>[
+                        Container(
+                          margin: const EdgeInsets.fromLTRB(2, 0, 2, 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
                             children: [
                               // Last played Card
                               FadeTransition(
@@ -140,12 +142,12 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                       alreadyPlayed.cards.isNotEmpty
                                           ? alreadyPlayed.cards.first
                                           : AECard(id: 0, name: "", text: ""),
-                                      Size(width / 2.2, height / 2.5),
+                                      Size(lbWidth / 2.2, lbHeight / 2.5),
                                       bodyColor: Colors.white,
                                       borderColor: Colors.black,
                                       borderWidth: 2,
                                       margin: EdgeInsets.fromLTRB(
-                                          2, 0, 2, height / 5)),
+                                          2, 0, 2, lbHeight / 5)),
                                   // TODO: add Functions to onTap and onLongPress, to this card and cards in the already played list
                                   onTap: () {},
                                   onLongPress: () {},
@@ -153,26 +155,18 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                               ),
                               // Divider. Don't sure I need it
                               Container(
-                                margin:
-                                    const EdgeInsets.only(top: 20, bottom: 240),
+                                margin: EdgeInsets.only(
+                                    top: 20, bottom: lbHeight / 3.5),
                                 width: 1.5,
                                 color: Colors.black,
                               ),
                               // Already played List
                               Expanded(
                                 child: Container(
-                                  //color: Colors.yellow,
-                                  //width: width / 2 - 30,
-                                  // (MediaQuery.of(context).size.width / 2) -
-                                  //     30,
-                                  // height:
-                                  //     height, //MediaQuery.of(context).size.height,
                                   margin:
                                       const EdgeInsets.fromLTRB(2, 10, 2, 200),
-                                  //color: Colors.amber,
                                   child: ListView.builder(
                                     controller: myController,
-                                    //reverse: true,
                                     itemCount: alreadyPlayed.cards.isNotEmpty
                                         ? alreadyPlayed.cards.length
                                         : 0,
@@ -215,288 +209,299 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                 ),
                               ),
                             ],
-                          );
-                        }),
-                      ),
-                    ),
-
-                    // To the Main Stack
-                    // TODO: Move other buttons to the left of the screen,
-                    // and make here ListView and button to add buttons to the list
-                    // Each button may be linked to a stack from the list in the dialog by long press
-                    Positioned(
-                      bottom: 2,
-                      left: 2,
-                      child: GestureDetector(
-                        child: LayoutBuilder(builder: ((context, constraints) {
-                          double width = constraints.maxWidth / 3;
-                          print("To main stack width == $width");
-                          double height = 50;
-                          return Container(
-                            width: width,
-                            height: height,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 2,
-                              ),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(18)),
-                            ),
-                            child: const Center(
-                              child: Text(
-                                "+",
-                                style: TextStyle(fontSize: 30),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          );
-                        })),
-                        onTap: () {
-                          print("To Main Stack was tapped");
-                          // TODO: if id is 0, show dialog with all stacks names
-                          // showDialog(
-                          //   context: context,
-                          //   builder: (BuildContext context) {
-                          //     return ChangeSequanceDialog(list: stack.cards);
-                          //   },
-                          // );
-                        },
-                      ),
-                    ),
-
-                    // Main object
-                    Positioned(
-                      bottom: -15,
-                      left:
-                          144, //(bodyContainerSize.width - mainObjSize.width) / 2,
-                      child: GestureDetector(
-                        child: Container(
-                          width: mainObjSize.width,
-                          height: mainObjSize.height,
-                          decoration: BoxDecoration(
-                            color: stack.stackColor,
-                            border: Border.all(
-                              color: Colors.black,
-                              width: 2,
-                            ),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(18)),
-                          ),
-                          margin: const EdgeInsets.all(0),
-                          child: Center(
-                            child: Text(
-                              stack.cards.isEmpty ? "X" : stack.name,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: stack.stackColor == Colors.black
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                            ),
+                            //);
+                            // }),
                           ),
                         ),
-                        onTap: () {
-                          print("Main object tapped");
-                          if (stack.cards.isEmpty) {
-                            context
-                                .read<TurnOrderBodyBloc>()
-                                .add(TurnOrderBodyShuffleEvent(stack.id));
-                          } else {
-                            context
-                                .read<TurnOrderBodyBloc>()
-                                .add(TurnOrderBodyNextEvent(stack.id));
-                          }
-                          _lastPlayedController?.forward(from: 0);
-                        },
-                        onLongPress: () {
-                          //print("Main object long pressed");
-                          if (stack.cards.isNotEmpty) {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return TopCardDialog(
-                                    cardId: stack.cards.last.id,
-                                    list: stack.cards,
-                                    stackId: stack.id);
-                              },
-                            );
-                          }
-                        },
-                      ),
-                    ),
 
-                    // Discard wild
-                    Positioned(
-                      bottom: 2,
-                      right: 2,
-                      child: GestureDetector(
-                        child: Container(
-                          width: 140,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                              color: Colors.black,
-                              width: 2,
-                            ),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(18),
-                            ),
-                          ),
+                        // Fast Links
+                        Positioned(
+                          bottom: 2,
+                          left: 2,
+                          // child: Expanded(
                           child: Container(
-                            margin: const EdgeInsets.only(top: 2),
-                            child: const Center(
-                              child: Text(
-                                "Discard \n(a) card(s)",
-                                style: TextStyle(fontSize: 18),
-                              ),
+                            height: lbHeight / 3,
+                            color: const Color.fromARGB(0, 0, 0, 0),
+                            child: Column(
+                              children: [
+                                // Button List
+                                Expanded(
+                                  child: Container(
+                                    color: Colors.amber,
+                                  ),
+                                ),
+                                // Add button to Button List
+                                GestureDetector(
+                                  child: Container(
+                                    width: lbWidth / 3 + 4,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                        color: Colors.black,
+                                        width: 2,
+                                      ),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(18)),
+                                    ),
+                                    child: const Center(
+                                      child: Text(
+                                        "+",
+                                        style: TextStyle(fontSize: 30),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    print("Add button to List onTap");
+                                    // TODO: if id is 0, show dialog with all stacks names
+                                    // showDialog(
+                                    //   context: context,
+                                    //   builder: (BuildContext context) {
+                                    //     return ChangeSequanceDialog(list: stack.cards);
+                                    //   },
+                                    // );
+                                  },
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return LinkDialog(
-                                list: stack.cards.map((e) => e.name).toList(),
-                                name: stack.name,
-                                discard: true,
-                              );
+
+                        // Main object
+                        Positioned(
+                          bottom: -15,
+                          left: lbWidth / 3 + 8,
+                          child: GestureDetector(
+                            child: Container(
+                              width: mainObjSize.width,
+                              height: mainObjSize.height,
+                              decoration: BoxDecoration(
+                                color: stack.stackColor,
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 2,
+                                ),
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(18)),
+                              ),
+                              margin: const EdgeInsets.all(0),
+                              child: Center(
+                                child: Text(
+                                  stack.cards.isEmpty ? "X" : stack.name,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                    color: stack.stackColor == Colors.black
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            onTap: () {
+                              print("Main object tapped");
+                              if (stack.cards.isEmpty) {
+                                context
+                                    .read<TurnOrderBodyBloc>()
+                                    .add(TurnOrderBodyShuffleEvent(stack.id));
+                              } else {
+                                context
+                                    .read<TurnOrderBodyBloc>()
+                                    .add(TurnOrderBodyNextEvent(stack.id));
+                              }
+                              _lastPlayedController?.forward(from: 0);
                             },
-                          );
-                          print("Discard a card tapped");
-                        },
-                      ),
-                    ),
-
-                    // Watch story
-                    Positioned(
-                      bottom: 74,
-                      right: 2,
-                      child: GestureDetector(
-                        child: Container(
-                          //color: Colors.white,
-                          width: 90,
-                          height: 70,
-                          //margin: const EdgeInsets.only(bottom: 80),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                              color: Colors.black,
-                              width: 2,
-                            ),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(18),
-                            ),
-                          ),
-                          child: Container(
-                            margin: const EdgeInsets.only(left: 10, top: 2),
-                            child: const Center(
-                              child: Text(
-                                "History",
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ),
+                            onLongPress: () {
+                              //print("Main object long pressed");
+                              if (stack.cards.isNotEmpty) {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return TopCardDialog(
+                                        cardId: stack.cards.last.id,
+                                        list: stack.cards,
+                                        stackId: stack.id);
+                                  },
+                                );
+                              }
+                            },
                           ),
                         ),
-                        onTap: () {
-                          context.read<HistoryBloc>().add(HistoryGetEvent());
-                          context
-                              .read<ProviderBloc>()
-                              .add(HistoryProviderEvent());
-                          print("History tapped");
-                        },
-                      ),
-                    ),
 
-                    // TODO: Move Change sequence, About Stack, History, Discard a card to More options button
+                        // Discard wild
+                        Positioned(
+                          bottom: 2,
+                          right: 2,
+                          child: GestureDetector(
+                            child: Container(
+                              width: lbWidth / 3 + 4,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 2,
+                                ),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(18),
+                                ),
+                              ),
+                              child: Container(
+                                margin: const EdgeInsets.only(top: 2),
+                                child: const Center(
+                                  child: Text(
+                                    "Discard \n(a) card(s)",
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return LinkDialog(
+                                    list:
+                                        stack.cards.map((e) => e.name).toList(),
+                                    name: stack.name,
+                                    discard: true,
+                                  );
+                                },
+                              );
+                              print("Discard a card tapped");
+                            },
+                          ),
+                        ),
+
+                        // Watch story
+                        Positioned(
+                          bottom: 54,
+                          right: 2,
+                          child: GestureDetector(
+                            child: Container(
+                              width: lbWidth / 3 + 4,
+                              height: 50,
+                              //margin: const EdgeInsets.only(bottom: 80),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 2,
+                                ),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(18),
+                                ),
+                              ),
+                              child: Container(
+                                margin: const EdgeInsets.only(left: 10, top: 2),
+                                child: const Center(
+                                  child: Text(
+                                    "History",
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            onTap: () {
+                              context
+                                  .read<HistoryBloc>()
+                                  .add(HistoryGetEvent());
+                              context
+                                  .read<ProviderBloc>()
+                                  .add(HistoryProviderEvent());
+                              print("History tapped");
+                            },
+                          ),
+                        ),
+
+                        // TODO: Move Change sequence, About Stack, History, Discard a card to More options button
 // and make them as a list in a dialog, to save space on the screen
 // To the main stack change on 3 buttons like To the stack ... Where user can select the stacks to fast access them,
 // and if user want to select another stack, he can select it from the list in the dialog by long press
-                    // Change sequance
-                    Positioned(
-                      bottom: 146,
-                      right: 2,
-                      child: GestureDetector(
-                        child: Container(
-                          width: 90,
-                          height: 70,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                              color: Colors.black,
-                              width: 2,
+                        // Change sequance
+                        Positioned(
+                          bottom: 106,
+                          right: 2,
+                          child: GestureDetector(
+                            child: Container(
+                              width: lbWidth / 3 + 4,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 2,
+                                ),
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(18)),
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  "Change sequance",
+                                  style: TextStyle(fontSize: 18),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
                             ),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(18)),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "Change sequance",
-                              style: TextStyle(fontSize: 18),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                        onTap: () {
-                          print("Change sequance tapped");
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return ChangeSequanceDialog(
-                                  stackId: stack.id, list: stack.cards);
+                            onTap: () {
+                              print("Change sequance tapped");
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return ChangeSequanceDialog(
+                                      stackId: stack.id, list: stack.cards);
+                                },
+                              );
                             },
-                          );
-                        },
-                      ),
-                    ),
-
-                    // About Stack
-                    Positioned(
-                      bottom: 218,
-                      right: 2,
-                      child: GestureDetector(
-                        child: Container(
-                          width: 90,
-                          height: 70,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                              color: Colors.black,
-                              width: 2,
-                            ),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(18)),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "About Stack",
-                              style: TextStyle(fontSize: 18),
-                              textAlign: TextAlign.center,
-                            ),
                           ),
                         ),
-                        onTap: () {
-                          print("About Stack was tapped");
-                          // TODO: send stack id to show dialog with stack info
-                          // showDialog(
-                          //   context: context,
-                          //   builder: (BuildContext context) {
-                          //     return ChangeSequanceDialog(list: stack.cards);
-                          //   },
-                          // );
-                        },
-                      ),
+
+                        // About Stack
+                        Positioned(
+                          bottom: 158,
+                          right: 2,
+                          child: GestureDetector(
+                            child: Container(
+                              width: lbWidth / 3 + 4,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 2,
+                                ),
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(18)),
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  "About Stack",
+                                  style: TextStyle(fontSize: 18),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                            onTap: () {
+                              print("About Stack was tapped");
+                              // TODO: send stack id to show dialog with stack info
+                              // showDialog(
+                              //   context: context,
+                              //   builder: (BuildContext context) {
+                              //     return ChangeSequanceDialog(list: stack.cards);
+                              //   },
+                              // );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          }),
         ),
       );
     });
