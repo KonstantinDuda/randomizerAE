@@ -225,29 +225,34 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                     // and make here ListView and button to add buttons to the list
                     // Each button may be linked to a stack from the list in the dialog by long press
                     Positioned(
-                      bottom: 74,
-                      left: 22,
+                      bottom: 2,
+                      left: 2,
                       child: GestureDetector(
-                        child: Container(
-                          width: 140,
-                          height: 70,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                              color: Colors.black,
-                              width: 2,
+                        child: LayoutBuilder(builder: ((context, constraints) {
+                          double width = constraints.maxWidth / 3;
+                          print("To main stack width == $width");
+                          double height = 50;
+                          return Container(
+                            width: width,
+                            height: height,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 2,
+                              ),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(18)),
                             ),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(18)),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "To the Main stack",
-                              style: TextStyle(fontSize: 18),
-                              textAlign: TextAlign.center,
+                            child: const Center(
+                              child: Text(
+                                "+",
+                                style: TextStyle(fontSize: 30),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
-                          ),
-                        ),
+                          );
+                        })),
                         onTap: () {
                           print("To Main Stack was tapped");
                           // TODO: if id is 0, show dialog with all stacks names
@@ -261,92 +266,11 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                       ),
                     ),
 
-                    // About Stack
-                    Positioned(
-                      bottom: 2,
-                      left: 2,
-                      child: GestureDetector(
-                        child: Container(
-                          width: 90,
-                          height: 70,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                              color: Colors.black,
-                              width: 2,
-                            ),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(18)),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "About Stack",
-                              style: TextStyle(fontSize: 18),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                        onTap: () {
-                          print("About Stack was tapped");
-                          // TODO: send stack id to show dialog with stack info
-                          // showDialog(
-                          //   context: context,
-                          //   builder: (BuildContext context) {
-                          //     return ChangeSequanceDialog(list: stack.cards);
-                          //   },
-                          // );
-                        },
-                      ),
-                    ),
-
-// TODO: Move Change sequence, About Stack, History, Discard a card to More options button
-// and make them as a list in a dialog, to save space on the screen
-// To the main stack change on 3 buttons like To the stack ... Where user can select the stacks to fast access them,
-// and if user want to select another stack, he can select it from the list in the dialog by long press
-                    // Change sequance
-                    Positioned(
-                      bottom: 2,
-                      left: 94,
-                      child: GestureDetector(
-                        child: Container(
-                          width: 90,
-                          height: 70,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                              color: Colors.black,
-                              width: 2,
-                            ),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(18)),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "Change sequance",
-                              style: TextStyle(fontSize: 18),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                        onTap: () {
-                          print("Change sequance tapped");
-                          // TODO: sequence showing from end to start, change it to show from start to end
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return ChangeSequanceDialog(
-                                  stackId: stack.id, list: stack.cards);
-                            },
-                          );
-                        },
-                      ),
-                    ),
-
                     // Main object
                     Positioned(
                       bottom: -15,
-                      right:
-                          94, //(bodyContainerSize.width - mainObjSize.width) / 2,
+                      left:
+                          144, //(bodyContainerSize.width - mainObjSize.width) / 2,
                       child: GestureDetector(
                         child: Container(
                           width: mainObjSize.width,
@@ -411,8 +335,8 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                       right: 2,
                       child: GestureDetector(
                         child: Container(
-                          width: 90,
-                          height: 70,
+                          width: 140,
+                          height: 50,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border.all(
@@ -485,6 +409,86 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                               .read<ProviderBloc>()
                               .add(HistoryProviderEvent());
                           print("History tapped");
+                        },
+                      ),
+                    ),
+
+                    // TODO: Move Change sequence, About Stack, History, Discard a card to More options button
+// and make them as a list in a dialog, to save space on the screen
+// To the main stack change on 3 buttons like To the stack ... Where user can select the stacks to fast access them,
+// and if user want to select another stack, he can select it from the list in the dialog by long press
+                    // Change sequance
+                    Positioned(
+                      bottom: 146,
+                      right: 2,
+                      child: GestureDetector(
+                        child: Container(
+                          width: 90,
+                          height: 70,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 2,
+                            ),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(18)),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              "Change sequance",
+                              style: TextStyle(fontSize: 18),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        onTap: () {
+                          print("Change sequance tapped");
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return ChangeSequanceDialog(
+                                  stackId: stack.id, list: stack.cards);
+                            },
+                          );
+                        },
+                      ),
+                    ),
+
+                    // About Stack
+                    Positioned(
+                      bottom: 218,
+                      right: 2,
+                      child: GestureDetector(
+                        child: Container(
+                          width: 90,
+                          height: 70,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 2,
+                            ),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(18)),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              "About Stack",
+                              style: TextStyle(fontSize: 18),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        onTap: () {
+                          print("About Stack was tapped");
+                          // TODO: send stack id to show dialog with stack info
+                          // showDialog(
+                          //   context: context,
+                          //   builder: (BuildContext context) {
+                          //     return ChangeSequanceDialog(list: stack.cards);
+                          //   },
+                          // );
                         },
                       ),
                     ),
