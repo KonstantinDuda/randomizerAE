@@ -8,12 +8,14 @@ class LinkDialog extends StatefulWidget {
   final List<String> list; // Cards or Stacks names
   final String name; // From where it is called
   final bool discard; // Is it discard or Link something
+  final int stackId; // From which stack dialog was opened
 
   const LinkDialog({
     super.key,
     required this.list,
     required this.name,
     required this.discard,
+    required this.stackId,
   });
 
   @override
@@ -24,7 +26,9 @@ class _LinkDialogState extends State<LinkDialog> {
   List<String> stateList = [];
   List<bool> isChosen = [];
   bool isDiscard = false;
+  List<bool> canIteract = [];
   String objName = "";
+  int stackId = 0;
 
   @override
   void initState() {
@@ -34,8 +38,10 @@ class _LinkDialogState extends State<LinkDialog> {
     stateList.shuffle(); // Shuffle the list to randomize the order
     isDiscard = widget.discard;
     objName = widget.name;
+    stackId = widget.stackId;
     for (var _ in widget.list) {
       isChosen.add(false);
+      canIteract.add(true);
     }
   }
 
@@ -49,7 +55,7 @@ class _LinkDialogState extends State<LinkDialog> {
         child: ListView.builder(
           itemCount: widget.list.length,
           itemBuilder: (context, index) {
-            final bool canIteract = isDiscard ? true : false;
+            //final bool canIteract = isDiscard ? true : false;
             return SizedBox(
               width: 280,
               height: 50,
@@ -59,8 +65,19 @@ class _LinkDialogState extends State<LinkDialog> {
                     child: CheckboxListTile(
                       title: Text(stateList[index]),
                       value: isChosen[index],
-                      enabled: canIteract,
+                      enabled: canIteract[index],
                       onChanged: (value) {
+                        if (!isDiscard && value == true) {
+                          setState(() {
+                            print(
+                                "!isDiscard == ${!isDiscard} && value == $value");
+                            canIteract = List.filled(canIteract.length, false);
+                            canIteract[index] = true;
+                            print("canIteract == $canIteract");
+                          });
+                        } else {
+                          canIteract = List.filled(canIteract.length, true);
+                        }
                         setState(() {
                           isChosen[index] = value ?? false;
                         });
@@ -82,12 +99,15 @@ class _LinkDialogState extends State<LinkDialog> {
                 selectedItems.add(stateList[i]);
               }
             }
-            context.read<TurnOrderBodyBloc>().add(
-                TurnOrderBodyDiscardEvent(objName, selectedItems, isDiscard));
+            context.read<TurnOrderBodyBloc>().add(TurnOrderBodyDiscardEvent(
+                objName, selectedItems, isDiscard, stackId));
 
             Navigator.of(context).pop();
           },
-          child: const Text('Save'),
+          child: const Text(
+            'Save',
+            style: TextStyle(fontSize: 18, color: Colors.black),
+          ),
         ),
       ],
     );

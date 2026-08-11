@@ -68,22 +68,16 @@ class TurnOrderBodyChangeActiveStackEvent extends TurnOrderBodyEvent {
   List<Object> get props => [stackId];
 }
 
-// class TurnOrderBodyClearStackEvent extends TurnOrderBodyEvent {
-//   final int id;
-//   const TurnOrderBodyClearStackEvent(this.id);
-
-//   @override
-//   List<Object> get props => [id];
-// }
-
 class TurnOrderBodyDiscardEvent extends TurnOrderBodyEvent {
   final String name;
   final List<String> list;
   final bool isDiscard;
-  const TurnOrderBodyDiscardEvent(this.name, this.list, this.isDiscard);
+  final int stackId;
+  const TurnOrderBodyDiscardEvent(
+      this.name, this.list, this.isDiscard, this.stackId);
 
   @override
-  List<Object> get props => [name, list, isDiscard];
+  List<Object> get props => [name, list, isDiscard, stackId];
 }
 
 // States
@@ -97,13 +91,17 @@ class TurnOrderBodyState extends Equatable {
 class TurnOrderBodySuccessActionState extends TurnOrderBodyState {
   final CardsStack stack;
   final CardsStack alreadyPlayed;
+  final List<CardsStack> allStacks;
+  final List<String> links;
 
   const TurnOrderBodySuccessActionState(
       [this.stack = const CardsStack.empty(),
-      this.alreadyPlayed = const CardsStack.empty()]);
+      this.alreadyPlayed = const CardsStack.empty(),
+      this.allStacks = const [],
+      this.links = const []]);
 
   @override
-  List<Object> get props => [stack, alreadyPlayed];
+  List<Object> get props => [stack, alreadyPlayed, allStacks, links];
 }
 
 // class TurnOrderBodyClearScreenState extends TurnOrderBodyState {

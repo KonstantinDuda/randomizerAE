@@ -25,7 +25,6 @@ class _ChangeSequanceDialogState extends State<ChangeSequanceDialog> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     for (int i = widget.list.length - 1; i > -1; i--) {

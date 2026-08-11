@@ -8,6 +8,7 @@ import '../../../bloc/history_bloc.dart';
 import '../../../bloc/turn_order_body_bloc.dart';
 import '../../../database/cards_stack.dart';
 import 'dialog_ch_seq.dart';
+import 'dialog_shuffle_put.dart';
 import 'dialog_top_card.dart';
 import 'dialog_link.dart';
 import 'my_card.dart';
@@ -50,12 +51,17 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
         builder: (context, state) {
       late CardsStack stack;
       late CardsStack alreadyPlayed;
+      late List<CardsStack> allStacks;
+      late List<String> linkKeys;
 
       var clickCounter = 0;
 
       if (state is TurnOrderBodySuccessActionState) {
         stack = state.stack;
         alreadyPlayed = state.alreadyPlayed;
+        allStacks = state.allStacks;
+        linkKeys = state.links;
+        print("allStacks == $allStacks");
       } else {
         stack = const CardsStack.empty();
         alreadyPlayed = const CardsStack.empty();
@@ -139,18 +145,26 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                 key: ValueKey(clickCounter),
                                 child: GestureDetector(
                                   child: MyCard(
-                                      alreadyPlayed.cards.isNotEmpty
-                                          ? alreadyPlayed.cards.first
-                                          : AECard(id: 0, name: "", text: ""),
-                                      Size(lbWidth / 2.2, lbHeight / 2.5),
-                                      bodyColor: Colors.white,
-                                      borderColor: Colors.black,
-                                      borderWidth: 2,
-                                      margin: EdgeInsets.fromLTRB(
-                                          2, 0, 2, lbHeight / 5)),
+                                    alreadyPlayed.cards.isNotEmpty
+                                        ? alreadyPlayed.cards.first
+                                        : AECard(id: 0, name: "", text: ""),
+                                    Size(lbWidth / 2.2, lbHeight / 2.5),
+                                    bodyColor: Colors.white,
+                                    borderColor: Colors.black,
+                                    borderWidth: 2,
+                                    margin: EdgeInsets.fromLTRB(
+                                        2, 0, 2, lbHeight / 5),
+                                  ),
                                   // TODO: add Functions to onTap and onLongPress, to this card and cards in the already played list
                                   onTap: () {},
-                                  onLongPress: () {},
+                                  onLongPress: () {
+                                    if (alreadyPlayed.cards.isNotEmpty) {
+                                      _dialogShuffleLink(
+                                          stack.id,
+                                          alreadyPlayed.cards.first.name,
+                                          allStacks);
+                                    }
+                                  },
                                 ),
                               ),
                               // Divider. Don't sure I need it
@@ -202,6 +216,10 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                           print(
                                               "Already played card long pressed: ${alreadyPlayed.cards[index].name}");
                                           // TODO: show dialog with options: Shufle in stack, Put on top of stack, Put on bottom of stack, Link card to stack
+                                          _dialogShuffleLink(
+                                              stack.id,
+                                              alreadyPlayed.cards[index].name,
+                                              allStacks);
                                         },
                                       );
                                     },
@@ -330,7 +348,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                           ),
                         ),
 
-                        // Discard wild
+                        // Discard (a) card(s)
                         Positioned(
                           bottom: 2,
                           right: 2,
@@ -352,7 +370,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                 margin: const EdgeInsets.only(top: 2),
                                 child: const Center(
                                   child: Text(
-                                    "Discard \n(a) card(s)",
+                                    "Discard (a) card(s)",
                                     style: TextStyle(fontSize: 18),
                                   ),
                                 ),
@@ -367,10 +385,11 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                         stack.cards.map((e) => e.name).toList(),
                                     name: stack.name,
                                     discard: true,
+                                    stackId: stack.id,
                                   );
                                 },
                               );
-                              print("Discard a card tapped");
+                              //print("Discard a card tapped");
                             },
                           ),
                         ),
@@ -416,10 +435,6 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                           ),
                         ),
 
-                        // TODO: Move Change sequence, About Stack, History, Discard a card to More options button
-// and make them as a list in a dialog, to save space on the screen
-// To the main stack change on 3 buttons like To the stack ... Where user can select the stacks to fast access them,
-// and if user want to select another stack, he can select it from the list in the dialog by long press
                         // Change sequance
                         Positioned(
                           bottom: 106,
@@ -505,5 +520,29 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
         ),
       );
     });
+  }
+
+  _dialogShuffleLink(int stackId, String text, List<CardsStack> stacks) async {
+    String collback = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ShufflePutBackDialog(stackId, text);
+      },
+    );
+    if (!mounted) return;
+    print("ShuffleLink dialog return $collback");
+    if (collback != "") {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return LinkDialog(
+            list: stacks.map((e) => e.name).toList(),
+            name: text,
+            discard: false,
+            stackId: stackId,
+          );
+        },
+      );
+    }
   }
 }
