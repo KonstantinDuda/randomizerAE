@@ -124,36 +124,11 @@ class _RootAppBarState extends State<RootAppBar> {
                             ),
                           ),
                           onTap: () {
-                            print("\n \n \n");
                             print(
-                                "RootAppBar stacks[index].stackType == ${stacks[index].stackType} \n");
-                            //if (db[index].stackType == StackType.turnOrder) {
-                            if (stacks[index].stackType ==
-                                StackType.turnOrder) {
-                              context
-                                  .read<TurnOrderBodyBloc>()
-                                  .add(TurnOrderBodyChangeActiveStackEvent(
-                                      // db[index].id));
-                                      stacks[index].id));
-                              context
-                                  .read<RootBodyProviderBloc>()
-                                  .add(const RootBodyTurnOrderEvent());
-                            } else if (stacks[index].stackType ==
-                                    StackType.friend ||
-                                stacks[index].stackType == StackType.foe) {
-                              print(
-                                  "RootAppBar stacks[index].stackType friend or foe \n");
-                              var stack = stacks[index];
-                              print("RootAppBar heroStack == $stack \n");
-
-                              context
-                                  .read<RootBodyProviderBloc>()
-                                  .add(RootBodyFriendFoeEvent());
-                            } else {
-                              context
-                                  .read<RootBodyProviderBloc>()
-                                  .add(RootBodyLoadingEvent());
-                            }
+                                "\n RootAppBar stacks[index].stackType == ${stacks[index].stackType} \n");
+                            context.read<TurnOrderBodyBloc>().add(
+                                TurnOrderBodyChangeActiveStackEvent(
+                                    stacks[index].id));
                           },
                         );
                       },

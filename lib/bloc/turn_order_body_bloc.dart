@@ -24,8 +24,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     on<TurnOrderBodyPutInButtom>(_onPutInTheButtom);
     on<TurnOrderBodyChangeSequenceEvent>(_onChangeSequence);
     on<TurnOrderBodyChangeActiveStackEvent>(_onChangeActiveStack);
-    //on<TurnOrderBodyClearStackEvent>(_onClearStack);
-    //on<TurnOrderBodyChangeAvailableStackListEvent>(_onChangeAvailableList);
+    on<TurnOrderAddDeleteStackEvent>(_onAddDeleteStack);
   }
 
   void _onInit(
@@ -53,7 +52,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
         for (int i = 0; i < stackList.length; i++) {
           List<AECard> cards = stackList[i].cards;
           cards.shuffle();
-          print("TOBB _onInit: cards.shuffled == $cards");
+          //print("TOBB _onInit: cards.shuffled == $cards");
           shuffledStacks.add(stackList[i].copyWith(cards: cards));
         }
         stacks.addAll(shuffledStacks);
@@ -160,13 +159,16 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
           "TurnOrderBodyBloc _onInit stacks.isNotEmpty \n stacks.length == ${stacks.length} \n alreadyPlayed.length == ${alreadyPlayed.length}");
     }
     alreadyPlayedCheck();
+    print(
+        "TurnOrderBodyBloc _onInit alreadyPlayed.length == ${alreadyPlayed.length} \n");
+    print("TurnOrderBodyBloc _onInit links.length == ${links.length} \n");
 
     emit(TurnOrderBodySuccessActionState(
         stacks.first,
         alreadyPlayed.firstWhere((element) => element.id == stacks.first.id,
             orElse: () => stacks.first.copyWith(cards: [])),
         stacks,
-        linksKeys));
+        links));
   }
 
   void _onNext(
@@ -226,7 +228,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
         curentStack.copyWith(cards: curentStack.cards),
         newAlreadyPlayed.copyWith(cards: newAlreadyPlayed.cards),
         List.from(stacks),
-        linksKeys));
+        links));
   }
 
   _onDiscard(
@@ -302,7 +304,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
         curentStack.copyWith(cards: curentStack.cards),
         newAlreadyPlayed.copyWith(cards: newAlreadyPlayed.cards),
         List.from(stacks),
-        linksKeys));
+        links));
   }
 
   void _onShuffle(
@@ -314,7 +316,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     _saveStacksAndAP(curentStack.id, curentStack.cards, curentAP.cards);
 
     emit(TurnOrderBodySuccessActionState(
-        curentStack, curentAP, List.from(stacks), linksKeys));
+        curentStack, curentAP, List.from(stacks), links));
   }
 
   void _onShuffleIn(TurnOrderBodyShuffleInStackEvent event,
@@ -339,7 +341,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     _saveStacksAndAP(curentStack.id, curentStack.cards, curentAP.cards);
 
     emit(TurnOrderBodySuccessActionState(
-        curentStack, curentAP, List.from(stacks), linksKeys));
+        curentStack, curentAP, List.from(stacks), links));
   }
 
   _onPutInTheButtom(
@@ -366,7 +368,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     _saveStacksAndAP(curentStack.id, curentStack.cards, curentAP.cards);
 
     emit(TurnOrderBodySuccessActionState(
-        curentStack, curentAP, List.from(stacks), linksKeys));
+        curentStack, curentAP, List.from(stacks), links));
   }
 
   void _onChangeSequence(TurnOrderBodyChangeSequenceEvent event,
@@ -386,7 +388,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
           orElse: () => stacks[stackIndex].copyWith(cards: []),
         ),
         List.from(stacks),
-        linksKeys));
+        links));
   }
 
   void _onChangeActiveStack(TurnOrderBodyChangeActiveStackEvent event,
@@ -402,7 +404,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
     if (newStack.id != 0 && newAlreadyPlayed.id != 0) {
       emit(TurnOrderBodySuccessActionState(
-          newStack, newAlreadyPlayed, List.from(stacks), linksKeys));
+          newStack, newAlreadyPlayed, List.from(stacks), links));
       return;
     } else if (newStack.id != 0 && newAlreadyPlayed.id == 0) {
       alreadyPlayed.add(newStack.copyWith(cards: []));
@@ -429,7 +431,70 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
       }
     }
     emit(TurnOrderBodySuccessActionState(
-        newStack, newAlreadyPlayed, List.from(stacks), linksKeys));
+        newStack, newAlreadyPlayed, List.from(stacks), links));
+  }
+
+  _onAddDeleteStack(TurnOrderAddDeleteStackEvent event,
+      Emitter<TurnOrderBodyState> emit) async {
+    print("TOBB _onAddDeleteStack: event.ids == ${event.ids}");
+
+    List<int> localIds = event.ids;
+
+// TODO: Something wrong here, or not
+    for (var i = 0; i < localIds.length; i++) {
+      var forStack = stacks.firstWhere((e) => e.id == localIds[i],
+          orElse: () => const CardsStack.empty());
+      if (forStack.id == 0) {
+        print("TOBB _onAddDeleteStack: forStack.id == 0");
+        forStack = await db.getStackById(localIds[i]);
+        // Don't update cause it will be update in CRUD
+        //data.updateStack(forStack.copyWith(isActive: !forStack.isActive));
+        stacks.add(forStack);
+        alreadyPlayed.add(forStack.copyWith(cards: []));
+        print("TOBB _onAddDeleteStack: ${forStack.name} was added");
+        print("TOBB _onAddDeleteStack: stacks.length == ${stacks.length}");
+        print(
+            "TOBB _onAddDeleteStack: alreadyPlayed.length == ${alreadyPlayed.length}");
+        print("TOBB _onAddDeleteStack: links.length == ${links.length}");
+        // Checing
+        var stackToPrint = await db.getStackById(localIds[i]);
+        print("TOBB _onAddDeleteStack: after data.updateStack "
+            "${stackToPrint.name} == ${stackToPrint.isActive}");
+      } else {
+        print("TOBB _onAddDeleteStack: forStack.id != 0");
+        var apIndex =
+            alreadyPlayed.indexWhere((element) => element.id == localIds[i]);
+        var stacksIndex = stacks.indexWhere((e) => e.id == localIds[i]);
+        print(
+            "TOBB _onAddDeleteStack: ${stacks[localIds[i]].name} will be deleted");
+        alreadyPlayed.removeAt(apIndex);
+        stacks.removeAt(stacksIndex);
+        if (links.containsValue(localIds[i])) {
+          print(
+              "TOBB _onAddDeleteStack: links.length Before == ${links.length}");
+          links.removeWhere((key, value) => value == localIds[i]);
+          print(
+              "TOBB _onAddDeleteStack: links.length After == ${links.length}");
+        }
+
+        print("TOBB _onAddDeleteStack: stacks.length == ${stacks.length}");
+        print(
+            "TOBB _onAddDeleteStack: alreadyPlayed.length == ${alreadyPlayed.length}");
+        print("TOBB _onAddDeleteStack: links.length == ${links.length}");
+      }
+    }
+    //data.setStacks(stacks);
+
+    print("TOBB _onAddDeleteStack: stacks.length == ${stacks.length}");
+    print(
+        "TOBB _onAddDeleteStack: alreadyPlayed.length == ${alreadyPlayed.length}");
+    print("TOBB _onAddDeleteStack: alreadyPlayed == $alreadyPlayed");
+
+    emit(TurnOrderBodySuccessActionState(
+        stacks.first,
+        alreadyPlayed.firstWhere((e) => e.id == stacks.first.id),
+        stacks,
+        links));
   }
 
   // void _onClearStack(TurnOrderBodyClearStackEvent event,

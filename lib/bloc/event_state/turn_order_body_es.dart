@@ -80,6 +80,15 @@ class TurnOrderBodyDiscardEvent extends TurnOrderBodyEvent {
   List<Object> get props => [name, list, isDiscard, stackId];
 }
 
+class TurnOrderAddDeleteStackEvent extends TurnOrderBodyEvent {
+  final List<int> ids;
+
+  const TurnOrderAddDeleteStackEvent(this.ids);
+
+  @override
+  List<Object> get props => [ids];
+}
+
 // States
 class TurnOrderBodyState extends Equatable {
   const TurnOrderBodyState();
@@ -92,13 +101,13 @@ class TurnOrderBodySuccessActionState extends TurnOrderBodyState {
   final CardsStack stack;
   final CardsStack alreadyPlayed;
   final List<CardsStack> allStacks;
-  final List<String> links;
+  final Map<String, int> links;
 
   const TurnOrderBodySuccessActionState(
       [this.stack = const CardsStack.empty(),
       this.alreadyPlayed = const CardsStack.empty(),
       this.allStacks = const [],
-      this.links = const []]);
+      this.links = const {}]);
 
   @override
   List<Object> get props => [stack, alreadyPlayed, allStacks, links];

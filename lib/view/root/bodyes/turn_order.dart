@@ -52,7 +52,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
       late CardsStack stack;
       late CardsStack alreadyPlayed;
       late List<CardsStack> allStacks;
-      late List<String> linkKeys;
+      late Map<String, int> links;
 
       var clickCounter = 0;
 
@@ -60,8 +60,8 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
         stack = state.stack;
         alreadyPlayed = state.alreadyPlayed;
         allStacks = state.allStacks;
-        linkKeys = state.links;
-        print("allStacks == $allStacks");
+        links = state.links;
+        //print("TurnOrderBody: allStacks == $allStacks");
       } else {
         stack = const CardsStack.empty();
         alreadyPlayed = const CardsStack.empty();
@@ -155,8 +155,16 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                     margin: EdgeInsets.fromLTRB(
                                         2, 0, 2, lbHeight / 5),
                                   ),
-                                  // TODO: add Functions to onTap and onLongPress, to this card and cards in the already played list
-                                  onTap: () {},
+                                  onTap: () {
+                                    if (alreadyPlayed.cards.isNotEmpty &&
+                                        links.keys.contains(
+                                            alreadyPlayed.cards.first.name)) {
+                                      context.read<TurnOrderBodyBloc>().add(
+                                          TurnOrderBodyChangeActiveStackEvent(
+                                              links[alreadyPlayed
+                                                  .cards.first.name]!));
+                                    }
+                                  },
                                   onLongPress: () {
                                     if (alreadyPlayed.cards.isNotEmpty) {
                                       _dialogShuffleLink(
@@ -210,12 +218,17 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                         onTap: () {
                                           print(
                                               "Already played card tapped: ${alreadyPlayed.cards[index].name}");
+                                          if (links.keys.contains(text)) {
+                                            context.read<TurnOrderBodyBloc>().add(
+                                                TurnOrderBodyChangeActiveStackEvent(
+                                                    links[text]!));
+                                          }
+
                                           // TODO: move to linked Stack, if it is linked, or show dialog to chose the Stack to link it
                                         },
                                         onLongPress: () {
                                           print(
                                               "Already played card long pressed: ${alreadyPlayed.cards[index].name}");
-                                          // TODO: show dialog with options: Shufle in stack, Put on top of stack, Put on bottom of stack, Link card to stack
                                           _dialogShuffleLink(
                                               stack.id,
                                               alreadyPlayed.cards[index].name,
@@ -319,7 +332,6 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                               ),
                             ),
                             onTap: () {
-                              print("Main object tapped");
                               if (stack.cards.isEmpty) {
                                 context
                                     .read<TurnOrderBodyBloc>()
@@ -332,7 +344,6 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                               _lastPlayedController?.forward(from: 0);
                             },
                             onLongPress: () {
-                              //print("Main object long pressed");
                               if (stack.cards.isNotEmpty) {
                                 showDialog(
                                   context: context,

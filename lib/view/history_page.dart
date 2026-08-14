@@ -62,7 +62,7 @@ class HistoryPage extends StatelessWidget {
         }
 
         listRows() {
-          print("HistoryPage _listRows $rows");
+          //print("HistoryPage _listRows $rows");
           for (int i = 0; i < rows.length; i++) {
             rows[i].insert(0, "Turn ${i + 1}");
           }

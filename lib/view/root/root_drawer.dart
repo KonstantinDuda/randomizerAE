@@ -1,7 +1,9 @@
+import 'package:card_randomizer/bloc/event_state/turn_order_body_es.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc/crud_stack_bloc.dart';
+import '/bloc/turn_order_body_bloc.dart';
 import '../../bloc/event_state/crud_stack_es.dart';
 import '../../bloc/providers/provider_bloc.dart';
 import '../../database/cards_stack.dart';
@@ -103,22 +105,10 @@ class _RootDrawerState extends State<RootDrawer> {
                 context
                     .read<CRUDStackBloc>()
                     .add(CRUDStackUpdateAvailableListEvent(idList));
+                context
+                    .read<TurnOrderBodyBloc>()
+                    .add(TurnOrderAddDeleteStackEvent(idList));
 
-                for (var i = 0; i < stacks.length; i++) {
-                  if (stacks[i].stackType == StackType.friend ||
-                      stacks[i].stackType == StackType.foe) {
-                    for (var j = 0; j < idList.length; j++) {
-                      if (stacks[i].id == idList[j] &&
-                          stacks[i].isActive == false) {
-                        print(
-                            "RootDrawer stack ${stacks[i].name} send to FriendFoeChangeActiveStackEvent with stacks[i].id ${stacks[i].id} \n");
-                        // context
-                        //     .read<FriendFoeBodyBloc>()
-                        //     .add(FriendFoeChangeActiveStackEvent(stacks[i].id));
-                      }
-                    }
-                  }
-                }
                 context.read<CRUDStackBloc>().add(CRUDStackInitialEvent());
                 context.read<ProviderBloc>().add(LoadingEvent());
                 Navigator.pop(context);
