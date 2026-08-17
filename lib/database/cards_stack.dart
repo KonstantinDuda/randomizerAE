@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:card_randomizer/database/db_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'default_data.dart';
@@ -134,7 +133,6 @@ class CardsStack {
     var ids = json["cards"];
     final List<int> parsedCardIds =
         ids is String ? List<int>.from(jsonDecode(ids)) : List<int>.from(ids);
-    print("CardsStack fromJson: parsedCardsIds == $parsedCardIds");
 
     var db = DefaultData();
     var cards = db.getCardsById(parsedCardIds);
