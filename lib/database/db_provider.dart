@@ -140,7 +140,7 @@ class DBProvider {
         await db.query(stackTableName, where: "id = ?", whereArgs: [id]);
     if (maps.isNotEmpty) {
       var newRes = await _pullCardsToStack(maps);
-
+      print("DBProvider getStackById: newRes == $newRes");
       return newRes.first; // CardsStack.fromJson(maps.first);
     } else {
       return const CardsStack.empty();
@@ -198,7 +198,7 @@ class DBProvider {
     List<CardsStack> cs = [];
     if (maps.isNotEmpty) {
       for (var element in maps) {
-        //print("DBProvider _pullCardsToStack element == $element");
+        print("DBProvider _pullCardsToStack element == $element");
         cs.add(CardsStack.fromJson(element));
       }
     }

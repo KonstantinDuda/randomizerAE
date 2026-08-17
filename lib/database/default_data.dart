@@ -34,21 +34,24 @@ class DefaultData {
     }
   }
 
-  getCardsById(List<int> ids) {
+  List<AECard> getCardsById(List<int> ids) {
     List<AECard> result = [];
+    print("DefData getCardById: cards.length == ${_cards.length}");
     for (var id in ids) {
-      var card = _cards.firstWhere((card) => card.id == id,
+      print("DefData getCardById: id in for == $id");
+      var card = _cards.firstWhere((element) => element.id == id,
           orElse: () => AECard(id: 0, name: '', text: ''));
       if (card.id != 0) {
         result.add(card);
       }
     }
+    print("DefData getCardById: result == $result");
     return result;
   }
 
-  setCards(List<AECard> newCards) {
-    _cards = newCards;
-  }
+  // setCards(List<AECard> newCards) {
+  //   _cards = newCards;
+  // }
 
   newCard(AECard card) {
     _cards.add(card);
@@ -116,11 +119,12 @@ class DefaultData {
   }
 
   Future<CardsStack> getStack(int id) async {
-    var stack = _stacks.firstWhere(((e) => e.id == id),
-        orElse: () => const CardsStack.empty());
-    if (stack.id == 0) {
-      stack = await _db.getStackById(id);
-    }
+    // var stack = _stacks.firstWhere(((e) => e.id == id),
+    //     orElse: () => const CardsStack.empty());
+    // if (stack.id == 0) {
+    var stack = await _db.getStackById(id);
+    // }
+    print("DD getStack: stack == $stack");
     return stack;
   }
 
@@ -205,6 +209,8 @@ class DefaultData {
       var toCards =
           (jsonCards['cards'] as List).map((e) => AECard.fromMap(e)).toList();
       _cards.addAll(toCards);
+      print(
+          "DefData createDD: _cards.length == ${_cards.length} after TOCards generate");
 
       final String responseFfCards = await rootBundle.loadString(
         'assets/json/ff_cards.json',
@@ -219,8 +225,11 @@ class DefaultData {
       for (var element in _cards) {
         _db.createCard(element);
       }
-      var cardsLength = await _db.getAllCards().then((value) => value.length);
-      print("cardsLength: $cardsLength");
+      print(
+          "DefData createDD: _cards.length == ${_cards.length} after fFCards generate");
+
+      var cardsLength = await _db.getAllCards();
+      print("DefData createDD: cardsLength == $cardsLength from _db");
     } else {
       print("default_data. firstRunCards.isNotEmpty");
       _cards = firstRunCards;

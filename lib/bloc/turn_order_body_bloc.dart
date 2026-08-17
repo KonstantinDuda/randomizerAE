@@ -341,12 +341,15 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
   void _onShuffle(
       TurnOrderBodyShuffleEvent event, Emitter<TurnOrderBodyState> emit) async {
     print("TOBB _onShuffle: event.stackId == ${event.stackId}");
-    var curentStack =
-        await data.getStack(event.stackId); // .getStackById(event.stackId);
+    var curentStack = await db.getStackById(event.stackId);
+    List<AECard> cards = [];
     if (curentStack.id != 0) {
-      var cards = curentStack.cards;
+      print("TOBB _onShuffle: curentStack.id != 0");
+      cards = curentStack.cards;
       cards.shuffle();
+      print("TOBB _onShuffle: cards == $cards");
       curentStack = curentStack.copyWith(cards: cards);
+      print("TOBB _onShuffle: curentStack == $curentStack");
     }
     var curentAP = curentStack.copyWith(cards: []);
 
@@ -559,7 +562,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     print("TOBB _onAddDeleteStack: alreadyPlayed == $alreadyPlayed");
 
     emit(TurnOrderBodySuccessActionState(
-        stacks.first,
+        stacks.isNotEmpty ? stacks.first : const CardsStack.empty(),
         alreadyPlayed.firstWhere((e) => e.id == stacks.first.id),
         stacks,
         links));
@@ -598,7 +601,9 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
   _saveStacksAndAP(int stackId, List<AECard> stackCards, List<AECard> apCards) {
     var stackIndex = stacks.indexWhere((element) => element.id == stackId);
+    print("TOBB _saveStacksAndAP: stackIndex == $stackIndex");
     stacks[stackIndex] = stacks[stackIndex].copyWith(cards: stackCards);
+    print("TOBB _saveStacksAndAP: stack == ${stacks[stackIndex]}");
     var apIndex = alreadyPlayed.indexWhere((element) => element.id == stackId);
     alreadyPlayed[apIndex] = alreadyPlayed[apIndex].copyWith(cards: apCards);
   }
