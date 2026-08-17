@@ -71,6 +71,25 @@ class DefaultData {
     _cards.removeWhere((card) => card.id == id);
   }
 
+  // Friend Foe Cards
+  void addCardsToDB() async {
+    for (var element in _cards) {
+      _db.createCard(element);
+    }
+    // print("DefaultData FriendFoeData addCardsToDB in comment now");
+  }
+
+  addCardToStory(AECard card, bool isNewTurn) {
+    if (isNewTurn) {
+      story.add([card]);
+    } else {
+      var list = story.last;
+      list.add(card);
+      story.removeLast();
+      story.add(list);
+    }
+  }
+
 // Stacks
   Future<List<CardsStack>> getStacks() async {
     if (_stacks.isNotEmpty) {
@@ -79,6 +98,30 @@ class DefaultData {
       _stacks = await _db.getAllStacks();
       return _stacks;
     }
+  }
+
+  Future<List<CardsStack>> getAvailableStacks() async {
+    List<CardsStack> aStacks = [];
+    if (_stacks.isNotEmpty) {
+      _stacks.map((e) {
+        if (e.isActive) {
+          aStacks.add(e);
+        }
+      });
+    } else {
+      _stacks = await _db.getAllStacks();
+      aStacks = await _db.getAvailableStacks();
+    }
+    return aStacks;
+  }
+
+  Future<CardsStack> getStack(int id) async {
+    var stack = _stacks.firstWhere(((e) => e.id == id),
+        orElse: () => const CardsStack.empty());
+    if (stack.id == 0) {
+      stack = await _db.getStackById(id);
+    }
+    return stack;
   }
 
   newStack(CardsStack stack) async {
@@ -176,7 +219,7 @@ class DefaultData {
       for (var element in _cards) {
         _db.createCard(element);
       }
-      var cardsLength = _db.getAllCards().then((value) => value.length);
+      var cardsLength = await _db.getAllCards().then((value) => value.length);
       print("cardsLength: $cardsLength");
     } else {
       print("default_data. firstRunCards.isNotEmpty");
@@ -208,37 +251,9 @@ class DefaultData {
       for (var element in _stacks) {
         _db.createStack(element);
       }
-
-      // var stacksLength = _db.getAllStacks().then((value) => value.length);
-      print("default_data. createDD: _stacks.length: ${_stacks.length}");
-
-      // createTurnOrderData();
-      // createCards();
-
-      //createFriendFoeHeroes();
-      //createStacks();
     } else {
       print("default_data. firstRunStacks.isNotEmpty");
       _stacks = firstRunStacks;
-    }
-  }
-
-// Friend Foe Cards
-  void addCardsToDB() async {
-    for (var element in _cards) {
-      _db.createCard(element);
-    }
-    // print("DefaultData FriendFoeData addCardsToDB in comment now");
-  }
-
-  addCardToStory(AECard card, bool isNewTurn) {
-    if (isNewTurn) {
-      story.add([card]);
-    } else {
-      var list = story.last;
-      list.add(card);
-      story.removeLast();
-      story.add(list);
     }
   }
 }

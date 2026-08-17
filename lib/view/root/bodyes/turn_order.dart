@@ -53,6 +53,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
       late CardsStack alreadyPlayed;
       late List<CardsStack> allStacks;
       late Map<String, int> links;
+      List<String> lokalLinks = [];
 
       var clickCounter = 0;
 
@@ -61,7 +62,12 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
         alreadyPlayed = state.alreadyPlayed;
         allStacks = state.allStacks;
         links = state.links;
-        //print("TurnOrderBody: allStacks == $allStacks");
+        for (var entry in links.entries) {
+          if (entry.key != "Friend" && entry.key != "Foe") {
+            lokalLinks.add(entry.key);
+          }
+        }
+        //print("TurnOrderBody: links == $links");
       } else {
         stack = const CardsStack.empty();
         alreadyPlayed = const CardsStack.empty();
@@ -156,6 +162,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                         2, 0, 2, lbHeight / 5),
                                   ),
                                   onTap: () {
+                                    print("Last played card tapped");
                                     if (alreadyPlayed.cards.isNotEmpty &&
                                         links.keys.contains(
                                             alreadyPlayed.cards.first.name)) {
@@ -175,7 +182,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                   },
                                 ),
                               ),
-                              // Divider. Don't sure I need it
+                              // Divider
                               Container(
                                 margin: EdgeInsets.only(
                                     top: 20, bottom: lbHeight / 3.5),
@@ -223,8 +230,6 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                                 TurnOrderBodyChangeActiveStackEvent(
                                                     links[text]!));
                                           }
-
-                                          // TODO: move to linked Stack, if it is linked, or show dialog to chose the Stack to link it
                                         },
                                         onLongPress: () {
                                           print(
@@ -257,8 +262,47 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                               children: [
                                 // Button List
                                 Expanded(
-                                  child: Container(
-                                    color: Colors.amber,
+                                  child: SizedBox(
+                                    width: lbWidth / 3,
+                                    //color: Colors.amber,
+                                    child: ListView.builder(
+                                        itemCount: lokalLinks.isNotEmpty
+                                            ? lokalLinks.length
+                                            : 0,
+                                        itemBuilder: ((context, index) {
+                                          return GestureDetector(
+                                            child: Container(
+                                              margin: const EdgeInsets.all(2),
+                                              padding: const EdgeInsets.all(5),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  color: Colors.black,
+                                                  width: 2,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: Center(
+                                                  child: Text(
+                                                lokalLinks[index],
+                                                style: const TextStyle(
+                                                    fontSize: 18),
+                                                textAlign: TextAlign.center,
+                                              )),
+                                            ),
+                                            onTap: () {
+                                              if (links.keys.contains(
+                                                  lokalLinks[index])) {
+                                                context
+                                                    .read<TurnOrderBodyBloc>()
+                                                    .add(
+                                                        TurnOrderBodyChangeActiveStackEvent(
+                                                            links[lokalLinks[
+                                                                index]]!));
+                                              }
+                                            },
+                                          );
+                                        })),
                                   ),
                                 ),
                                 // Add button to Button List
