@@ -329,13 +329,19 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                   ),
                                   onTap: () {
                                     print("Add button to List onTap");
-                                    // TODO: if id is 0, show dialog with all stacks names
-                                    // showDialog(
-                                    //   context: context,
-                                    //   builder: (BuildContext context) {
-                                    //     return ChangeSequanceDialog(list: stack.cards);
-                                    //   },
-                                    // );
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return LinkDialog(
+                                          list: allStacks
+                                              .map((e) => e.name)
+                                              .toList(),
+                                          name: stack.name,
+                                          discard: false,
+                                          stackId: stack.id,
+                                        );
+                                      },
+                                    );
                                   },
                                 ),
                               ],

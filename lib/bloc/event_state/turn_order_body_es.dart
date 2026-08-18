@@ -72,12 +72,20 @@ class TurnOrderBodyDiscardEvent extends TurnOrderBodyEvent {
   final String name;
   final List<String> list;
   final bool isDiscard;
-  final int stackId;
+  //final int stackId;
   const TurnOrderBodyDiscardEvent(
-      this.name, this.list, this.isDiscard, this.stackId);
+    this.name,
+    this.list,
+    this.isDiscard,
+    /*this.stackId*/
+  );
 
   @override
-  List<Object> get props => [name, list, isDiscard, stackId];
+  List<Object> get props => [
+        name,
+        list,
+        isDiscard, /*stackId*/
+      ];
 }
 
 class TurnOrderAddDeleteStackEvent extends TurnOrderBodyEvent {

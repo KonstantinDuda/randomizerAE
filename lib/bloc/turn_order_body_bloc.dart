@@ -259,28 +259,31 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
   _onDiscard(
       TurnOrderBodyDiscardEvent event, Emitter<TurnOrderBodyState> emit) {
-    print("TurnOrderBodyBloc _onDiscard event.name == ${event.name} \n");
-    print("TurnOrderBodyBloc _onDiscard event.list == ${event.list} \n");
+    print(
+        "TurnOrderBodyBloc _onDiscard card or stack name from where it colled== ${event.name} \n");
+    print(
+        "TurnOrderBodyBloc _onDiscard link or dickard names list == ${event.list} \n");
     print(
         "TurnOrderBodyBloc _onDiscard event.isDiscard == ${event.isDiscard} \n");
 
-    String link = "";
-    var curentStack = stacks.firstWhere(
-        (element) => element.id == event.stackId,
+    // String link = "";
+    var curentStack = stacks.firstWhere((element) => element.name == event.name,
         orElse: () => const CardsStack.empty());
     var newAlreadyPlayed = alreadyPlayed.firstWhere(
-      (element) => element.id == event.stackId,
+      //(element) => element.id == event.stackId,
+      (element) => element.id == curentStack.id,
       orElse: () => const CardsStack.empty(),
     );
-    if (curentStack.id == 0) {
-      for (var entry in links.entries) {
-        if (entry.key == event.name) {
-          link = entry.key;
-        }
-      }
-      // link = linksKeys.firstWhere((element) => element == event.name,
-      //     orElse: () => "");
-    }
+    // if (curentStack.id == 0) {
+    //   for (var entry in links.entries) {
+    //     if (entry.key == event.name) {
+    //       link = entry.key;
+    //     }
+    //   }
+    //   // link = linksKeys.firstWhere((element) => element == event.name,
+    //   //     orElse: () => "");
+    // }
+    String link = event.name;
 
     if (event.isDiscard) {
       List<AECard> newAlreadyCards = [];
@@ -316,20 +319,50 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
         newAlreadyPlayed = alreadyPlayed.last;
       }
     } else {
-      var idToLink =
-          stacks.firstWhere((element) => element.name == event.list.first).id;
-      if (link != "") {
-        links[link] = idToLink;
-      } else {
-        links.addAll({event.name: idToLink});
+      // var idToLink =
+      //     stacks.firstWhere((element) => element.name == event.list.first).id;
+      // if (link != "") {
+      //   links[link] = idToLink;
+      // } else {
+      //   links.addAll({event.name: idToLink});
+      // }
+      linksCreating(List<String> names) {
+        for (var name in names) {
+          var id = stacks
+              .firstWhere((e) => e.name == name,
+                  orElse: () => const CardsStack.empty())
+              .id;
+          if (id != 0) {
+            links[name] = id;
+          }
+        }
       }
+
+      print("TOBB _onDiscard: discard == false. stacks.names == ${event.list}");
+      if (link != curentStack.name && event.list.isNotEmpty) {
+        var id = stacks.firstWhere((e) => e.name == event.list.first).id;
+        links[link] = id;
+        print(
+            "TOBB _onDiscard: discard == false. The ${links[link]} was created");
+        if (event.list.length > 1) {
+          var list = event.list;
+          list.removeAt(0);
+          linksCreating(list);
+        }
+      } else {
+        linksCreating(event.list);
+        print("TOBB _onDiscard: discard == false. $links was created");
+      }
+
       print("_onDiscard isDiscard == false: links == $links");
     }
 
-    // Here you can implement the logic for linking or discarding based on the event data
-    // For example, you might want to update the stack or alreadyPlayed based on the event
-
-    // After processing, emit a new state if necessary
+    if (curentStack.id == 0) {
+      curentStack =
+          stacks.firstWhere((e) => e.stackType == StackType.turnOrder);
+      newAlreadyPlayed =
+          alreadyPlayed.firstWhere((e) => e.id == curentStack.id);
+    }
 
     emit(TurnOrderBodySuccessActionState(
         curentStack.copyWith(cards: curentStack.cards),

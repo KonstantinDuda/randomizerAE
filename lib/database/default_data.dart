@@ -36,16 +36,16 @@ class DefaultData {
 
   List<AECard> getCardsById(List<int> ids) {
     List<AECard> result = [];
-    print("DefData getCardById: cards.length == ${_cards.length}");
+    //print("DefData getCardsById: cards.length == ${_cards.length}");
     for (var id in ids) {
-      print("DefData getCardById: id in for == $id");
+      //print("DefData getCardsById: id in for == $id");
       var card = _cards.firstWhere((element) => element.id == id,
           orElse: () => AECard(id: 0, name: '', text: ''));
       if (card.id != 0) {
         result.add(card);
       }
     }
-    print("DefData getCardById: result == $result");
+    //print("DefData getCardById: result == $result");
     return result;
   }
 
