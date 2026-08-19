@@ -43,7 +43,7 @@
         {   
             "id": 5,
             "name": "TO 3",
-            "is_standart": 1,
+            "is_standart": 0,
             "stack_type": "StackType.turnOrder",
             "stack_color": 4294967295,
             "cards": [1, 2, 3, 5, 6, 6, 8, 9],
@@ -70,10 +70,64 @@
         {   
             "id": 8,
             "name": "AK 3",
-            "is_standart": 1,
+            "is_standart": 0,
             "stack_type": "StackType.turnOrder",
             "stack_color": 4278190080,
             "cards": [1, 2, 3, 5, 6, 6],
+            "description": ""
+        },
+        {   
+            "id": 23,
+            "name": "TO 3 Bone and Myth",
+            "is_standart": 0,
+            "stack_type": "StackType.turnOrder",
+            "stack_color": 4294967295,
+            "cards": [1, 2, 3, 5, 8, 9, 84, 85],
+            "description": ""
+        },
+        {   
+            "id": 24,
+            "name": "TO 3 Bone and Myth without friend",
+            "is_standart": 0,
+            "stack_type": "StackType.turnOrder",
+            "stack_color": 4294967295,
+            "cards": [1, 2, 3, 5, 9, 84, 85],
+            "description": ""
+        },
+        {   
+            "id": 25,
+            "name": "AK 3 Continua",
+            "is_standart": 0,
+            "stack_type": "StackType.turnOrder",
+            "stack_color": 4278190080,
+            "cards": [1, 2, 3, 5, 6, 6, 10],
+            "description": ""
+        },
+        {   
+            "id": 26,
+            "name": "AK 3 Bliz",
+            "is_standart": 0,
+            "stack_type": "StackType.turnOrder",
+            "stack_color": 4278190080,
+            "cards": [1, 2, 3, 5, 6, 7],
+            "description": ""
+        },
+        {   
+            "id": 27,
+            "name": "TO 3 Bliz without friend",
+            "is_standart": 0,
+            "stack_type": "StackType.turnOrder",
+            "stack_color": 4288585374,
+            "cards": [1, 2, 3, 5, 6, 7, 9],
+            "description": ""
+        },
+        {   
+            "id": 28,
+            "name": "Tyrans",
+            "is_standart": 0,
+            "stack_type": "StackType.turnOrder",
+            "stack_color": 4283215696,
+            "cards": [86, 87, 88, 89, 90 ,91],
             "description": ""
         }
     ]

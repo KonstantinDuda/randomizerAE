@@ -49,6 +49,46 @@
             "id": 10,
             "name": "Nemesis specific card",
             "text": ""
+        },
+        {
+            "id": 84,
+            "name": "Myth",
+            "text": ""
+        },
+        {
+            "id": 85,
+            "name": "Bone",
+            "text": ""
+        },
+        {
+            "id": 86,
+            "name": "Quaggoth",
+            "text": ""
+        },
+        {
+            "id": 87,
+            "name": "Undead",
+            "text": ""
+        },
+        {
+            "id": 88,
+            "name": "Elemental",
+            "text": ""
+        },
+        {
+            "id": 89,
+            "name": "Illithid",
+            "text": ""
+        },
+        {
+            "id": 90,
+            "name": "Drow",
+            "text": ""
+        },
+        {
+            "id": 91,
+            "name": "Dragon",
+            "text": ""
         }
   ]
 }

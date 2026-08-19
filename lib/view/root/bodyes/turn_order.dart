@@ -144,7 +144,9 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                           ),
                           child: Row(
                             children: [
+                              //
                               // Last played Card
+                              //
                               FadeTransition(
                                 opacity: _lastPlayedOpacity ??
                                     const AlwaysStoppedAnimation(1.0),
@@ -182,14 +184,18 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                   },
                                 ),
                               ),
+                              //
                               // Divider
+                              //
                               Container(
                                 margin: EdgeInsets.only(
                                     top: 20, bottom: lbHeight / 3.5),
                                 width: 1.5,
                                 color: Colors.black,
                               ),
+                              //
                               // Already played List
+                              //
                               Expanded(
                                 child: Container(
                                   margin:
@@ -250,6 +256,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                           ),
                         ),
 
+                        //
                         // Fast Links
                         Positioned(
                           bottom: 2,
@@ -305,6 +312,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                         })),
                                   ),
                                 ),
+                                //
                                 // Add button to Button List
                                 GestureDetector(
                                   child: Container(
