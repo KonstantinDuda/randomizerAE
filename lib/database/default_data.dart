@@ -1,22 +1,16 @@
 import 'dart:convert';
 
-//import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'cards_stack.dart';
-//import 'cards_stack_db.dart';
-//import 'cards_stack_db.dart';
 import 'db_provider.dart';
 
 class DefaultData {
   final _db = DBProvider();
   List<AECard> _cards = [];
   List<CardsStack> _stacks = [];
-  //List<HeroStack> friendFoeList = [];
 
-  //List<AECard> _ffCards = [];
-
-  List<List<AECard>> story = [];
+  Map<int, List<List<AECard>>> story = {};
 
   static final DefaultData _dbProvider = DefaultData._();
   DefaultData._();
@@ -82,14 +76,41 @@ class DefaultData {
     // print("DefaultData FriendFoeData addCardsToDB in comment now");
   }
 
-  addCardToStory(AECard card, bool isNewTurn) {
-    if (isNewTurn) {
-      story.add([card]);
-    } else {
-      var list = story.last;
+// History
+  addCardToStory(int stackId, AECard card, bool isNewTurn) {
+    if (isNewTurn && story.containsKey(stackId)) {
+      story[stackId]!.add([card]);
+      //story.add([card]);
+    } else if (isNewTurn) {
+      // story.containsKey(stackId) == false
+      story[stackId] = [];
+      story[stackId]!.add([card]);
+    } else if (isNewTurn == false && story.containsKey(stackId)) {
+      var list = story[stackId]!.last;
       list.add(card);
-      story.removeLast();
-      story.add(list);
+      story[stackId]!.removeLast();
+      story[stackId]!.add(list);
+      // var list = story.last;
+      // list.add(card);
+      // story.removeLast();
+      // story.add(list);
+    } else {
+      print(
+          "DD addCardToStory: story.containsKey(stackId) == false && isNewTurn == false");
+    }
+  }
+
+  List<List<AECard>> getStory(int stackId) {
+    List<List<AECard>> result = [];
+    if (story.containsKey(stackId)) {
+      result = story[stackId]!;
+    }
+    return result;
+  }
+
+  clearHistory(int stackId) {
+    if (story.containsKey(stackId)) {
+      story[stackId]!.clear();
     }
   }
 

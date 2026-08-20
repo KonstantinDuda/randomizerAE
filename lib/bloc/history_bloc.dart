@@ -11,7 +11,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   List<String> columns = [];
   //int turns = 0;
 
-  HistoryBloc() : super(const HistorySuccessState()) {
+  HistoryBloc() : super(const HistorySuccessState(0)) {
     on<HistoryGetEvent>(_getHistory);
     on<HistoryGetCardEvent>(_getCardHistory);
     on<HistoryClearEvent>(_clearHistory);
@@ -21,8 +21,9 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     print("HistoryBloc getHistory");
 
     try {
-      var allData = defaultData.story;
+      //var allData = defaultData.story;
       //print("HistoryBloc _getHistory: allData == $allData.");
+      var allData = defaultData.getStory(event.stackId);
 
       List<List<String>> storyToReturn = [];
       List<String> columnsToReturn = [];
@@ -30,7 +31,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
 
       if (allData.isEmpty) {
         print("HistoryBloc _getHistory: allData is empty.");
-        emit(const HistorySuccessState([], []));
+        emit(HistorySuccessState(event.stackId, [], []));
         return;
       } else {
         List<String> turnList = [];
@@ -40,10 +41,10 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
           }
           if (allData[i].length > maxLength) {
             maxLength = allData[i].length;
-            List<AECard> sortedCards = allData[i];
+            //List<AECard> sortedCards = allData[i];
             List<AECard> beforeSortedCards = allData[i];
-            sortedCards.sort((a, b) => a.name.compareTo(b.name));
-            columnsToReturn = sortedCards.map((e) => e.name).toList();
+            //sortedCards.sort((a, b) => a.name.compareTo(b.name));
+            columnsToReturn = beforeSortedCards.map((e) => e.name).toList();
             allData.removeAt(i);
             allData.insert(i, beforeSortedCards);
           }
@@ -62,7 +63,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       story = storyToReturn;
       columns = columnsToReturn;
 
-      emit(HistorySuccessState(columnsToReturn, storyToReturn));
+      emit(HistorySuccessState(event.stackId, columnsToReturn, storyToReturn));
     } catch (e) {
       print("HistoryBloc getHistory error: $e");
       emit(HistoryErrorState(e.toString()));
@@ -78,10 +79,10 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       HistoryClearEvent event, Emitter<HistoryState> emit) async {
     print("HistoryBloc clearHistory");
 
-    defaultData.story.clear();
+    defaultData.clearHistory(event.stackId);
     story.clear();
     columns.clear();
 
-    emit(const HistorySuccessState([], []));
+    emit(const HistorySuccessState(0, [], []));
   }
 }

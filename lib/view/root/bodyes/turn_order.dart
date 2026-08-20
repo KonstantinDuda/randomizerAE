@@ -495,7 +495,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                             onTap: () {
                               context
                                   .read<HistoryBloc>()
-                                  .add(HistoryGetEvent());
+                                  .add(HistoryGetEvent(stack.id));
                               context
                                   .read<ProviderBloc>()
                                   .add(HistoryProviderEvent());

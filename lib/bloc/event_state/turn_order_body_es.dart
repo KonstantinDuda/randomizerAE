@@ -97,6 +97,15 @@ class TurnOrderAddDeleteStackEvent extends TurnOrderBodyEvent {
   List<Object> get props => [ids];
 }
 
+class TurnOrderBodyClearStackHistoryEvent extends TurnOrderBodyEvent {
+  final int stackId;
+
+  const TurnOrderBodyClearStackHistoryEvent(this.stackId);
+
+  @override
+  List<Object> get props => [stackId];
+}
+
 // States
 class TurnOrderBodyState extends Equatable {
   const TurnOrderBodyState();

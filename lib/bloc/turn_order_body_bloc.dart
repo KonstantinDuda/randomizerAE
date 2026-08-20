@@ -25,6 +25,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     on<TurnOrderBodyChangeSequenceEvent>(_onChangeSequence);
     on<TurnOrderBodyChangeActiveStackEvent>(_onChangeActiveStack);
     on<TurnOrderAddDeleteStackEvent>(_onAddDeleteStack);
+    on<TurnOrderBodyClearStackHistoryEvent>(_onClearStack);
   }
 
   void _onInit(
@@ -221,9 +222,11 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
       // Creating story to statistic
       if (newAlreadyPlayed.cards.length > 1) {
-        data.addCardToStory(newAlreadyPlayed.cards.first, false);
+        data.addCardToStory(
+            newAlreadyPlayed.id, newAlreadyPlayed.cards.first, false);
       } else {
-        data.addCardToStory(newAlreadyPlayed.cards.first, true);
+        data.addCardToStory(
+            newAlreadyPlayed.id, newAlreadyPlayed.cards.first, true);
       }
     }
 
@@ -235,11 +238,6 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
         curentStackIsNew = false;
         break;
       }
-      // if (alreadyPlayed[i].id == curentStack.id) {
-      //   alreadyPlayed[i] = curentStack;
-      //   alreadyPlayedIsNew = false;
-      //   break;
-      // }
     }
     if (curentStackIsNew) {
       stacks.add(curentStack);
@@ -247,12 +245,6 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
           "TOBB _onNext $curentStackIsNew is new. alreadyPlayed will be added");
       alreadyPlayed.add(curentStack.copyWith(cards: []));
     }
-//var apNew = alreadyPlayed.firstWhere((e) => e.id == curentStack.id, orElse: () => const CardsStack.empty());
-    // if (alreadyPlayedIsNew) {
-    //   print(
-    //       "TOBB _onNext alreadyPlayedIsNew. $alreadyPlayedIsNew will be added");
-    //   alreadyPlayed.add(newAlreadyPlayed);
-    // }
 
     emit(TurnOrderBodySuccessActionState(
         curentStack.copyWith(cards: curentStack.cards),
@@ -607,36 +599,36 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
         links));
   }
 
-  // void _onClearStack(TurnOrderBodyClearStackEvent event,
-  //     Emitter<TurnOrderBodyState> emit) async {
-  //   var curentStack = stacks.firstWhere((element) => element.id == event.id,
-  //       orElse: () => const CardsStack.empty());
-  //   var curentAP = alreadyPlayed.firstWhere((element) => element.id == event.id,
-  //       orElse: () => const CardsStack.empty());
+  void _onClearStack(TurnOrderBodyClearStackHistoryEvent event,
+      Emitter<TurnOrderBodyState> emit) async {
+    var curentStack = stacks.firstWhere(
+        (element) => element.id == event.stackId,
+        orElse: () => const CardsStack.empty());
+    var curentAP = alreadyPlayed.firstWhere(
+        (element) => element.id == event.stackId,
+        orElse: () => const CardsStack.empty());
 
-  //   if (curentStack.id != 0) {
-  //     curentStack = curentStack.copyWith(cards: []);
-  //     for (var i = 0; i < stacks.length; i++) {
-  //       if (stacks[i].id == event.id) {
-  //         stacks[i] = curentStack;
-  //         break;
-  //       }
-  //     }
-  //   }
-  //   if (curentAP.id != 0) {
-  //     curentAP = curentAP.copyWith(cards: []);
-  //     for (var i = 0; i < alreadyPlayed.length; i++) {
-  //       if (alreadyPlayed[i].id == event.id) {
-  //         alreadyPlayed[i] = curentAP;
-  //         break;
-  //       }
-  //     }
-  //   }
+    if (curentStack.id != 0) {
+      curentStack = curentStack.copyWith(cards: []);
+      for (var i = 0; i < stacks.length; i++) {
+        if (stacks[i].id == event.stackId) {
+          stacks[i] = curentStack;
+          break;
+        }
+      }
+    }
+    if (curentAP.id != 0) {
+      curentAP = curentAP.copyWith(cards: []);
+      for (var i = 0; i < alreadyPlayed.length; i++) {
+        if (alreadyPlayed[i].id == event.stackId) {
+          alreadyPlayed[i] = curentAP;
+          break;
+        }
+      }
+    }
 
-  //   emit(TurnOrderBodySuccessActionState(curentStack,
-  //       curentAP)); // Is here need to be  curentAP.copyWith(cards: curentAP.cards) or just curentAP.copyWith()?
-  //   // I think it is the same, but need to check
-  // }
+    emit(TurnOrderBodySuccessActionState(curentStack, curentAP, stacks, links));
+  }
 
   _saveStacksAndAP(int stackId, List<AECard> stackCards, List<AECard> apCards) {
     var stackIndex = stacks.indexWhere((element) => element.id == stackId);

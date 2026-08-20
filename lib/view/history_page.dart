@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/event_state/history_es.dart';
+import '../bloc/event_state/turn_order_body_es.dart';
 import '../bloc/providers/provider_bloc.dart';
 import '../bloc/history_bloc.dart';
+import '../bloc/turn_order_body_bloc.dart';
 
 class HistoryPage extends StatelessWidget {
   const HistoryPage({super.key});
@@ -16,12 +18,14 @@ class HistoryPage extends StatelessWidget {
         //int stepCount = 0;
         List<List<String>> rows = [];
         String text = "";
+        int stackId = 0;
 
         List<DataColumn> columnWidgets = [];
         List<DataRow> rowWidgets = [];
 
         if (state is HistorySuccessState) {
           //text = state.story;
+          stackId = state.stackId;
           if (state.columns.isNotEmpty) {
             columns = state.columns;
           }
@@ -112,7 +116,7 @@ class HistoryPage extends StatelessWidget {
             ),
             body: const Center(
               child: Text(
-                'This is the History Page. \n History is Epmty now.',
+                'This is the History Page. \n History is Empty now.',
               ),
             ),
           );
@@ -145,10 +149,10 @@ class HistoryPage extends StatelessWidget {
               onPressed: () {
                 columns.clear();
                 rows.clear();
-                context.read<HistoryBloc>().add(HistoryClearEvent());
-                // context
-                //     .read<TurnOrderBodyBloc>()
-                //     .add(TurnOrderBodyClearStackEvent()); // TODO: This need to know stack id
+                context.read<HistoryBloc>().add(HistoryClearEvent(stackId));
+                context
+                    .read<TurnOrderBodyBloc>()
+                    .add(TurnOrderBodyClearStackHistoryEvent(stackId));
                 context.read<ProviderBloc>().add(RootEvent());
               },
               style: ElevatedButton.styleFrom(
