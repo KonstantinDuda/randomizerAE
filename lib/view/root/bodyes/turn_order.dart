@@ -178,7 +178,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                     if (alreadyPlayed.cards.isNotEmpty) {
                                       _dialogShuffleLink(
                                           stack.id,
-                                          alreadyPlayed.cards.first.name,
+                                          alreadyPlayed.cards.first /*.name*/,
                                           allStacks);
                                     }
                                   },
@@ -242,7 +242,8 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                               "Already played card long pressed: ${alreadyPlayed.cards[index].name}");
                                           _dialogShuffleLink(
                                               stack.id,
-                                              alreadyPlayed.cards[index].name,
+                                              alreadyPlayed
+                                                  .cards[index] /*.name*/,
                                               allStacks);
                                         },
                                       );
@@ -591,11 +592,11 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
     });
   }
 
-  _dialogShuffleLink(int stackId, String text, List<CardsStack> stacks) async {
+  _dialogShuffleLink(int stackId, AECard card, List<CardsStack> stacks) async {
     String collback = await showDialog(
       context: context,
       builder: (BuildContext context) {
-        return ShufflePutBackDialog(stackId, text);
+        return ShufflePutBackDialog(stackId, card);
       },
     );
     if (!mounted) return;
@@ -606,7 +607,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
         builder: (BuildContext context) {
           return LinkDialog(
             list: stacks.map((e) => e.name).toList(),
-            name: text,
+            name: card.name,
             discard: false,
             stackId: stackId,
           );

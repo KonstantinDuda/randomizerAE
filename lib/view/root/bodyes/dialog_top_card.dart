@@ -1,3 +1,4 @@
+import 'package:card_randomizer/view/root/bodyes/my_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,7 +29,6 @@ class _TopCardDialogState extends State<TopCardDialog> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     newSequance = widget.list;
@@ -40,49 +40,64 @@ class _TopCardDialogState extends State<TopCardDialog> {
     }
   }
 
+  Widget _button(String text, VoidCallback onPressed, BuildContext context) {
+    return GestureDetector(
+        child: Container(
+          height: 40,
+          margin: const EdgeInsets.only(bottom: 5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: Colors.black,
+              width: 2,
+            ),
+          ),
+          child: Center(
+            child: Text(
+              text,
+              style: const TextStyle(color: Colors.black, fontSize: 18),
+            ),
+          ),
+        ),
+        onTap: () {
+          onPressed();
+          Navigator.of(context).pop();
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('The top card '),
-      content: Container(
-        height: 300,
-        width: 90,
-        alignment: Alignment.center,
-        margin: const EdgeInsets.all(5),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: Colors.black,
-            width: 2,
-          ),
-        ),
-        child: Text(
-          topCard.text,
-          style: const TextStyle(
-            fontSize: 20,
-          ),
-        ),
-      ),
+      content: UnconstrainedBox(child: MyCard(topCard, const Size(200, 300))),
       actions: [
-        TextButton(
-          onPressed: () {
-            print("Dialog_Top_Card newSequance BEFORE changes == $newSequance");
-            newSequance.removeAt(topCardIndex);
-            newSequance.insert(0, topCard);
-            print("Dialog_Top_Card newSequance AFTER changes == $newSequance");
-            context.read<TurnOrderBodyBloc>().add(
-                  TurnOrderBodyChangeSequenceEvent(widget.stackId, newSequance),
-                );
-            Navigator.of(context).pop();
-          },
-          child: const Text('On Bottom'),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text('On Top'),
-        ),
+        // TextButton(
+        //   onPressed: () {
+        //     print("Dialog_Top_Card newSequance BEFORE changes == $newSequance");
+        //     newSequance.removeAt(topCardIndex);
+        //     newSequance.insert(0, topCard);
+        //     print("Dialog_Top_Card newSequance AFTER changes == $newSequance");
+        //     context.read<TurnOrderBodyBloc>().add(
+        //           TurnOrderBodyChangeSequenceEvent(widget.stackId, newSequance),
+        //         );
+        //     Navigator.of(context).pop();
+        //   },
+        //   child: const Text('On Bottom'),
+        // ),
+        _button("On top", () {}, context),
+        _button("On bottom", () {
+          newSequance.removeAt(topCardIndex);
+          newSequance.insert(0, topCard);
+          context.read<TurnOrderBodyBloc>().add(
+                TurnOrderBodyChangeSequenceEvent(widget.stackId, newSequance),
+              );
+        }, context),
+        // TextButton(
+        //   onPressed: () {
+        //     Navigator.of(context).pop();
+        //   },
+        //   child: const Text('On Top'),
+        // ),
       ],
     );
   }

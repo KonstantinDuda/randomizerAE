@@ -41,10 +41,19 @@ class TurnOrderBodyShuffleInStackEvent extends TurnOrderBodyEvent {
   List<Object> get props => [stackId, text];
 }
 
-class TurnOrderBodyPutInButtom extends TurnOrderBodyEvent {
+class TurnOrderBodyPutInButtomEvent extends TurnOrderBodyEvent {
   final int stackId;
   final String text;
-  const TurnOrderBodyPutInButtom(this.stackId, this.text);
+  const TurnOrderBodyPutInButtomEvent(this.stackId, this.text);
+
+  @override
+  List<Object> get props => [stackId, text];
+}
+
+class TurnOrderBodyPutOnTopEvent extends TurnOrderBodyEvent {
+  final int stackId;
+  final String text;
+  const TurnOrderBodyPutOnTopEvent(this.stackId, this.text);
 
   @override
   List<Object> get props => [stackId, text];

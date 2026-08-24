@@ -1,3 +1,5 @@
+import 'package:card_randomizer/database/cards_stack.dart';
+import 'package:card_randomizer/view/root/bodyes/my_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -6,8 +8,8 @@ import '../../../bloc/turn_order_body_bloc.dart';
 
 class ShufflePutBackDialog extends StatelessWidget {
   final int stackId;
-  final String text;
-  const ShufflePutBackDialog(this.stackId, this.text, {super.key});
+  final AECard card;
+  const ShufflePutBackDialog(this.stackId, this.card, {super.key});
 
   Widget _button(String text, VoidCallback onPressed, BuildContext context,
       String navigation) {
@@ -38,24 +40,32 @@ class ShufflePutBackDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Shuffle or put "$text" in the bottom?'),
+      title: Text('Shuffle or put "${card.name}" in the bottom?'),
       //content: const Text('Do you want to shuffle the deck and put the card back?'),
+      content: UnconstrainedBox(child: MyCard(card, const Size(200, 300))),
       actions: [
         _button(
-            'Shuffle card in stack',
+            'Shuffle the card into the stack',
             () => context
                 .read<TurnOrderBodyBloc>()
-                .add(TurnOrderBodyShuffleInStackEvent(stackId, text)),
+                .add(TurnOrderBodyShuffleInStackEvent(stackId, card.name)),
             context,
             ""),
         _button(
-            'Put card in the bottom',
+            'Place the card at the bottom of the stack',
             () => context
                 .read<TurnOrderBodyBloc>()
-                .add(TurnOrderBodyPutInButtom(stackId, text)),
+                .add(TurnOrderBodyPutInButtomEvent(stackId, card.name)),
             context,
             ""),
-        _button('Link card to Stack', () {}, context, "link")
+        _button(
+            'Place the card on top of the stack',
+            () => context
+                .read<TurnOrderBodyBloc>()
+                .add(TurnOrderBodyPutOnTopEvent(stackId, card.name)),
+            context,
+            ""),
+        _button('Link the card to the stack', () {}, context, "link"),
       ],
     );
   }

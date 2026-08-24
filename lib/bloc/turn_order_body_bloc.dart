@@ -21,7 +21,8 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     on<TurnOrderBodyDiscardEvent>(_onDiscard);
     on<TurnOrderBodyShuffleEvent>(_onShuffle);
     on<TurnOrderBodyShuffleInStackEvent>(_onShuffleIn);
-    on<TurnOrderBodyPutInButtom>(_onPutInTheButtom);
+    on<TurnOrderBodyPutInButtomEvent>(_onPutInTheButtom);
+    on<TurnOrderBodyPutOnTopEvent>(_onPunOnTop);
     on<TurnOrderBodyChangeSequenceEvent>(_onChangeSequence);
     on<TurnOrderBodyChangeActiveStackEvent>(_onChangeActiveStack);
     on<TurnOrderAddDeleteStackEvent>(_onAddDeleteStack);
@@ -411,7 +412,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
   }
 
   _onPutInTheButtom(
-      TurnOrderBodyPutInButtom event, Emitter<TurnOrderBodyState> emit) {
+      TurnOrderBodyPutInButtomEvent event, Emitter<TurnOrderBodyState> emit) {
     print("TurnOrderBodyBloc _onPutInTheButtom event.text == ${event.text} \n");
     AECard card = AECard(id: 0, text: "", name: "");
     var curentStack = stacks.firstWhere(
@@ -422,7 +423,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
         orElse: () => const CardsStack.empty());
 
     for (var i = 0; i < curentAP.cards.length; i++) {
-      if (curentAP.cards[i].text == event.text) {
+      if (curentAP.cards[i].name == event.text) {
         print(
             "TurnOrderBodyBloc _onPutInTheButtom found card to put in the buttom: ${curentAP.cards[i]} \n");
         card = curentAP.cards[i];
@@ -435,6 +436,37 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
     emit(TurnOrderBodySuccessActionState(
         curentStack, curentAP, List.from(stacks), links));
+  }
+
+  _onPunOnTop(
+      TurnOrderBodyPutOnTopEvent event, Emitter<TurnOrderBodyState> emit) {
+    print("TurnOrderBodyBloc _onPutInTheButtom event.text == ${event.text}");
+    print(
+        "TurnOrderBodyBloc _onPutInTheButtom event.stackId == ${event.stackId} \n");
+    AECard card = AECard(id: 0, text: "", name: "");
+    var curentStack = stacks.firstWhere(
+        (element) => element.id == event.stackId,
+        orElse: () => const CardsStack.empty());
+    var curentAP = alreadyPlayed.firstWhere(
+        (element) => element.id == event.stackId,
+        orElse: () => const CardsStack.empty());
+    print("TurnOrderBodyBloc _onPutOnTop curentStack == $curentStack");
+    print("TurnOrderBodyBloc _onPutOnTop curentAP == $curentAP");
+
+    for (var i = 0; i < curentAP.cards.length; i++) {
+      if (curentAP.cards[i].name == event.text) {
+        print(
+            "TurnOrderBodyBloc _onPutOnTop found card to put on top: ${curentAP.cards[i]} \n");
+        card = curentAP.cards[i];
+        curentAP.cards.removeAt(i);
+        curentStack.cards.add(card);
+        break;
+      }
+    }
+    _saveStacksAndAP(curentStack.id, curentStack.cards, curentAP.cards);
+
+    emit(TurnOrderBodySuccessActionState(
+        curentStack.copyWith(), curentAP.copyWith(), List.from(stacks), links));
   }
 
   void _onChangeSequence(TurnOrderBodyChangeSequenceEvent event,
