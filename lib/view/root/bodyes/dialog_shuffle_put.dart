@@ -45,27 +45,27 @@ class ShufflePutBackDialog extends StatelessWidget {
       content: UnconstrainedBox(child: MyCard(card, const Size(200, 300))),
       actions: [
         _button(
-            'Shuffle the card into the stack',
+            'SHUFFLE the card into the stack',
             () => context
                 .read<TurnOrderBodyBloc>()
                 .add(TurnOrderBodyShuffleInStackEvent(stackId, card.name)),
             context,
             ""),
         _button(
-            'Place the card at the bottom of the stack',
-            () => context
-                .read<TurnOrderBodyBloc>()
-                .add(TurnOrderBodyPutInButtomEvent(stackId, card.name)),
-            context,
-            ""),
-        _button(
-            'Place the card on top of the stack',
+            'Place the card on TOP of the stack',
             () => context
                 .read<TurnOrderBodyBloc>()
                 .add(TurnOrderBodyPutOnTopEvent(stackId, card.name)),
             context,
             ""),
-        _button('Link the card to the stack', () {}, context, "link"),
+        _button(
+            'Place the card at the BOTTOM of the stack',
+            () => context
+                .read<TurnOrderBodyBloc>()
+                .add(TurnOrderBodyPutInButtomEvent(stackId, card.name)),
+            context,
+            ""),
+        _button('LINK the card to the stack', () {}, context, "link"),
       ],
     );
   }

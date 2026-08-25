@@ -71,19 +71,6 @@ class _TopCardDialogState extends State<TopCardDialog> {
       title: const Text('The top card '),
       content: UnconstrainedBox(child: MyCard(topCard, const Size(200, 300))),
       actions: [
-        // TextButton(
-        //   onPressed: () {
-        //     print("Dialog_Top_Card newSequance BEFORE changes == $newSequance");
-        //     newSequance.removeAt(topCardIndex);
-        //     newSequance.insert(0, topCard);
-        //     print("Dialog_Top_Card newSequance AFTER changes == $newSequance");
-        //     context.read<TurnOrderBodyBloc>().add(
-        //           TurnOrderBodyChangeSequenceEvent(widget.stackId, newSequance),
-        //         );
-        //     Navigator.of(context).pop();
-        //   },
-        //   child: const Text('On Bottom'),
-        // ),
         _button("On top", () {}, context),
         _button("On bottom", () {
           newSequance.removeAt(topCardIndex);
@@ -92,12 +79,6 @@ class _TopCardDialogState extends State<TopCardDialog> {
                 TurnOrderBodyChangeSequenceEvent(widget.stackId, newSequance),
               );
         }, context),
-        // TextButton(
-        //   onPressed: () {
-        //     Navigator.of(context).pop();
-        //   },
-        //   child: const Text('On Top'),
-        // ),
       ],
     );
   }

@@ -1,31 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../bloc/crud_stack_bloc.dart';
+import '../../bloc/event_state/crud_stack_es.dart';
+import '../../database/cards_stack.dart';
+import 'dialog_add_card.dart';
+import 'dialog_delete.dart';
 
 class StackWidget extends StatefulWidget {
-  final Widget stackName;
-  final String cardNames;
-  final bool checkbox;
-  final String curentType;
-  final Color curentColor;
-  final Function changeName;
-  final Function addCard;
-  final Function checkboxChange;
-  final Function changeType;
-  final Function changeColor;
-  final Function saveStack;
-  final Function deleteStack;
-  const StackWidget(
-      this.stackName,
-      this.cardNames,
-      this.checkbox,
-      this.curentType,
-      this.curentColor,
-      this.changeName,
-      this.addCard,
-      this.checkboxChange,
-      this.changeType,
-      this.changeColor,
-      this.saveStack,
-      this.deleteStack,
+  final CardsStack stack;
+  // final Widget stackName;
+  // final String cardNames;
+  // final bool checkbox;
+  // final String curentType;
+  // final Color curentColor;
+  // final Function changeName;
+  // final Function addCard;
+  // final Function checkboxChange;
+  // final Function changeType;
+  // final Function changeColor;
+  // final Function saveStack;
+  // final Function deleteStack;
+  const StackWidget(this.stack,
+      // this.stackName,
+      // this.cardNames,
+      // this.checkbox,
+      // this.curentType,
+      // this.curentColor,
+      // this.changeName,
+      // this.addCard,
+      // this.checkboxChange,
+      // this.changeType,
+      // this.changeColor,
+      // this.saveStack,
+      // this.deleteStack,
       {super.key});
 
   // final int index;
@@ -37,7 +45,9 @@ class StackWidget extends StatefulWidget {
 
 class _StackWidgetState extends State<StackWidget> {
 //  List<CardsStack> stacks = [];
+  CardsStack changedStack = const CardsStack.empty();
   List<String> stackTypes = const ["Turn order", "Friend", "Foe", "Other"];
+  String stringType = "";
   List<Color> stackColors = const [
     Color.fromARGB(255, 76, 175, 80),
     Color.fromARGB(255, 33, 150, 243),
@@ -47,14 +57,75 @@ class _StackWidgetState extends State<StackWidget> {
     Color.fromARGB(255, 0, 0, 0),
     Color.fromARGB(255, 255, 255, 255),
   ];
+  String cardNames = "\n";
+
+  @override
+  void initState() {
+    super.initState();
+
+    changedStack = widget.stack;
+
+    if (changedStack.cards.isNotEmpty) {
+      for (var i = 0; i < changedStack.cards.length; i++) {
+        cardNames = "$cardNames ${changedStack.cards[i]} \n";
+      }
+    }
+
+    if (changedStack.stackType == StackType.turnOrder) {
+      stringType = "Turn order";
+    } else if (changedStack.stackType == StackType.friend) {
+      stringType = "Friend";
+    } else if (changedStack.stackType == StackType.foe) {
+      stringType = "Foe";
+    } else {
+      stringType = "Other";
+    }
+  }
+
+  changeType(String value) {
+    if (value != stringType) {
+      print("StackWidget: ${changedStack.name} Stack type changed to $value");
+      var newStackType = StackType.turnOrder;
+      if (value == "Turn order") {
+        newStackType = StackType.turnOrder;
+      } else if (value == "Friend") {
+        newStackType = StackType.friend;
+      } else if (value == "Foe") {
+        newStackType = StackType.foe;
+      } else if (value == "Other") {
+        newStackType = StackType.other;
+      }
+      if (mounted) {
+        setState(() {
+          changedStack = changedStack.copyWith(stackType: newStackType);
+        });
+      }
+    } else {
+      print("StackWidget: ${changedStack.name} Stack type not changed");
+    }
+  }
+
+  changeColor(Color value) {
+    if (value != changedStack.stackColor) {
+      print("StackWidget: "
+          "${changedStack.name} Stack color changed to ${value.toARGB32()}");
+      if (mounted) {
+        setState(() {
+          changedStack = changedStack.copyWith(stackColor: value);
+        });
+      }
+    } else {
+      print("StackWidget: Stack color not changed");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     var screenSize = Size(
-        400, MediaQuery.of(context).size.height); //MediaQuery.of(context).size;
+        350, MediaQuery.of(context).size.height); //MediaQuery.of(context).size;
     return Container(
       width: screenSize.width,
-      height: screenSize.height,
+      height: 525, // screenSize.height,
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(
@@ -68,14 +139,27 @@ class _StackWidgetState extends State<StackWidget> {
         //mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          widget.stackName,
+          //changedStackName,
+          Center(
+            child: Text(
+              "Stack name: ${changedStack.name}",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           Row(
             children: [
+              // Cards in Stack part
               Column(
                 children: [
                   const Text(
                     "Cards in stack: ",
                     style: TextStyle(
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -90,19 +174,24 @@ class _StackWidgetState extends State<StackWidget> {
                       ),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    margin: const EdgeInsets.fromLTRB(0, 0, 2, 0),
+                    margin: const EdgeInsets.fromLTRB(2, 0, 2, 0),
                     child: Column(
                       children: [
                         Expanded(
                           child: Text(
-                            widget.cardNames,
+                            //widget.cardNames,
+                            cardNames,
                             maxLines: 10,
                             textAlign: TextAlign.center,
                           ),
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            widget.addCard();
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    AddCardToStackDialog(stack: changedStack));
+                            //widget.addCard();
                           },
                           child: const Icon(
                             Icons.add,
@@ -125,25 +214,35 @@ class _StackWidgetState extends State<StackWidget> {
                     children: [
                       Column(
                         children: [
+                          // Is Active boolean
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Text("Is Active: "),
                               Checkbox(
                                   value:
-                                      widget.checkbox, //stacks[index].isActive,
+                                      // widget.checkbox,
+                                      changedStack.isActive,
                                   onChanged: (value) {
-                                    widget.checkboxChange(value);
+                                    //widget.checkboxChange(value);
+                                    print(
+                                        "StackWidget: IsActive change to $value");
+                                    var newIsActive = value;
+                                    setState(() {
+                                      changedStack = changedStack.copyWith(
+                                          isActive: newIsActive);
+                                    });
                                   }),
                             ],
                           ),
+                          // StackType
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Text("Stack Type: "),
                               DropdownButton<String>(
                                 iconSize: 35,
-                                value: widget.curentType, //typesList[index],
+                                value: stringType, //widget.curentType,
                                 items: stackTypes.map((String type) {
                                   return DropdownMenuItem<String>(
                                     alignment: AlignmentDirectional.center,
@@ -152,11 +251,13 @@ class _StackWidgetState extends State<StackWidget> {
                                   );
                                 }).toList(),
                                 onChanged: (value) {
-                                  widget.changeType(value);
+                                  changeType(value!);
+                                  //widget.changeType(value);
                                 },
                               ),
                             ],
                           ),
+                          // Stack color
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -168,7 +269,8 @@ class _StackWidgetState extends State<StackWidget> {
                                   Color? matchedColor;
                                   for (final c in stackColors) {
                                     if (c.toARGB32() ==
-                                        widget.curentColor.toARGB32()) {
+                                        changedStack.stackColor.toARGB32()) {
+                                      //widget.curentColor.toARGB32()) {
                                       matchedColor = c;
                                       break;
                                     }
@@ -195,7 +297,8 @@ class _StackWidgetState extends State<StackWidget> {
                                     }).toList(),
                                     onChanged: (Color? value) {
                                       if (value != null) {
-                                        widget.changeColor(value);
+                                        changeColor(value);
+                                        //widget.changeColor(value);
                                       }
                                     },
                                   );
@@ -213,13 +316,21 @@ class _StackWidgetState extends State<StackWidget> {
                           children: [
                             ElevatedButton(
                               onPressed: () {
-                                widget.saveStack();
+                                context.read<CRUDStackBloc>().add(
+                                    CRUDStackUpdateStackEvent(changedStack));
+                                //widget.saveStack();
                               },
                               child: const Text("Save"),
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                widget.deleteStack();
+                                print("Delete ${changedStack.name} stack");
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        DeleteDialog(changedStack.name, false,
+                                            true, changedStack.id));
+                                //widget.deleteStack();
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.red,
@@ -234,6 +345,16 @@ class _StackWidgetState extends State<StackWidget> {
                 ),
               ),
             ],
+          ),
+          const Center(
+              child: Text(
+            "Description:",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          )),
+          Container(
+            margin: const EdgeInsets.fromLTRB(3, 2, 3, 2),
+            color: Colors.amber,
+            child: Text(changedStack.description),
           ),
         ],
       ),

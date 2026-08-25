@@ -6,7 +6,7 @@ import '/bloc/providers/provider_bloc.dart';
 import '../../bloc/crud_stack_bloc.dart';
 import '../../bloc/event_state/crud_stack_es.dart';
 import '/database/cards_stack.dart';
-import 'dialog_add_card.dart';
+//import 'dialog_add_card.dart';
 import 'dialog_create_card.dart';
 import 'dialog_delete.dart';
 import 'stack_widget.dart';
@@ -71,7 +71,7 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
     );
   }
 
-  stackWidget(int index) {
+  /*stackWidget(int index) {
     String cardNames = "\n";
     curentColor = colorsList[index];
     int nCounter = 0;
@@ -237,6 +237,7 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
       deleteStack,
     );
   }
+*/
 
   box(String text, String buttonText, SizedBox sizedBox, Function create) {
     return SizedBox(
@@ -352,13 +353,13 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
               'Stacks: ',
               'Create stack',
               SizedBox(
-                height: 330,
+                height: 525,
                 width: MediaQuery.of(context).size.width,
                 child: ListView.builder(
                   itemCount: stacks.isEmpty ? 0 : stacks.length,
                   scrollDirection: Axis.horizontal,
-                  itemBuilder: (_, index) =>
-                      stackWidget(index), // StackWidgetPage(index),
+                  itemBuilder: (_, index) => StackWidget(stacks[index]),
+                  //stackWidget(index),
                 ),
               ),
               () => createStack(),

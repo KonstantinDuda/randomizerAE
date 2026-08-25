@@ -50,7 +50,7 @@ class AECard {
 
   @override
   String toString() {
-    var result = 'AECard name: $name';
+    var result = name;
     return result;
   }
 }
