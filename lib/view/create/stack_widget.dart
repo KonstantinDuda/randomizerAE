@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 import '../../bloc/crud_stack_bloc.dart';
 import '../../bloc/event_state/crud_stack_es.dart';
@@ -9,35 +10,7 @@ import 'dialog_delete.dart';
 
 class StackWidget extends StatefulWidget {
   final CardsStack stack;
-  // final Widget stackName;
-  // final String cardNames;
-  // final bool checkbox;
-  // final String curentType;
-  // final Color curentColor;
-  // final Function changeName;
-  // final Function addCard;
-  // final Function checkboxChange;
-  // final Function changeType;
-  // final Function changeColor;
-  // final Function saveStack;
-  // final Function deleteStack;
-  const StackWidget(this.stack,
-      // this.stackName,
-      // this.cardNames,
-      // this.checkbox,
-      // this.curentType,
-      // this.curentColor,
-      // this.changeName,
-      // this.addCard,
-      // this.checkboxChange,
-      // this.changeType,
-      // this.changeColor,
-      // this.saveStack,
-      // this.deleteStack,
-      {super.key});
-
-  // final int index;
-  // const StackWidgetPage(this.index, {super.key});
+  const StackWidget(this.stack, {super.key});
 
   @override
   State<StatefulWidget> createState() => _StackWidgetState();
@@ -58,6 +31,7 @@ class _StackWidgetState extends State<StackWidget> {
     Color.fromARGB(255, 255, 255, 255),
   ];
   String cardNames = "\n";
+  String descriptionHtml = "";
 
   @override
   void initState() {
@@ -80,6 +54,8 @@ class _StackWidgetState extends State<StackWidget> {
     } else {
       stringType = "Other";
     }
+
+    descriptionHtml = descriptionFill();
   }
 
   changeType(String value) {
@@ -117,6 +93,18 @@ class _StackWidgetState extends State<StackWidget> {
     } else {
       print("StackWidget: Stack color not changed");
     }
+  }
+
+  descriptionFill() {
+    descriptionHtml = widget.stack.description;
+
+    var regPlayer = RegExp(r'\b(player|players)\b', caseSensitive: false);
+    descriptionHtml = descriptionHtml.replaceAllMapped(regPlayer, (match) {
+      final foundWorld = match.group(0);
+      return '<span class="player">$foundWorld</span>';
+    });
+
+    return descriptionHtml;
   }
 
   @override
@@ -354,7 +342,10 @@ class _StackWidgetState extends State<StackWidget> {
           Container(
             margin: const EdgeInsets.fromLTRB(3, 2, 3, 2),
             color: Colors.amber,
-            child: Text(changedStack.description),
+            child: Html(
+              data: descriptionHtml,
+              style: {},
+            ),
           ),
         ],
       ),

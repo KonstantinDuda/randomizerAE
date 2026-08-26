@@ -1,16 +1,20 @@
+import 'package:card_randomizer/view/create/stack_widget.dart';
+import 'package:card_randomizer/view/root/dialogs/dialog_about_stack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../bloc/crud_stack_bloc.dart';
+import '../../../bloc/event_state/crud_stack_es.dart';
 import '../../../bloc/event_state/history_es.dart';
 import '../../../bloc/event_state/turn_order_body_es.dart';
 import '../../../bloc/providers/provider_bloc.dart';
 import '../../../bloc/history_bloc.dart';
 import '../../../bloc/turn_order_body_bloc.dart';
 import '../../../database/cards_stack.dart';
-import 'dialog_ch_seq.dart';
-import 'dialog_shuffle_put.dart';
-import 'dialog_top_card.dart';
-import 'dialog_link.dart';
+import '../dialogs/dialog_ch_seq.dart';
+import '../dialogs/dialog_shuffle_put.dart';
+import '../dialogs/dialog_top_card.dart';
+import '../dialogs/dialog_link.dart';
 import 'my_card.dart';
 
 class TurnOrderBody extends StatefulWidget {
@@ -570,13 +574,11 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                             ),
                             onTap: () {
                               print("About Stack was tapped");
-                              // TODO: send stack id to show dialog with stack info
-                              // showDialog(
-                              //   context: context,
-                              //   builder: (BuildContext context) {
-                              //     return ChangeSequanceDialog(list: stack.cards);
-                              //   },
-                              // );
+                              var stackCards = stack.cards;
+                              stackCards.addAll(alreadyPlayed.cards);
+                              stackCards.sort(((a, b) => a.id.compareTo(b.id)));
+                              _dialogAboutStack(
+                                  stack.copyWith(cards: stackCards), context);
                             },
                           ),
                         ),
@@ -592,6 +594,19 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
     });
   }
 
+  _dialogAboutStack(CardsStack stack, BuildContext context) async {
+    String collback = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return DialogAboutStack(stack);
+      },
+    );
+    if (collback == "edit" && mounted) {
+      context.read<CRUDStackBloc>().add(CRUDDataFromDBEvent());
+      context.read<ProviderBloc>().add(UpdateDeleteEvent());
+    }
+  }
+
   _dialogShuffleLink(int stackId, AECard card, List<CardsStack> stacks) async {
     String collback = await showDialog(
       context: context,
@@ -601,7 +616,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
     );
     if (!mounted) return;
     print("ShuffleLink dialog return $collback");
-    if (collback != "") {
+    if (collback == "link") {
       showDialog(
         context: context,
         builder: (BuildContext context) {

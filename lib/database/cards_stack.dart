@@ -184,6 +184,19 @@ class CardsStack {
     );
   }
 
+  String stackTypeToString(StackType type) {
+    switch (type) {
+      case StackType.turnOrder:
+        return "Turn order";
+      case StackType.friend:
+        return "Friend";
+      case StackType.foe:
+        return "Foe";
+      default:
+        return "Other";
+    }
+  }
+
   @override
   String toString() {
     var result =
