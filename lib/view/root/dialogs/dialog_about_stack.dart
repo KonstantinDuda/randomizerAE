@@ -1,3 +1,4 @@
+import 'package:card_randomizer/view/root/description.dart';
 import 'package:flutter/material.dart';
 
 import '../../../database/cards_stack.dart';
@@ -17,6 +18,7 @@ class _DialogAboutStackState extends State<DialogAboutStack> {
 
   @override
   void initState() {
+    super.initState();
     stack = widget.stack;
     if (stack.cards.isNotEmpty) {
       cards = stack.cards.map(((e) => e.name)).toString();
@@ -45,23 +47,29 @@ class _DialogAboutStackState extends State<DialogAboutStack> {
                             : Colors.black),
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.only(left: 5, right: 5),
-                  child: Text(stack.isActive
-                      ? "Stack is Active"
-                      : "Stack is not Active"),
+                const Expanded(
+                  child: Center(
+                    child: Text(
+                      "Cards in stack: ",
+                      style: TextStyle(fontSize: 18),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
+                // Container(
+                //   margin: const EdgeInsets.only(left: 5, right: 5),
+                //   child: Text(stack.isActive
+                //       ? "Stack is Active"
+                //       : "Stack is not Active"),
+                // ),
               ],
-            ),
-            const Text(
-              "Cards in stack: ",
-              style: TextStyle(fontSize: 18),
             ),
             Text(cards),
             const Text(
               "Description: ",
               style: TextStyle(fontSize: 18),
             ),
+            Description(stack.description),
           ],
         ),
       ),

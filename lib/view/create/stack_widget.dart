@@ -1,3 +1,4 @@
+import 'package:card_randomizer/view/root/description.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -55,7 +56,7 @@ class _StackWidgetState extends State<StackWidget> {
       stringType = "Other";
     }
 
-    descriptionHtml = descriptionFill();
+    descriptionHtml = widget.stack.description;
   }
 
   changeType(String value) {
@@ -93,18 +94,6 @@ class _StackWidgetState extends State<StackWidget> {
     } else {
       print("StackWidget: Stack color not changed");
     }
-  }
-
-  descriptionFill() {
-    descriptionHtml = widget.stack.description;
-
-    var regPlayer = RegExp(r'\b(player|players)\b', caseSensitive: false);
-    descriptionHtml = descriptionHtml.replaceAllMapped(regPlayer, (match) {
-      final foundWorld = match.group(0);
-      return '<span class="player">$foundWorld</span>';
-    });
-
-    return descriptionHtml;
   }
 
   @override
@@ -340,13 +329,8 @@ class _StackWidgetState extends State<StackWidget> {
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           )),
           Container(
-            margin: const EdgeInsets.fromLTRB(3, 2, 3, 2),
-            color: Colors.amber,
-            child: Html(
-              data: descriptionHtml,
-              style: {},
-            ),
-          ),
+              margin: const EdgeInsets.fromLTRB(3, 2, 3, 2),
+              child: Description(descriptionHtml)),
         ],
       ),
     );

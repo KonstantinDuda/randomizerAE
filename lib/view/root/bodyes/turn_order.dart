@@ -1,5 +1,3 @@
-import 'package:card_randomizer/view/create/stack_widget.dart';
-import 'package:card_randomizer/view/root/dialogs/dialog_about_stack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,6 +9,7 @@ import '../../../bloc/providers/provider_bloc.dart';
 import '../../../bloc/history_bloc.dart';
 import '../../../bloc/turn_order_body_bloc.dart';
 import '../../../database/cards_stack.dart';
+import '../dialogs/dialog_about_stack.dart';
 import '../dialogs/dialog_ch_seq.dart';
 import '../dialogs/dialog_shuffle_put.dart';
 import '../dialogs/dialog_top_card.dart';
@@ -574,11 +573,14 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                             ),
                             onTap: () {
                               print("About Stack was tapped");
-                              var stackCards = stack.cards;
-                              stackCards.addAll(alreadyPlayed.cards);
-                              stackCards.sort(((a, b) => a.id.compareTo(b.id)));
-                              _dialogAboutStack(
-                                  stack.copyWith(cards: stackCards), context);
+                              if (stack.id > 0) {
+                                var stackCards = stack.cards;
+                                stackCards.addAll(alreadyPlayed.cards);
+                                stackCards
+                                    .sort(((a, b) => a.id.compareTo(b.id)));
+                                _dialogAboutStack(
+                                    stack.copyWith(cards: stackCards), context);
+                              }
                             },
                           ),
                         ),
