@@ -1,13 +1,13 @@
-import 'package:card_randomizer/view/root/description.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_html/flutter_html.dart';
 
 import '../../bloc/crud_stack_bloc.dart';
 import '../../bloc/event_state/crud_stack_es.dart';
 import '../../database/cards_stack.dart';
+import '../root/description.dart';
 import 'dialog_add_card.dart';
 import 'dialog_delete.dart';
+import 'dialog_description.dart';
 
 class StackWidget extends StatefulWidget {
   final CardsStack stack;
@@ -328,9 +328,39 @@ class _StackWidgetState extends State<StackWidget> {
             "Description:",
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           )),
-          Container(
+          Expanded(
+            child: Container(
+              color: Colors.amber,
               margin: const EdgeInsets.fromLTRB(3, 2, 3, 2),
-              child: Description(descriptionHtml)),
+              child: Stack(
+                children: [
+                  Description(descriptionHtml),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () {
+                        showDialog(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    DescriptionDialog(stack: changedStack))
+                            .then((value) {
+                          if (value != null) {
+                            setState(() {
+                              descriptionHtml = value;
+                              changedStack = changedStack.copyWith(
+                                  description: descriptionHtml);
+                            });
+                          }
+                        });
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

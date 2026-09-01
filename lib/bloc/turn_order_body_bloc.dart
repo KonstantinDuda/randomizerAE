@@ -276,13 +276,25 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
     if (event.isDiscard) {
       List<AECard> newAlreadyCards = [];
 
-      for (var i = 0; i < curentStack.cards.length; i++) {
-        if (event.list.contains(curentStack.cards[i].name)) {
-          newAlreadyCards.add(curentStack.cards[i]);
-          curentStack.cards.removeAt(i);
-          i--; // Adjust index after removal
+      for (var name in event.list) {
+        if (curentStack.cards.isNotEmpty &&
+            curentStack.cards.any((card) => card.name == name)) {
+          var cardToRemove =
+              curentStack.cards.firstWhere((card) => card.name == name);
+          newAlreadyCards.add(cardToRemove);
+          curentStack.cards.remove(cardToRemove);
+          print("TOBB _onDiscard: event.isDiscard. card $name was removed "
+              "from ${curentStack.name} which now has ${curentStack.cards} cards.");
         }
       }
+      // for (var i = 0; i < curentStack.cards.length; i++) {
+      //   if (event.list.contains(curentStack.cards[i].name)) {
+      //     // TODO: It's add all cards with the same name, but it should add only that many cards how many event.list contains
+      //     newAlreadyCards.add(curentStack.cards[i]);
+      //     curentStack.cards.removeAt(i);
+      //     i--; // Adjust index after removal
+      //   }
+      // }
       for (var i = 0; i < stacks.length; i++) {
         if (stacks[i].name == event.name) {
           stacks[i] = curentStack;
@@ -293,6 +305,19 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
           (element) => element.name == event.name,
           orElse: () => const CardsStack.empty());
       if (discardedEarlier.id != 0) {
+        for (var i = 0; i < newAlreadyCards.length; i++) {
+          if (newAlreadyPlayed.cards.isEmpty && i == 0) {
+            data.addCardToStory(newAlreadyPlayed.id, newAlreadyCards[i], true);
+          } else {
+            data.addCardToStory(newAlreadyPlayed.id, newAlreadyCards[i], false);
+          }
+          print(
+              "TOBB _onDiscard: event.isDiscard discardedEarlier.id != 0. newAlreadyCards.name == ${newAlreadyCards[i].name}");
+        }
+        // for (var card in newAlreadyCards) {
+        //   data.addCardToStory(newAlreadyPlayed.id, card,
+        //       newAlreadyPlayed.cards.isEmpty ? true : false);
+        // }
         newAlreadyCards.addAll(discardedEarlier.cards);
         for (var i = 0; i < alreadyPlayed.length; i++) {
           if (alreadyPlayed[i].name == event.name) {
@@ -309,6 +334,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
             "TOBB _onDiscard: event.isDiscard discardedEarlier.id == 0. alreadyPlayed.add($curentStack)");
       }
     } else {
+      // This is for creating links
       linksCreating(List<String> names) {
         for (var name in names) {
           var id = stacks

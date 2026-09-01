@@ -78,11 +78,11 @@ class DefaultData {
 
 // History
   addCardToStory(int stackId, AECard card, bool isNewTurn) {
+    print(
+        "DD addCardToStory: stackId == $stackId, card == $card, isNewTurn == $isNewTurn");
     if (isNewTurn && story.containsKey(stackId)) {
       story[stackId]!.add([card]);
-      //story.add([card]);
     } else if (isNewTurn) {
-      // story.containsKey(stackId) == false
       story[stackId] = [];
       story[stackId]!.add([card]);
     } else if (isNewTurn == false && story.containsKey(stackId)) {
@@ -90,10 +90,6 @@ class DefaultData {
       list.add(card);
       story[stackId]!.removeLast();
       story[stackId]!.add(list);
-      // var list = story.last;
-      // list.add(card);
-      // story.removeLast();
-      // story.add(list);
     } else {
       print(
           "DD addCardToStory: story.containsKey(stackId) == false && isNewTurn == false");

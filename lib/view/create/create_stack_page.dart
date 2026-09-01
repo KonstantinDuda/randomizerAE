@@ -34,6 +34,7 @@ class _CreateStackPageState extends State<CreateStackPage> {
   bool isActive = false;
   String curentType = "Turn order";
   Color curentColor = const Color.fromARGB(255, 255, 255, 255); //Colors.white;
+  String description = "";
 
   List<String> stackTypes = const [
     "Turn order",
@@ -69,7 +70,7 @@ class _CreateStackPageState extends State<CreateStackPage> {
         stackType: stackType,
         stackColor: curentColor,
         cards: cards,
-        description: "");
+        description: description);
     stack = newStack;
     print("CreateStackPage createNewStack stack == $stack");
   }
@@ -235,7 +236,7 @@ class _CreateStackPageState extends State<CreateStackPage> {
             // Cards in stack
             Expanded(
               child: Container(
-                margin: const EdgeInsets.fromLTRB(20, 0, 15, 57),
+                margin: const EdgeInsets.fromLTRB(20, 0, 15, 5),
                 //width: MediaQuery.of(context).size.width - 80,
                 decoration: BoxDecoration(
                   //stackColor,
@@ -259,6 +260,22 @@ class _CreateStackPageState extends State<CreateStackPage> {
                     ),
                   ],
                 ),
+              ),
+            ),
+            // Description
+            Container(
+              height: 230,
+              margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+              child: TextField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Description',
+                ),
+                maxLines: 8,
+                onChanged: (value) {
+                  description = value;
+                },
+                controller: TextEditingController(text: description),
               ),
             ),
           ],

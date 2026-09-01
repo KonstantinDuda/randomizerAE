@@ -37,7 +37,8 @@ class _AddCardToStackDialogState extends State<AddCardToStackDialog> {
 
         var counter = 0;
         for (var i in allCards) {
-          namesAllCards.add(i.text.split(":")[0]);
+          //namesAllCards.add(i.text.split(":")[0]);
+          namesAllCards.add(i.name);
           for (var j in widget.stack.cards) {
             print("AddCardDialog i.id == ${i.id}; j.id == ${j.id}");
             if (i.id == j.id) {

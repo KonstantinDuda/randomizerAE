@@ -125,31 +125,6 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
                 controller: TextEditingController(text: cardTextAfterOr),
               ),
             ),
-            /*Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Card type: "),
-                DropdownButton<String>(
-                  iconSize: 35,
-                  value: cardType, //typesList[index],
-                  items: cardTypesList.map((String type) {
-                    return DropdownMenuItem<String>(
-                      alignment: AlignmentDirectional.center,
-                      value: type,
-                      child: Text(type),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      cardType = value!;
-                      cardType == "Turn order"
-                          ? typeIsTO = true
-                          : typeIsTO = false;
-                    });
-                  },
-                ),
-              ],
-            ),*/
           ],
         ),
       ),

@@ -158,8 +158,10 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
   _onUpdateStack(
       CRUDStackUpdateStackEvent event, Emitter<CRUDStackState> emit) async {
     print("CRUDStackBloc _onUpdateStack event.stack == ${event.stack}");
-    var stacksFromDB = await db.getAllStacks();
+    //var stacksFromDB = await db.getAllStacks();
     List<CardsStack> newStacks = [];
+    print(
+        "CRUDStackBloc _onUpdateStack event.stack.description == ${event.stack.description}");
 
     var stackFromDB = await db.getStackById(event.stack.id);
     if (stackFromDB.id == 0) {
@@ -172,7 +174,8 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
           stackFromDB.isActive == event.stack.isActive &&
           stackFromDB.stackType == event.stack.stackType &&
           stackFromDB.stackColor == event.stack.stackColor &&
-          stackFromDB.cards.length == event.stack.cards.length) {
+          stackFromDB.cards.length == event.stack.cards.length &&
+          stackFromDB.description == event.stack.description) {
         var cardsIsEqual = true;
         for (var i = 0; i < stackFromDB.cards.length; i++) {
           stackFromDB.cards[i] == event.stack.cards[i]
@@ -201,8 +204,8 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
 
     emit(CRUDStackSuccessActionState(cards, newStacks));
 
-    print(
-        "CRUDStackBloc _onUpdateStack stacks.length == ${stacksFromDB.length}, newStacks.length == ${stacks.length}");
+    // print(
+    //     "CRUDStackBloc _onUpdateStack stacks.length == ${stacksFromDB.length}, newStacks.length == ${stacks.length}");
   }
 
   _onUpdateAvailableList(CRUDStackUpdateAvailableListEvent event,

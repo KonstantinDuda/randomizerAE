@@ -1,7 +1,7 @@
-import 'package:card_randomizer/view/root/description.dart';
 import 'package:flutter/material.dart';
 
 import '../../../database/cards_stack.dart';
+import '../description.dart';
 import 'dialog_button.dart';
 
 class DialogAboutStack extends StatefulWidget {

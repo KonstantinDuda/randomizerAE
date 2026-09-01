@@ -7,11 +7,6 @@ class Description extends StatelessWidget {
 
   _textToHtml() {
     String newText = text;
-    // var rules = RegExp(r'\b(rules)\b', caseSensitive: false);
-    // newText = newText.replaceAllMapped(rules, (match) {
-    //   final rule = match.group(0);
-    //   return '<b>$rule</b>';
-    // });
     var nextRuls = RegExp(r'(^|\.[\s]*)+([^.:]+:)');
     newText = newText.replaceAllMapped(nextRuls, (match) {
       final dotAndSpace = match.group(1) ?? "";
@@ -29,7 +24,6 @@ class Description extends StatelessWidget {
         child: Html(
       data: data,
       style: {
-        //"b": Style(fontSize: FontSize(16), fontWeight: FontWeight.bold),
         "span.nextR":
             Style(fontSize: FontSize(16), fontWeight: FontWeight.bold),
       },
