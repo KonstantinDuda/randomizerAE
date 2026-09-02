@@ -32,6 +32,7 @@ class _StackWidgetState extends State<StackWidget> {
     Color.fromARGB(255, 255, 255, 255),
   ];
   String cardNames = "\n";
+  //String stackName = "";
   String descriptionHtml = "";
 
   @override
@@ -57,6 +58,7 @@ class _StackWidgetState extends State<StackWidget> {
     }
 
     descriptionHtml = widget.stack.description;
+    //stackName = widget.stack.name;
   }
 
   changeType(String value) {
@@ -117,15 +119,45 @@ class _StackWidgetState extends State<StackWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //changedStackName,
-          Center(
-            child: Text(
-              "Stack name: ${changedStack.name}",
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+          SizedBox(
+            height: 40,
+            width: screenSize.width,
+            child: Stack(
+              children: [
+                Center(
+                  child: Text(
+                    changedStack.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  right: 15,
+                  top: -5,
+                  child: IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) => DescriptionDialog(
+                              stack: changedStack,
+                              isDescription: false)).then((value) {
+                        if (value != null) {
+                          setState(() {
+                            //stackName = value;
+                            changedStack = changedStack.copyWith(name: value);
+                          });
+                        }
+                      });
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
           Row(
@@ -330,8 +362,8 @@ class _StackWidgetState extends State<StackWidget> {
           )),
           Expanded(
             child: Container(
-              color: Colors.amber,
-              margin: const EdgeInsets.fromLTRB(3, 2, 3, 2),
+              // color: Colors.amber,
+              margin: const EdgeInsets.fromLTRB(3, 0, 3, 2),
               child: Stack(
                 children: [
                   Description(descriptionHtml),
@@ -342,10 +374,11 @@ class _StackWidgetState extends State<StackWidget> {
                       icon: const Icon(Icons.edit),
                       onPressed: () {
                         showDialog(
-                                context: context,
-                                builder: (BuildContext context) =>
-                                    DescriptionDialog(stack: changedStack))
-                            .then((value) {
+                            context: context,
+                            builder: (BuildContext context) =>
+                                DescriptionDialog(
+                                    stack: changedStack,
+                                    isDescription: true)).then((value) {
                           if (value != null) {
                             setState(() {
                               descriptionHtml = value;

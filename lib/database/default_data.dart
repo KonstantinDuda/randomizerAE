@@ -171,48 +171,6 @@ class DefaultData {
     _stacks.removeWhere((stack) => stack.id == id);
   }
 
-// Heroes
-  /*Future<List<HeroStack>> getHeroes() async {
-    if (friendFoeList.isNotEmpty) {
-      return friendFoeList;
-    } else {
-      friendFoeList = await _db.getAllHeroes();
-      return friendFoeList;
-    }
-  }
-  HeroStack getHeroByStackId(int stackId) {
-    for (var element in friendFoeList) {
-      if (element.heroStack.id == stackId) {
-         return element;
-      }
-    }
-    return const HeroStack.empty();
-  }
-  newHero(HeroStack hero) async {
-    //friendFoeList.add(hero);
-    _db.createHero(hero);
-    friendFoeList = await _db.getAllHeroes();
-    // // print("DefaultData newHero hero == $hero");
-  }
-  updateHero(int id, HeroStack hero) async {
-    int index = friendFoeList.indexWhere((hero) => hero.id == id);
-    if (index != -1) {
-      friendFoeList[index] = hero;
-      _db.updateHero(hero);
-      // print("DefaultData updateHero hero == ${hero.name}");
-      return friendFoeList;
-    } else {
-      // print("DefaultData updateHero hero with id $id not found");
-    }
-  }
-  deleteHero(int id) async {
-    await _db.deleteHero(id);
-    friendFoeList.removeWhere((hero) => hero.id == id);
-  }
-  setHeroes(List<HeroStack> newHeroes) {
-    friendFoeList = newHeroes;
-  }*/
-
 // Default Data
   createDefaultData() async {
     var firstRunCards = await _db.getAllCards();

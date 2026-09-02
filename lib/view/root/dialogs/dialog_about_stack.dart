@@ -56,12 +56,6 @@ class _DialogAboutStackState extends State<DialogAboutStack> {
                     ),
                   ),
                 ),
-                // Container(
-                //   margin: const EdgeInsets.only(left: 5, right: 5),
-                //   child: Text(stack.isActive
-                //       ? "Stack is Active"
-                //       : "Stack is not Active"),
-                // ),
               ],
             ),
             Text(cards),
@@ -69,7 +63,7 @@ class _DialogAboutStackState extends State<DialogAboutStack> {
               "Description: ",
               style: TextStyle(fontSize: 18),
             ),
-            Description(stack.description),
+            SizedBox(height: 220, child: Description(stack.description)),
           ],
         ),
       ),

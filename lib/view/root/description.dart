@@ -21,12 +21,15 @@ class Description extends StatelessWidget {
   Widget build(BuildContext context) {
     var data = _textToHtml();
     return Center(
-        child: Html(
-      data: data,
-      style: {
-        "span.nextR":
-            Style(fontSize: FontSize(16), fontWeight: FontWeight.bold),
-      },
+        child: SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Html(
+        data: data,
+        style: {
+          "span.nextR":
+              Style(fontSize: FontSize(16), fontWeight: FontWeight.bold),
+        },
+      ),
     ));
   }
 }
