@@ -24,11 +24,12 @@ class CRUDStackNewCardEvent extends CRUDStackEvent {
   final String textAfterOr;
   final String type;
 
-  const CRUDStackNewCardEvent(this.id, this.name, this.isOptional, this.textBeforeOr,
-      this.textAfterOr, this.type);
+  const CRUDStackNewCardEvent(this.id, this.name, this.isOptional,
+      this.textBeforeOr, this.textAfterOr, this.type);
 
   @override
-  List<Object> get props => [id, name, isOptional, textBeforeOr, textAfterOr, type];
+  List<Object> get props =>
+      [id, name, isOptional, textBeforeOr, textAfterOr, type];
 }
 
 class CRUDStackUpdateAvailableListEvent extends CRUDStackEvent {
@@ -45,6 +46,15 @@ class CRUDStackDeleteCardEvent extends CRUDStackEvent {
 
   @override
   List<Object> get props => [id];
+}
+
+class CRUDStackFilterEvent extends CRUDStackEvent {
+  final String filterType;
+  final String filterString;
+  const CRUDStackFilterEvent(this.filterType, this.filterString);
+
+  @override
+  List<Object> get props => [filterType, filterString];
 }
 
 // Stacks
@@ -83,12 +93,17 @@ class CRUDStackState extends Equatable {
 class CRUDStackSuccessActionState extends CRUDStackState {
   final List<AECard> cards;
   final List<CardsStack> stacks;
+  final String filterType;
+  final String filterString;
 
   const CRUDStackSuccessActionState(
-      [this.cards = const [], this.stacks = const []]);
+      [this.cards = const [],
+      this.stacks = const [],
+      this.filterType = "All",
+      this.filterString = ""]);
 
   @override
-  List<Object> get props => [cards, stacks];
+  List<Object> get props => [cards, stacks, filterType, filterString];
 }
 
 class CRUDStackErrorActionState extends CRUDStackState {

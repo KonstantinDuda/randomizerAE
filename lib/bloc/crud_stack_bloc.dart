@@ -21,8 +21,8 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
     on<CRUDStackUpdateStackEvent>(_onUpdateStack);
     on<CRUDStackUpdateAvailableListEvent>(_onUpdateAvailableList);
     on<CRUDStackDeleteStackEvent>(_onDeleteStack);
-
     on<CRUDDataFromDBEvent>(_onDBData);
+    on<CRUDStackFilterEvent>(_onFilter);
   }
 
   _onInit(CRUDStackInitialEvent event, Emitter<CRUDStackState> emit) async {
@@ -266,5 +266,74 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
         "CRUDStackBloc _onDBData localStacks.length == ${localStacks.length}");
 
     emit(CRUDStackSuccessActionState(localCards, localStacks));
+  }
+
+  _onFilter(CRUDStackFilterEvent event, Emitter<CRUDStackState> emit) async {
+    print(
+        "CRUDStackBloc _onFilter event.filterType == ${event.filterType}, event.filterString == ${event.filterString}");
+
+    List<CardsStack> filteredStacks = [];
+    List<AECard> filteredCards = [];
+
+    if (event.filterType == "All") {
+      filteredStacks = stacks;
+    } else if (event.filterType == "Turn order") {
+      for (var stack in stacks) {
+        if (stack.stackType == StackType.turnOrder) {
+          filteredStacks.add(stack);
+        }
+      }
+    } else if (event.filterType == "Friends and Foes") {
+      for (var stack in stacks) {
+        if (stack.stackType == StackType.friend ||
+            stack.stackType == StackType.foe) {
+          filteredStacks.add(stack);
+        }
+      }
+    } else if (event.filterType == "Friends") {
+      for (var stack in stacks) {
+        if (stack.stackType == StackType.friend) {
+          filteredStacks.add(stack);
+        }
+      }
+    } else if (event.filterType == "Foes") {
+      for (var stack in stacks) {
+        if (stack.stackType == StackType.foe) {
+          filteredStacks.add(stack);
+        }
+      }
+    } else if (event.filterType == "Other") {
+      for (var stack in stacks) {
+        if (stack.stackType == StackType.other) {
+          filteredStacks.add(stack);
+        }
+      }
+    }
+
+    if (event.filterString.isNotEmpty) {
+      filteredStacks = filteredStacks.where((stack) {
+        return stack.name
+            .toLowerCase()
+            .contains(event.filterString.toLowerCase());
+      }).toList();
+      for (var card in cards) {
+        if (card.name
+            .toLowerCase()
+            .contains(event.filterString.toLowerCase())) {
+          filteredCards.add(card);
+        }
+      }
+    } else {
+      filteredCards = cards;
+    }
+    if (filteredStacks.isEmpty) {
+      filteredStacks = stacks;
+    }
+
+    print(
+        "CRUDStackBloc _onFilter filteredStacks.length == ${filteredStacks.length}");
+
+    emit(CRUDStackSuccessActionState(
+        filteredCards, filteredStacks, event.filterType, event.filterString));
   }
 }
