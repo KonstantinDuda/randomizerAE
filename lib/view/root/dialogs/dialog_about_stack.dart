@@ -30,7 +30,7 @@ class _DialogAboutStackState extends State<DialogAboutStack> {
     return AlertDialog(
       title: Text(stack.name),
       content: SizedBox(
-        height: 300,
+        height: 320,
         child: Column(
           children: [
             Row(
@@ -69,7 +69,7 @@ class _DialogAboutStackState extends State<DialogAboutStack> {
       ),
       actions: [
         dialogButton("Leave 'About stack'", () {}, context),
-        dialogButton("Edit the stack", () {}, context, navigation: "edit")
+        dialogButton("Edit the stack", () {}, context, navigation: stack.name),
       ],
     );
   }

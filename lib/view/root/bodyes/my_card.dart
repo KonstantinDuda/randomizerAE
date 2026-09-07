@@ -100,46 +100,50 @@ class MyCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       child: Center(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Html(data: text, style: {
-        "body": Style(
-          textAlign: TextAlign.center,
-          fontSize: FontSize(bodyFontSize), // FontSize(18),
+            "body": Style(
+              textAlign: TextAlign.center,
+              fontSize: FontSize(bodyFontSize), // FontSize(18),
+            ),
+            "h1": Style(
+              textAlign: TextAlign.center,
+              fontSize: FontSize(hFontSize), //FontSize(30),
+            ),
+            "h5": Style(margin: Margins.only(top: 5, bottom: 5)),
+            "span.player": Style(
+              color: const Color.fromARGB(255, 3, 192, 60),
+              fontWeight: FontWeight.bold,
+            ),
+            "span.life": Style(
+              color: const Color.fromARGB(255, 3, 192, 60),
+              fontWeight: FontWeight.bold,
+            ),
+            "span.energy": Style(
+              color: const Color.fromARGB(
+                  255, 2, 71, 254), // const Color.fromARGB(255, 0, 191, 255),
+              fontWeight: FontWeight.bold,
+            ),
+            "span.money": Style(
+              color: const Color.fromARGB(255, 255, 126, 0),
+              fontWeight: FontWeight.bold,
+            ),
+            "span.damage": Style(
+              color: const Color.fromARGB(255, 255, 0, 0),
+              fontWeight: FontWeight.bold,
+            ),
+            "span.nemesis": Style(
+              color: const Color.fromARGB(255, 255, 0, 0),
+              fontWeight: FontWeight.bold,
+            ),
+            "span.unleash": Style(
+              color: const Color.fromARGB(255, 255, 0, 0),
+              fontWeight: FontWeight.bold,
+            ),
+          }),
         ),
-        "h1": Style(
-          textAlign: TextAlign.center,
-          fontSize: FontSize(hFontSize), //FontSize(30),
-        ),
-        "h5": Style(margin: Margins.only(top: 5, bottom: 5)),
-        "span.player": Style(
-          color: const Color.fromARGB(255, 3, 192, 60),
-          fontWeight: FontWeight.bold,
-        ),
-        "span.life": Style(
-          color: const Color.fromARGB(255, 3, 192, 60),
-          fontWeight: FontWeight.bold,
-        ),
-        "span.energy": Style(
-          color: const Color.fromARGB(
-              255, 2, 71, 254), // const Color.fromARGB(255, 0, 191, 255),
-          fontWeight: FontWeight.bold,
-        ),
-        "span.money": Style(
-          color: const Color.fromARGB(255, 255, 126, 0),
-          fontWeight: FontWeight.bold,
-        ),
-        "span.damage": Style(
-          color: const Color.fromARGB(255, 255, 0, 0),
-          fontWeight: FontWeight.bold,
-        ),
-        "span.nemesis": Style(
-          color: const Color.fromARGB(255, 255, 0, 0),
-          fontWeight: FontWeight.bold,
-        ),
-        "span.unleash": Style(
-          color: const Color.fromARGB(255, 255, 0, 0),
-          fontWeight: FontWeight.bold,
-        ),
-      })),
+      ),
     );
   }
 }

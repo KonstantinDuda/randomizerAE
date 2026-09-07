@@ -115,48 +115,45 @@ class _StackWidgetState extends State<StackWidget> {
       ),
       margin: const EdgeInsets.all(5),
       child: Column(
-        //mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          //changedStackName,
           SizedBox(
             height: 40,
             width: screenSize.width,
-            child: Stack(
+            child: Row(
               children: [
-                Center(
-                  child: Text(
-                    changedStack.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      changedStack.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
-                Positioned(
-                  right: 15,
-                  top: -5,
-                  child: IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) => DescriptionDialog(
-                              stack: changedStack,
-                              isDescription: false)).then((value) {
-                        if (value != null) {
-                          setState(() {
-                            //stackName = value;
-                            changedStack = changedStack.copyWith(name: value);
-                          });
-                        }
-                      });
-                    },
-                  ),
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => DescriptionDialog(
+                            stack: changedStack,
+                            isDescription: false)).then((value) {
+                      if (value != null) {
+                        setState(() {
+                          //stackName = value;
+                          changedStack = changedStack.copyWith(name: value);
+                        });
+                      }
+                    });
+                  },
                 ),
+                // ),
               ],
             ),
           ),

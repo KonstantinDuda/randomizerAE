@@ -198,7 +198,7 @@ class DBProvider {
     List<CardsStack> cs = [];
     if (maps.isNotEmpty) {
       for (var element in maps) {
-        print("DBProvider _pullCardsToStack element == $element");
+        //print("DBProvider _pullCardsToStack element == $element");
         cs.add(CardsStack.fromJson(element));
       }
     }

@@ -46,6 +46,16 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
     super.dispose();
   }
 
+  myText(String text) {
+    return Center(
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 18, height: 1.2),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     //const Size mainObjSize = Size(130, 220);
@@ -275,7 +285,6 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                 Expanded(
                                   child: SizedBox(
                                     width: lbWidth / 3,
-                                    //color: Colors.amber,
                                     child: ListView.builder(
                                         itemCount: lokalLinks.isNotEmpty
                                             ? lokalLinks.length
@@ -293,13 +302,15 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                                 borderRadius:
                                                     BorderRadius.circular(10),
                                               ),
-                                              child: Center(
-                                                  child: Text(
-                                                lokalLinks[index],
-                                                style: const TextStyle(
-                                                    fontSize: 18),
-                                                textAlign: TextAlign.center,
-                                              )),
+                                              child: myText(lokalLinks[index]),
+                                              // child: Center(
+                                              //   child: Text(
+                                              //     lokalLinks[index],
+                                              //     style: const TextStyle(
+                                              //         fontSize: 18),
+                                              //     textAlign: TextAlign.center,
+                                              //   ),
+                                              // ),
                                             ),
                                             onTap: () {
                                               if (links.keys.contains(
@@ -320,7 +331,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                 // Add button to Button List
                                 GestureDetector(
                                   child: Container(
-                                    width: lbWidth / 3 + 4,
+                                    width: lbWidth / 3 + 2,
                                     height: 50,
                                     decoration: BoxDecoration(
                                       color: Colors.white,
@@ -364,10 +375,10 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                         // Main object
                         Positioned(
                           bottom: -15,
-                          left: lbWidth / 3 + 8,
+                          left: lbWidth / 3 + 6,
                           child: GestureDetector(
                             child: Container(
-                              width: mainObjSize.width,
+                              width: mainObjSize.width - 4,
                               height: mainObjSize.height,
                               decoration: BoxDecoration(
                                 color: stack.stackColor,
@@ -384,8 +395,9 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                   stack.cards.isEmpty ? "X" : stack.name,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontSize: 22,
+                                    fontSize: 20,
                                     fontWeight: FontWeight.bold,
+                                    height: 1.2,
                                     color: stack.stackColor == Colors.black
                                         ? Colors.white
                                         : Colors.black,
@@ -441,12 +453,14 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                               ),
                               child: Container(
                                 margin: const EdgeInsets.only(top: 2),
-                                child: const Center(
-                                  child: Text(
-                                    "Discard (a) card(s)",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                ),
+                                child: myText("Discard (a) card(s)"),
+                                // child: Center(
+                                // child: Text(
+                                //   "Discard (a) card(s)",
+                                //   style: TextStyle(fontSize: 18),
+                                //   textAlign: TextAlign.center,
+                                // ),
+                                // ),
                               ),
                             ),
                             onTap: () {
@@ -488,12 +502,13 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                               ),
                               child: Container(
                                 margin: const EdgeInsets.only(left: 10, top: 2),
-                                child: const Center(
-                                  child: Text(
-                                    "History",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                ),
+                                child: myText("History"),
+                                // child: const Center(
+                                //   child: Text(
+                                //     "History",
+                                //     style: TextStyle(fontSize: 18),
+                                //   ),
+                                // ),
                               ),
                             ),
                             onTap: () {
@@ -525,13 +540,14 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(18)),
                               ),
-                              child: const Center(
-                                child: Text(
-                                  "Change sequance",
-                                  style: TextStyle(fontSize: 18),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
+                              child: myText("Change sequance"),
+                              // child: const Center(
+                              //   child: Text(
+                              //     "Change sequance",
+                              //     style: TextStyle(fontSize: 18),
+                              //     textAlign: TextAlign.center,
+                              //   ),
+                              // ),
                             ),
                             onTap: () {
                               print("Change sequance tapped");
@@ -563,13 +579,14 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(18)),
                               ),
-                              child: const Center(
-                                child: Text(
-                                  "About Stack",
-                                  style: TextStyle(fontSize: 18),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
+                              child: myText("About Stack"),
+                              // child: const Center(
+                              //   child: Text(
+                              //     "About Stack",
+                              //     style: TextStyle(fontSize: 18),
+                              //     textAlign: TextAlign.center,
+                              //   ),
+                              // ),
                             ),
                             onTap: () {
                               print("About Stack was tapped");
@@ -603,9 +620,11 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
         return DialogAboutStack(stack);
       },
     );
-    if (collback == "edit" && mounted) {
-      context.read<CRUDStackBloc>().add(CRUDDataFromDBEvent());
+    if (collback != "" && mounted) {
+      print("DialogAboutStack dialog return $collback");
+      //context.read<CRUDStackBloc>().add(CRUDDataFromDBEvent());
       context.read<ProviderBloc>().add(UpdateDeleteEvent());
+      context.read<CRUDStackBloc>().add(CRUDStackFilterEvent("All", collback));
     }
   }
 

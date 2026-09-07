@@ -113,10 +113,12 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
           }
         }
         curentTypeString = state.filterType;
-      } else {
-        print(
-            "UpdateDeleteStackPage build state is not CRUDStackSuccessActionState \n");
+        filterString = state.filterString;
       }
+      // else {
+      //   print(
+      //       "UpdateDeleteStackPage build state is not CRUDStackSuccessActionState \n");
+      // }
 
       return Scaffold(
         appBar: AppBar(
@@ -153,13 +155,15 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
                           Container(
                               margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                               child: const Text("Cards",
-                                  style: TextStyle(fontSize: 20))),
+                                  style: TextStyle(fontSize: 18))),
                           SizedBox(
                             width: 200,
                             child: TextField(
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: 'Filter',
+                              decoration: InputDecoration(
+                                border: const OutlineInputBorder(),
+                                labelText: filterString.isEmpty
+                                    ? 'Filter'
+                                    : filterString,
                               ),
                               onChanged: (value) {
                                 filterString = value;
@@ -178,7 +182,7 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
                                           AECard(id: 0, text: "", name: "")));
                             },
                             child: const Text("Create card",
-                                style: TextStyle(fontSize: 20)),
+                                style: TextStyle(fontSize: 14)),
                           ),
                         ],
                       ),
@@ -207,7 +211,7 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
                           Container(
                               margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                               child: const Text("Stacks",
-                                  style: TextStyle(fontSize: 20))),
+                                  style: TextStyle(fontSize: 18))),
                           DropdownButton<String>(
                             iconSize: 35,
                             iconEnabledColor: Colors.black,
@@ -222,9 +226,9 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
                             }).toList(),
                             onChanged: (String? value) {
                               curentTypeString = value ?? "All";
-                              print(
-                                  "UpdateDeleteStackPage build curentTypeString == "
-                                  "$curentTypeString filterString == $filterString");
+                              // print(
+                              //     "UpdateDeleteStackPage build curentTypeString == "
+                              //     "$curentTypeString filterString == $filterString");
                               if (value != null) {
                                 context.read<CRUDStackBloc>().add(
                                     CRUDStackFilterEvent(value, filterString));
@@ -238,7 +242,7 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
                                   .add(const CreateEvent(0));
                             },
                             child: const Text("Create stack",
-                                style: TextStyle(fontSize: 20)),
+                                style: TextStyle(fontSize: 14)),
                           ),
                         ],
                       ),
