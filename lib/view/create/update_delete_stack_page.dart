@@ -35,6 +35,7 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
     "Other"
   ];
   String curentTypeString = "All";
+  String filterString = "";
 
   stackColor(Color color) {
     return Container(
@@ -84,10 +85,11 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
         builder: (context, state) {
       if (state is CRUDStackSuccessActionState) {
         cards = state.cards;
-        var allStacks = state.stacks;
-        if (allStacks.isNotEmpty) {
-          stacks = allStacks;
-        }
+        // var allStacks = state.stacks;
+        // if (allStacks.isNotEmpty) {
+        //   stacks = allStacks;
+        // }
+        stacks = state.stacks;
         print("UpdateDeleteStackPage build state is CRUDStackSuccessActionState"
             " \n cards.length == ${cards.length} stacks.length == ${stacks.length}");
         screenSize = MediaQuery.of(context).size;
@@ -111,8 +113,6 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
           }
         }
         curentTypeString = state.filterType;
-        // print("UpdateDeleteStackPage build typesList == $typesList");
-        // print("UpdateDeleteStackPage build colorsList.length == ${colorsList.length}");
       } else {
         print(
             "UpdateDeleteStackPage build state is not CRUDStackSuccessActionState \n");
@@ -162,9 +162,10 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
                                 labelText: 'Filter',
                               ),
                               onChanged: (value) {
+                                filterString = value;
                                 context.read<CRUDStackBloc>().add(
                                     CRUDStackFilterEvent(
-                                        curentTypeString, value));
+                                        curentTypeString, filterString));
                               },
                             ),
                           ),
@@ -220,10 +221,13 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
                               );
                             }).toList(),
                             onChanged: (String? value) {
+                              curentTypeString = value ?? "All";
+                              print(
+                                  "UpdateDeleteStackPage build curentTypeString == "
+                                  "$curentTypeString filterString == $filterString");
                               if (value != null) {
-                                context
-                                    .read<CRUDStackBloc>()
-                                    .add(CRUDStackFilterEvent(value, ""));
+                                context.read<CRUDStackBloc>().add(
+                                    CRUDStackFilterEvent(value, filterString));
                               }
                             },
                           ),

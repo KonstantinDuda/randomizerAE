@@ -311,11 +311,13 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
     }
 
     if (event.filterString.isNotEmpty) {
-      filteredStacks = filteredStacks.where((stack) {
-        return stack.name
-            .toLowerCase()
-            .contains(event.filterString.toLowerCase());
-      }).toList();
+      if (filteredStacks.isNotEmpty) {
+        filteredStacks = filteredStacks.where((stack) {
+          return stack.name
+              .toLowerCase()
+              .contains(event.filterString.toLowerCase());
+        }).toList();
+      }
       for (var card in cards) {
         if (card.name
             .toLowerCase()
@@ -326,14 +328,14 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
     } else {
       filteredCards = cards;
     }
-    if (filteredStacks.isEmpty) {
-      filteredStacks = stacks;
-    }
+    // if (filteredStacks.isEmpty) {
+    //   filteredStacks = stacks;
+    // }
 
     print(
         "CRUDStackBloc _onFilter filteredStacks.length == ${filteredStacks.length}");
 
-    emit(CRUDStackSuccessActionState(
-        filteredCards, filteredStacks, event.filterType, event.filterString));
+    emit(CRUDStackSuccessActionState(filteredCards.toList(),
+        filteredStacks.toList(), event.filterType, event.filterString));
   }
 }
