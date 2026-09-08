@@ -63,7 +63,7 @@ class _StackWidgetState extends State<StackWidget> {
 
   changeType(String value) {
     if (value != stringType) {
-      print("StackWidget: ${changedStack.name} Stack type changed to $value");
+      //print("StackWidget: ${changedStack.name} Stack type changed to $value");
       var newStackType = StackType.turnOrder;
       if (value == "Turn order") {
         newStackType = StackType.turnOrder;
@@ -80,21 +80,21 @@ class _StackWidgetState extends State<StackWidget> {
         });
       }
     } else {
-      print("StackWidget: ${changedStack.name} Stack type not changed");
+      //print("StackWidget: ${changedStack.name} Stack type not changed");
     }
   }
 
   changeColor(Color value) {
     if (value != changedStack.stackColor) {
-      print("StackWidget: "
-          "${changedStack.name} Stack color changed to ${value.toARGB32()}");
+      //print("StackWidget: "
+      //  "${changedStack.name} Stack color changed to ${value.toARGB32()}");
       if (mounted) {
         setState(() {
           changedStack = changedStack.copyWith(stackColor: value);
         });
       }
     } else {
-      print("StackWidget: Stack color not changed");
+      //print("StackWidget: Stack color not changed");
     }
   }
 
@@ -231,8 +231,8 @@ class _StackWidgetState extends State<StackWidget> {
                                       changedStack.isActive,
                                   onChanged: (value) {
                                     //widget.checkboxChange(value);
-                                    print(
-                                        "StackWidget: IsActive change to $value");
+                                    //print(
+                                    //  "StackWidget: IsActive change to $value");
                                     var newIsActive = value;
                                     setState(() {
                                       changedStack = changedStack.copyWith(
@@ -330,7 +330,7 @@ class _StackWidgetState extends State<StackWidget> {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                print("Delete ${changedStack.name} stack");
+                                //print("Delete ${changedStack.name} stack");
                                 showDialog(
                                     context: context,
                                     builder: (BuildContext context) =>

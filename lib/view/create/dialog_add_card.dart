@@ -40,7 +40,7 @@ class _AddCardToStackDialogState extends State<AddCardToStackDialog> {
           //namesAllCards.add(i.text.split(":")[0]);
           namesAllCards.add(i.name);
           for (var j in widget.stack.cards) {
-            print("AddCardDialog i.id == ${i.id}; j.id == ${j.id}");
+            //print("AddCardDialog i.id == ${i.id}; j.id == ${j.id}");
             if (i.id == j.id) {
               counter++;
             }
@@ -53,8 +53,8 @@ class _AddCardToStackDialogState extends State<AddCardToStackDialog> {
           }
           counter = 0;
         }
-        print("AddCardDialog cardsList == $cardsList");
-        print("AddCardDialog cardCounter == $cardCounter");
+        //print("AddCardDialog cardsList == $cardsList");
+        //print("AddCardDialog cardCounter == $cardCounter");
       }
 
       return AlertDialog(
@@ -134,10 +134,10 @@ class _AddCardToStackDialogState extends State<AddCardToStackDialog> {
                   }
                 }
               }
-              print(
-                  "AddCardDialog update ${widget.stack.name} with List<AECard> == $newCardsList \n");
-              print(
-                  "AddCardDialog update ${widget.stack.name} old list == ${widget.stack.cards} \n");
+              //print(
+              //"AddCardDialog update ${widget.stack.name} with List<AECard> == $newCardsList \n");
+              //print(
+              //"AddCardDialog update ${widget.stack.name} old list == ${widget.stack.cards} \n");
               var newStack = CardsStack(
                   id: widget.stack.id,
                   name: widget.stack.name,

@@ -28,7 +28,7 @@ class _ChangeSequanceDialogState extends State<ChangeSequanceDialog> {
     super.initState();
 
     for (int i = widget.list.length - 1; i > -1; i--) {
-      print("DChSeq initState: widget.list[i] == ${widget.list[i]}");
+      //print("DChSeq initState: widget.list[i] == ${widget.list[i]}");
       newSequance.add(widget.list[i]);
     }
 

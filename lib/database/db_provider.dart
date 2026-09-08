@@ -61,7 +61,7 @@ class DBProvider {
         //conflictAlgorithm: ConflictAlgorithm.abort);
       );
     } else {
-      print("DBProvider createCard() card ${card.id} was in the Database \n");
+      //print("DBProvider createCard() card ${card.id} was in the Database \n");
     }
   }
 
@@ -81,14 +81,14 @@ class DBProvider {
   void updateCard(AECard card) async {
     final db = await getDatabase;
 
-    var cardBefore = await getCardById(card.id);
-    print("DBProvider update card, card before: $cardBefore");
+    //var cardBefore = await getCardById(card.id);
+    //print("DBProvider update card, card before: $cardBefore");
 
     await db.update(cardsTableName, card.toMap(),
         where: "id = ?", whereArgs: [card.id]);
 
-    var cardAfter = await getCardById(card.id);
-    print("DBProvider update card, card after: $cardAfter");
+    //var cardAfter = await getCardById(card.id);
+    //print("DBProvider update card, card after: $cardAfter");
   }
 
   void deleteCard(int id) async {
@@ -129,8 +129,8 @@ class DBProvider {
         //conflictAlgorithm: ConflictAlgorithm.abort);
       );
     } else {
-      print(
-          "DBProvider createStack() stack ${stack.id} was in the Database \n");
+      //print(
+      //  "DBProvider createStack() stack ${stack.id} was in the Database \n");
     }
   }
 
@@ -140,7 +140,7 @@ class DBProvider {
         await db.query(stackTableName, where: "id = ?", whereArgs: [id]);
     if (maps.isNotEmpty) {
       var newRes = await _pullCardsToStack(maps);
-      print("DBProvider getStackById: newRes == $newRes");
+      //print("DBProvider getStackById: newRes == $newRes");
       return newRes.first; // CardsStack.fromJson(maps.first);
     } else {
       return const CardsStack.empty();

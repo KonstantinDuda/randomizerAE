@@ -29,7 +29,7 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
   @override
   Widget build(BuildContext context) {
     /*if (widget.card.id > 0) {
-      print("DialogCreateCard widget.card.id > 0");
+      //print("DialogCreateCard widget.card.id > 0");
       if (widget.card.imgPath.isNotEmpty) {
         var pathAndName = widget.card.imgPath.split("/");
         if (pathAndName.length > 3) {
@@ -141,7 +141,7 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
           ),
           onPressed: () {
             //if (cardType == "Turn order") cardName = "";
-            print("DialogCreateCard create card");
+            //print("DialogCreateCard create card");
 
             context.read<CRUDStackBloc>().add(CRUDStackNewCardEvent(
                 widget.card.id,

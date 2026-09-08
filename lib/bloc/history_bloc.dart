@@ -18,7 +18,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   }
 
   void _getHistory(HistoryGetEvent event, Emitter<HistoryState> emit) async {
-    print("HistoryBloc getHistory");
+    //print("HistoryBloc getHistory");
 
     try {
       //var allData = defaultData.story;
@@ -30,7 +30,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       int maxLength = 0;
 
       if (allData.isEmpty) {
-        print("HistoryBloc _getHistory: allData is empty.");
+        //print("HistoryBloc _getHistory: allData is empty.");
         emit(HistorySuccessState(event.stackId, [], []));
         return;
       } else {
@@ -65,19 +65,19 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
 
       emit(HistorySuccessState(event.stackId, columnsToReturn, storyToReturn));
     } catch (e) {
-      print("HistoryBloc getHistory error: $e");
+      //print("HistoryBloc getHistory error: $e");
       emit(HistoryErrorState(e.toString()));
     }
   }
 
   void _getCardHistory(
       HistoryGetCardEvent event, Emitter<HistoryState> emit) async {
-    print("HistoryBloc getCardHistory event: ${event.cardId}");
+    //print("HistoryBloc getCardHistory event: ${event.cardId}");
   }
 
   void _clearHistory(
       HistoryClearEvent event, Emitter<HistoryState> emit) async {
-    print("HistoryBloc clearHistory");
+    //print("HistoryBloc clearHistory");
 
     defaultData.clearHistory(event.stackId);
     story.clear();

@@ -90,8 +90,8 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
         //   stacks = allStacks;
         // }
         stacks = state.stacks;
-        print("UpdateDeleteStackPage build state is CRUDStackSuccessActionState"
-            " \n cards.length == ${cards.length} stacks.length == ${stacks.length}");
+        //print("UpdateDeleteStackPage build state is CRUDStackSuccessActionState"
+        //  " \n cards.length == ${cards.length} stacks.length == ${stacks.length}");
         screenSize = MediaQuery.of(context).size;
         typesList.clear();
         colorsList.clear();

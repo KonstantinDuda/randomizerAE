@@ -60,11 +60,11 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
   }
 
   _onLoad(LoadingEvent event, Emitter<ProviderState> emit) {
-    print("ProviderBloc _onLoad");
+    //print("ProviderBloc _onLoad");
     try {
       emit(LoadingState());
     } catch (e) {
-      print("Error in ProviderBloc _onLoad: $e");
+      //print("Error in ProviderBloc _onLoad: $e");
     }
   }
 }

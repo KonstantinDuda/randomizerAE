@@ -32,8 +32,8 @@ class HistoryPage extends StatelessWidget {
             rows = state.story;
             for (var i = 0; i < rows.length; i++) {
               if (rows[i].length < columns.length) {
-                print("HistoryPage: row $i has ${rows[i].length} cells,"
-                    " but columns has ${columns.length} cells.");
+                //print("HistoryPage: row $i has ${rows[i].length} cells,"
+                //" but columns has ${columns.length} cells.");
                 // Fill missing cells with empty strings
                 rows[i].addAll(
                     List.generate(columns.length - rows[i].length, (_) => ""));
@@ -45,7 +45,7 @@ class HistoryPage extends StatelessWidget {
         }
 
         listColumns() {
-          print("HistoryPage _listRows $rows");
+          //print("HistoryPage _listRows $rows");
           columns.insert(0, "");
           for (var i = 0; i < columns.length; i++) {
             columnWidgets.add(

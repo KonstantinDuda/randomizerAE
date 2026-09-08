@@ -30,6 +30,8 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
   late AnimationController? _lastPlayedController;
   late Animation<double>? _lastPlayedOpacity;
 
+  bool allOptions = false;
+
   @override
   void initState() {
     super.initState();
@@ -177,7 +179,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                         2, 0, 2, lbHeight / 5),
                                   ),
                                   onTap: () {
-                                    print("Last played card tapped");
+                                    //print("Last played card tapped");
                                     if (alreadyPlayed.cards.isNotEmpty &&
                                         links.keys.contains(
                                             alreadyPlayed.cards.first.name)) {
@@ -242,8 +244,8 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                                       fontSize: 20))),
                                         ),
                                         onTap: () {
-                                          print(
-                                              "Already played card tapped: ${alreadyPlayed.cards[index].name}");
+                                          //print(
+                                          //  "Already played card tapped: ${alreadyPlayed.cards[index].name}");
                                           if (links.keys.contains(text)) {
                                             context.read<TurnOrderBodyBloc>().add(
                                                 TurnOrderBodyChangeActiveStackEvent(
@@ -251,8 +253,8 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                           }
                                         },
                                         onLongPress: () {
-                                          print(
-                                              "Already played card long pressed: ${alreadyPlayed.cards[index].name}");
+                                          //print(
+                                          //  "Already played card long pressed: ${alreadyPlayed.cards[index].name}");
                                           _dialogShuffleLink(
                                               stack.id,
                                               alreadyPlayed
@@ -303,14 +305,6 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                                     BorderRadius.circular(10),
                                               ),
                                               child: myText(lokalLinks[index]),
-                                              // child: Center(
-                                              //   child: Text(
-                                              //     lokalLinks[index],
-                                              //     style: const TextStyle(
-                                              //         fontSize: 18),
-                                              //     textAlign: TextAlign.center,
-                                              //   ),
-                                              // ),
                                             ),
                                             onTap: () {
                                               if (links.keys.contains(
@@ -351,7 +345,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                     ),
                                   ),
                                   onTap: () {
-                                    print("Add button to List onTap");
+                                    //print("Add button to List onTap");
                                     showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
@@ -433,7 +427,182 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                           ),
                         ),
 
+                        // Change sequance
+                        AnimatedPositioned(
+                          duration: const Duration(milliseconds: 350),
+                          curve: Curves.easeInOut,
+                          bottom: allOptions ? 210 : 2,
+                          right: 2,
+                          child: AnimatedOpacity(
+                            duration: const Duration(milliseconds: 240),
+                            opacity: allOptions ? 1.0 : 0.0,
+                            child: GestureDetector(
+                              child: Container(
+                                width: lbWidth / 3 + 4,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    color: Colors.black,
+                                    width: 2,
+                                  ),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(18)),
+                                ),
+                                child: myText("Change sequance"),
+                              ),
+                              onTap: () {
+                                //print("Change sequance tapped");
+                                if (allOptions) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return ChangeSequanceDialog(
+                                          stackId: stack.id, list: stack.cards);
+                                    },
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+
                         // Discard (a) card(s)
+                        AnimatedPositioned(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          bottom: allOptions ? 158 : 2,
+                          right: 2,
+                          child: AnimatedOpacity(
+                            duration: const Duration(milliseconds: 220),
+                            opacity: allOptions ? 1.0 : 0.0,
+                            child: GestureDetector(
+                              child: Container(
+                                width: lbWidth / 3 + 4,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    color: Colors.black,
+                                    width: 2,
+                                  ),
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(18),
+                                  ),
+                                ),
+                                child: Container(
+                                  margin: const EdgeInsets.only(top: 2),
+                                  child: myText("Discard (a) card(s)"),
+                                ),
+                              ),
+                              onTap: () {
+                                if (allOptions) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return LinkDialog(
+                                        list: stack.cards
+                                            .map((e) => e.name)
+                                            .toList(),
+                                        name: stack.name,
+                                        discard: true,
+                                        stackId: stack.id,
+                                      );
+                                    },
+                                  );
+                                }
+                                //print("Discard a card tapped");
+                              },
+                            ),
+                          ),
+                        ),
+
+                        // Watch story
+                        AnimatedPositioned(
+                          duration: const Duration(milliseconds: 250),
+                          curve: Curves.easeInOut,
+                          bottom: allOptions ? 106 : 2,
+                          right: 2,
+                          child: AnimatedOpacity(
+                            duration: const Duration(milliseconds: 200),
+                            opacity: allOptions ? 1.0 : 0.0,
+                            child: GestureDetector(
+                              child: Container(
+                                width: lbWidth / 3 + 4,
+                                height: 50,
+                                //margin: const EdgeInsets.only(bottom: 80),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    color: Colors.black,
+                                    width: 2,
+                                  ),
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(18),
+                                  ),
+                                ),
+                                child: Container(
+                                  margin:
+                                      const EdgeInsets.only(left: 10, top: 2),
+                                  child: myText("History"),
+                                ),
+                              ),
+                              onTap: () {
+                                if (allOptions) {
+                                  context
+                                      .read<HistoryBloc>()
+                                      .add(HistoryGetEvent(stack.id));
+                                  context
+                                      .read<ProviderBloc>()
+                                      .add(HistoryProviderEvent());
+                                  //print("History tapped");
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+
+                        // About Stack
+                        AnimatedPositioned(
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeInOut,
+                          bottom: allOptions ? 54 : 2,
+                          right: 2,
+                          child: AnimatedOpacity(
+                            duration: const Duration(milliseconds: 180),
+                            opacity: allOptions ? 1.0 : 0.0,
+                            child: GestureDetector(
+                              child: Container(
+                                width: lbWidth / 3 + 4,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    color: Colors.black,
+                                    width: 2,
+                                  ),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(18)),
+                                ),
+                                child: myText("About Stack"),
+                              ),
+                              onTap: () {
+                                //print("About Stack was tapped");
+                                if (stack.id > 0 && allOptions) {
+                                  var stackCards = stack.cards;
+                                  stackCards.addAll(alreadyPlayed.cards);
+                                  stackCards
+                                      .sort(((a, b) => a.id.compareTo(b.id)));
+                                  _dialogAboutStack(
+                                      stack.copyWith(cards: stackCards),
+                                      context);
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+
+                        // More options
                         Positioned(
                           bottom: 2,
                           right: 2,
@@ -453,151 +622,21 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                               ),
                               child: Container(
                                 margin: const EdgeInsets.only(top: 2),
-                                child: myText("Discard (a) card(s)"),
-                                // child: Center(
-                                // child: Text(
-                                //   "Discard (a) card(s)",
-                                //   style: TextStyle(fontSize: 18),
-                                //   textAlign: TextAlign.center,
-                                // ),
-                                // ),
+                                child: myText(allOptions
+                                    ? "Less options"
+                                    : "More options"),
                               ),
                             ),
                             onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return LinkDialog(
-                                    list:
-                                        stack.cards.map((e) => e.name).toList(),
-                                    name: stack.name,
-                                    discard: true,
-                                    stackId: stack.id,
-                                  );
-                                },
-                              );
-                              //print("Discard a card tapped");
-                            },
-                          ),
-                        ),
+                              setState(() {
+                                allOptions = !allOptions;
+                              });
 
-                        // Watch story
-                        Positioned(
-                          bottom: 54,
-                          right: 2,
-                          child: GestureDetector(
-                            child: Container(
-                              width: lbWidth / 3 + 4,
-                              height: 50,
-                              //margin: const EdgeInsets.only(bottom: 80),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: Colors.black,
-                                  width: 2,
-                                ),
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(18),
-                                ),
-                              ),
-                              child: Container(
-                                margin: const EdgeInsets.only(left: 10, top: 2),
-                                child: myText("History"),
-                                // child: const Center(
-                                //   child: Text(
-                                //     "History",
-                                //     style: TextStyle(fontSize: 18),
-                                //   ),
-                                // ),
-                              ),
-                            ),
-                            onTap: () {
-                              context
-                                  .read<HistoryBloc>()
-                                  .add(HistoryGetEvent(stack.id));
-                              context
-                                  .read<ProviderBloc>()
-                                  .add(HistoryProviderEvent());
-                              print("History tapped");
-                            },
-                          ),
-                        ),
-
-                        // Change sequance
-                        Positioned(
-                          bottom: 106,
-                          right: 2,
-                          child: GestureDetector(
-                            child: Container(
-                              width: lbWidth / 3 + 4,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: Colors.black,
-                                  width: 2,
-                                ),
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(18)),
-                              ),
-                              child: myText("Change sequance"),
-                              // child: const Center(
-                              //   child: Text(
-                              //     "Change sequance",
-                              //     style: TextStyle(fontSize: 18),
-                              //     textAlign: TextAlign.center,
-                              //   ),
-                              // ),
-                            ),
-                            onTap: () {
-                              print("Change sequance tapped");
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return ChangeSequanceDialog(
-                                      stackId: stack.id, list: stack.cards);
-                                },
-                              );
-                            },
-                          ),
-                        ),
-
-                        // About Stack
-                        Positioned(
-                          bottom: 158,
-                          right: 2,
-                          child: GestureDetector(
-                            child: Container(
-                              width: lbWidth / 3 + 4,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: Colors.black,
-                                  width: 2,
-                                ),
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(18)),
-                              ),
-                              child: myText("About Stack"),
-                              // child: const Center(
-                              //   child: Text(
-                              //     "About Stack",
-                              //     style: TextStyle(fontSize: 18),
-                              //     textAlign: TextAlign.center,
-                              //   ),
-                              // ),
-                            ),
-                            onTap: () {
-                              print("About Stack was tapped");
-                              if (stack.id > 0) {
-                                var stackCards = stack.cards;
-                                stackCards.addAll(alreadyPlayed.cards);
-                                stackCards
-                                    .sort(((a, b) => a.id.compareTo(b.id)));
-                                _dialogAboutStack(
-                                    stack.copyWith(cards: stackCards), context);
-                              }
+                              // if (allOptions) {
+                              //   print("Less options was tapped");
+                              // } else {
+                              //   print("More options was tapped");
+                              // }
                             },
                           ),
                         ),
@@ -621,7 +660,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
       },
     );
     if (collback != "" && mounted) {
-      print("DialogAboutStack dialog return $collback");
+      //print("DialogAboutStack dialog return $collback");
       //context.read<CRUDStackBloc>().add(CRUDDataFromDBEvent());
       context.read<ProviderBloc>().add(UpdateDeleteEvent());
       context.read<CRUDStackBloc>().add(CRUDStackFilterEvent("All", collback));
@@ -636,7 +675,7 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
       },
     );
     if (!mounted) return;
-    print("ShuffleLink dialog return $collback");
+    //print("ShuffleLink dialog return $collback");
     if (collback == "link") {
       showDialog(
         context: context,

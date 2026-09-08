@@ -37,7 +37,7 @@ class _AddCardsListViewState extends State<AddCardsListView> {
           //allCardsNames.add(i.text.split(":")[0]);
           allCardsNames.add(i.name);
           for (var j in widget.stack.cards) {
-            print("AddCardDialog i.id == ${i.id}; j.id == ${j.id}");
+            //print("AddCardDialog i.id == ${i.id}; j.id == ${j.id}");
             if (i.id == j.id) {
               counter++;
             }
@@ -50,8 +50,8 @@ class _AddCardsListViewState extends State<AddCardsListView> {
           }
           counter = 0;
         }
-        print("AddCardsListView cardsList == ${widget.cardsList}");
-        print("AddCardsListView cardCounters == ${widget.cardsCounters}");
+        //print("AddCardsListView cardsList == ${widget.cardsList}");
+        //print("AddCardsListView cardCounters == ${widget.cardsCounters}");
       }
 
       return ListView.builder(

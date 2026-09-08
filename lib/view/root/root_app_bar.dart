@@ -36,7 +36,7 @@ class _RootAppBarState extends State<RootAppBar> {
         }
         stacks = localStacks;
       } else {
-        print("RootAppBar state is NOT CRUDStackSuccessActionState");
+        //print("RootAppBar state is NOT CRUDStackSuccessActionState");
       }
       return Container(
         //width: size.width,
@@ -95,7 +95,7 @@ class _RootAppBarState extends State<RootAppBar> {
                         //  context.read<ProviderBloc>()
                         //              .add(DrawerEvent());
                       } else {
-                        print("RootAppBar widget is not mounted");
+                        //print("RootAppBar widget is not mounted");
                       }
                     },
                   ),
@@ -123,8 +123,8 @@ class _RootAppBarState extends State<RootAppBar> {
                             ),
                           ),
                           onTap: () {
-                            print(
-                                "\n RootAppBar stacks[index].stackType == ${stacks[index].stackType} \n");
+                            //print(
+                            //  "\n RootAppBar stacks[index].stackType == ${stacks[index].stackType} \n");
                             context.read<TurnOrderBodyBloc>().add(
                                 TurnOrderBodyChangeActiveStackEvent(
                                     stacks[index].id));

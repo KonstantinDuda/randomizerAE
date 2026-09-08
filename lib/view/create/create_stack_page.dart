@@ -60,8 +60,8 @@ class _CreateStackPageState extends State<CreateStackPage> {
     } else if (curentType == "Foe") {
       stackType = StackType.foe;
     } else {
-      print(
-          "CreateStackPage stack type != Turn order && Friend / Foe && Gravehold && Hero && Nemesis");
+      //print(
+      //"CreateStackPage stack type != Turn order && Friend / Foe && Gravehold && Hero && Nemesis");
     }
     var newStack = CardsStack(
         id: widget.id,
@@ -72,17 +72,17 @@ class _CreateStackPageState extends State<CreateStackPage> {
         cards: cards,
         description: description);
     stack = newStack;
-    print("CreateStackPage createNewStack stack == $stack");
+    //print("CreateStackPage createNewStack stack == $stack");
   }
 
   addCard(int index) {
-    print("CreateStackPage addCard id: $index");
+    //print("CreateStackPage addCard id: $index");
     cards.add(allCards[index]);
-    print("CreateStackPage addCard cards: $cards");
+    //print("CreateStackPage addCard cards: $cards");
   }
 
   minusCard(int id) {
-    print("CreateStackPage minusCard id: $id");
+    //print("CreateStackPage minusCard id: $id");
     for (var i = 0; i < cards.length; i++) {
       if (cards.isNotEmpty) {
         if (cards[i].id == id) {
@@ -91,7 +91,7 @@ class _CreateStackPageState extends State<CreateStackPage> {
         }
       }
     }
-    print("CreateStackPage minusCard cards: $cards");
+    //print("CreateStackPage minusCard cards: $cards");
   }
 
   @override
@@ -105,8 +105,8 @@ class _CreateStackPageState extends State<CreateStackPage> {
           }
         }
         allCards = state.cards;
-        print(
-            "CreateStackPage state is CRUDStackSuccessActionState newStack == $stack allCards.length == ${allCards.length}");
+        //print(
+        //  "CreateStackPage state is CRUDStackSuccessActionState newStack == $stack allCards.length == ${allCards.length}");
       }
 
       return Scaffold(

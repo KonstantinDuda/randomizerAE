@@ -30,7 +30,12 @@ class _DeleteDialogState extends State<DeleteDialog> {
       content: SizedBox(
         width: 300,
         height: 300,
-        child: Center(child: Text("Delete: \n ${widget.text}?", textAlign: TextAlign.center, style: const TextStyle(fontSize: 18),)),
+        child: Center(
+            child: Text(
+          "Delete: \n ${widget.text}?",
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 18),
+        )),
       ),
       actions: [
         TextButton(
@@ -44,7 +49,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
             backgroundColor: WidgetStateProperty.all(Colors.red),
           ),
           onPressed: () {
-            print("DialogDelete delete ${widget.text}");
+            //print("DialogDelete delete ${widget.text}");
             if (widget.isCard) {
               context
                   .read<CRUDStackBloc>()
@@ -54,9 +59,11 @@ class _DeleteDialogState extends State<DeleteDialog> {
                   .read<CRUDStackBloc>()
                   .add(CRUDStackDeleteStackEvent(widget.id));
             } else {
-              print("DialogDelete isCard == false, isStack == false");
+              //print("DialogDelete isCard == false, isStack == false");
             }
-            context.read<CRUDStackBloc>().add(CRUDStackInitialEvent()); // Addad 08.09.2025
+            context
+                .read<CRUDStackBloc>()
+                .add(CRUDStackInitialEvent()); // Addad 08.09.2025
             Navigator.of(context).pop();
           },
           child: const Text("Delete"),

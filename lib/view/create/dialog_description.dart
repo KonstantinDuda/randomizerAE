@@ -57,13 +57,13 @@ class _DescriptionDialogState extends State<DescriptionDialog> {
         TextButton(
           onPressed: () {
             if (isDescription) {
-              print(
-                  "DescriptionDialog onPressed Save description == $description");
+              //print(
+              //"DescriptionDialog onPressed Save description == $description");
               context.read<CRUDStackBloc>().add(CRUDStackUpdateStackEvent(
                   widget.stack.copyWith(description: description)));
               Navigator.of(context).pop(description);
             } else {
-              print("DescriptionDialog onPressed Save name == $name");
+              //print("DescriptionDialog onPressed Save name == $name");
               context.read<CRUDStackBloc>().add(
                   CRUDStackUpdateStackEvent(widget.stack.copyWith(name: name)));
               Navigator.of(context).pop(name);

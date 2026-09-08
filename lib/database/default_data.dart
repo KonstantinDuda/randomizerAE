@@ -78,8 +78,8 @@ class DefaultData {
 
 // History
   addCardToStory(int stackId, AECard card, bool isNewTurn) {
-    print(
-        "DD addCardToStory: stackId == $stackId, card == $card, isNewTurn == $isNewTurn");
+    //print(
+    //"DD addCardToStory: stackId == $stackId, card == $card, isNewTurn == $isNewTurn");
     if (isNewTurn && story.containsKey(stackId)) {
       story[stackId]!.add([card]);
     } else if (isNewTurn) {
@@ -91,8 +91,8 @@ class DefaultData {
       story[stackId]!.removeLast();
       story[stackId]!.add(list);
     } else {
-      print(
-          "DD addCardToStory: story.containsKey(stackId) == false && isNewTurn == false");
+      //print(
+      //"DD addCardToStory: story.containsKey(stackId) == false && isNewTurn == false");
     }
   }
 
@@ -141,7 +141,7 @@ class DefaultData {
     // if (stack.id == 0) {
     var stack = await _db.getStackById(id);
     // }
-    print("DD getStack: stack == $stack");
+    //print("DD getStack: stack == $stack");
     return stack;
   }
 
@@ -159,7 +159,7 @@ class DefaultData {
       if (_stacks[i].id == stack.id) {
         _stacks[i] = stack;
         _db.updateStack(stack);
-        // // print("DefaultData updateStack stack == $stack");
+        // print("DefaultData updateStack stack == $stack");
         return _stacks;
       }
     }
@@ -184,8 +184,8 @@ class DefaultData {
       var toCards =
           (jsonCards['cards'] as List).map((e) => AECard.fromMap(e)).toList();
       _cards.addAll(toCards);
-      print(
-          "DefData createDD: _cards.length == ${_cards.length} after TOCards generate");
+      //print(
+      //"DefData createDD: _cards.length == ${_cards.length} after TOCards generate");
 
       final String responseFfCards = await rootBundle.loadString(
         'assets/json/ff_cards.json',
@@ -195,18 +195,18 @@ class DefaultData {
           .map((e) => AECard.fromMap(e))
           .toList();
       _cards.addAll(fFcards);
-      print("default_data. createDD: _cards.length == ${_cards.length}");
+      //print("default_data. createDD: _cards.length == ${_cards.length}");
 
       for (var element in _cards) {
         _db.createCard(element);
       }
-      print(
-          "DefData createDD: _cards.length == ${_cards.length} after fFCards generate");
+      //print(
+      //"DefData createDD: _cards.length == ${_cards.length} after fFCards generate");
 
-      var cardsLength = await _db.getAllCards();
-      print("DefData createDD: cardsLength == $cardsLength from _db");
+      //var cardsLength = await _db.getAllCards();
+      //print("DefData createDD: cardsLength == $cardsLength from _db");
     } else {
-      print("default_data. firstRunCards.isNotEmpty");
+      //print("default_data. firstRunCards.isNotEmpty");
       _cards = firstRunCards;
     }
 
@@ -231,12 +231,12 @@ class DefaultData {
 
       _stacks.addAll(dbStacks);
       _stacks.addAll(dbFFStacks);
-      print("default_data. createDD: _stacks.length: ${_stacks.length}");
+      //print("default_data. createDD: _stacks.length: ${_stacks.length}");
       for (var element in _stacks) {
         _db.createStack(element);
       }
     } else {
-      print("default_data. firstRunStacks.isNotEmpty");
+      //print("default_data. firstRunStacks.isNotEmpty");
       _stacks = firstRunStacks;
     }
   }
