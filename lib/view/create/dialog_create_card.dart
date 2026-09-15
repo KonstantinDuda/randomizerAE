@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc/crud_stack_bloc.dart';
 import '../../bloc/event_state/crud_stack_es.dart';
+import '../../bloc/providers/provider_bloc.dart';
 import '../../database/cards_stack.dart';
+import '../root/dialogs/dialog_button.dart';
 
 class CreateCardDialog extends StatefulWidget {
   final AECard card;
@@ -18,56 +20,21 @@ class CreateCardDialog extends StatefulWidget {
 }
 
 class _CreateCardDialogState extends State<CreateCardDialog> {
-  String cardName = "";
-  String cardTextBeforeOr = "";
-  String cardTextAfterOr = "";
-  bool isOptional = false;
-  // List<String> cardTypesList = ["Turn order", "Friend", "Foe"];
-  // var cardType = "Turn order"; // "Other";
-  // var typeIsTO = false;
+  //String cardName = "";
+  AECard newCard = AECard.empty();
+  //String cardTextBeforeOr = "";
+  //String cardTextAfterOr = "";
+  //bool isOptional = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    newCard = widget.card;
+  }
 
   @override
   Widget build(BuildContext context) {
-    /*if (widget.card.id > 0) {
-      //print("DialogCreateCard widget.card.id > 0");
-      if (widget.card.imgPath.isNotEmpty) {
-        var pathAndName = widget.card.imgPath.split("/");
-        if (pathAndName.length > 3) {
-          for (var element in cardTypesList) {
-            if (element.toLowerCase() == pathAndName[2]) {
-              cardType = element;
-            }
-          }
-        }
-      }
-      if (cardType != "Turn order") {
-        if (widget.card.text.isNotEmpty) {
-          var nameAndText = widget.card.text.split(":");
-          var beforeOrAndAfter = [];
-          cardName = nameAndText[0];
-          if (nameAndText.length > 1) {
-            beforeOrAndAfter = nameAndText[1].split("OR");
-            cardTextBeforeOr = beforeOrAndAfter[0];
-            beforeOrAndAfter.length > 1
-                ? cardTextAfterOr = beforeOrAndAfter
-                    .sublist(1, beforeOrAndAfter.length - 1)
-                    .join(" ")
-                : cardTextAfterOr = "";
-          }
-        }
-      } else {
-        cardName = "";
-        var beforeOrAndAfter = widget.card.text.split("OR");
-        if (beforeOrAndAfter.length > 1) {
-          isOptional = true;
-          cardTextBeforeOr = beforeOrAndAfter[0];
-          cardTextAfterOr = beforeOrAndAfter
-              .sublist(1, beforeOrAndAfter.length - 1)
-              .join(" ");
-        }
-      }
-    }*/
-
     return AlertDialog(
       title: const Text('Create / Update card'),
       content: SizedBox(
@@ -79,82 +46,66 @@ class _CreateCardDialogState extends State<CreateCardDialog> {
               width: 300,
               child: TextField(
                 readOnly: false, // typeIsTO,
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(), labelText: "Card name"),
+                decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    labelText: newCard.name),
                 onChanged: (value) {
-                  cardName = value;
+                  newCard.name = value;
                 },
-                controller: TextEditingController(text: cardName),
+                controller: TextEditingController(text: newCard.name),
               ),
             ),
             Container(
               width: 300,
               margin: const EdgeInsets.only(top: 10),
               child: TextField(
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "Card text before Or"),
+                maxLines: 5,
+                decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    labelText: newCard.text),
                 onChanged: (value) {
-                  cardTextBeforeOr = value;
+                  newCard.text = value;
                 },
-                controller: TextEditingController(text: cardTextBeforeOr),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("OR"),
-                Checkbox(
-                    value: isOptional,
-                    onChanged: (value) {
-                      setState(() {
-                        isOptional = value!;
-                      });
-                    }),
-              ],
-            ),
-            SizedBox(
-              width: 300,
-              child: TextField(
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "Card text after Or"),
-                onChanged: (value) {
-                  cardTextAfterOr = value;
-                },
-                controller: TextEditingController(text: cardTextAfterOr),
+                controller: TextEditingController(text: newCard.text),
               ),
             ),
           ],
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text("Cancel"),
-        ),
-        TextButton(
-          style: ButtonStyle(
-            backgroundColor: WidgetStateProperty.all(Colors.green),
-          ),
-          onPressed: () {
-            //if (cardType == "Turn order") cardName = "";
-            //print("DialogCreateCard create card");
-
-            context.read<CRUDStackBloc>().add(CRUDStackNewCardEvent(
-                widget.card.id,
-                cardName,
-                isOptional,
-                cardTextBeforeOr,
-                cardTextAfterOr,
-                "" /*cardType*/));
-            context.read<CRUDStackBloc>().add(CRUDStackInitialEvent());
-            Navigator.of(context).pop();
-          },
-          child: const Text("Save"),
-        ),
+        // TextButton(
+        //   onPressed: () {
+        //     Navigator.of(context).pop();
+        //   },
+        //   child: const Text("Cancel"),
+        // ),
+        dialogButton("Cancel", () {}, context),
+        dialogButton("Save", () {
+          context.read<CRUDStackBloc>().add(CRUDStackNewCardEvent(newCard));
+          // widget.card.id,
+          // cardName,
+          // isOptional,
+          // cardTextBeforeOr,
+          // cardTextAfterOr));
+          //context.read<CRUDStackBloc>().add(CRUDStackInitialEvent());
+          //context.read<ProviderBloc>().add(UpdateDeleteEvent());
+        }, context),
+        // TextButton(
+        //   style: ButtonStyle(
+        //     backgroundColor: WidgetStateProperty.all(Colors.green),
+        //   ),
+        //   onPressed: () {
+        //     context.read<CRUDStackBloc>().add(CRUDStackNewCardEvent(
+        //         widget.card.id,
+        //         cardName,
+        //         isOptional,
+        //         cardTextBeforeOr,
+        //         cardTextAfterOr));
+        //     context.read<CRUDStackBloc>().add(CRUDStackInitialEvent());
+        //     Navigator.of(context).pop();
+        //   },
+        //   child: const Text("Save"),
+        // ),
       ],
     );
   }

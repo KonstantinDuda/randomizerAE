@@ -10,7 +10,6 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
   late List<CardsStack> stacks = [];
   late List<CardsStack> alreadyPlayed = [];
   Map<String, int> links = {};
-  //List<String> linksKeys = [];
   final db = DBProvider();
   final data = DefaultData();
 
@@ -496,7 +495,7 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
 
   void _onChangeSequence(TurnOrderBodyChangeSequenceEvent event,
       Emitter<TurnOrderBodyState> emit) {
-    //print("TOBB _onChangeSeq: list == ${event.list}");
+    print("TOBB _onChangeSeq: list == ${event.list}");
     var newCardsList = event.list;
     var stackIndex =
         stacks.indexWhere((element) => element.id == event.stackId);

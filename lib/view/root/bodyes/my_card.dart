@@ -27,7 +27,7 @@ class MyCard extends StatelessWidget {
       //     : "<h3>${card.name}</h3> <body>${card.text}</body>";
       String text = "<body>${card.text}</body>";
 
-      var regOr = RegExp(r'\b(OR)\b',
+      var regOr = RegExp(r'\b(OR|АБО)\b',
           caseSensitive: true); // \b — це межа слова (word boundary)
       text = text.replaceAllMapped(regOr, (match) {
         final foundWorld = match.group(0); // Зберігає оригінальний регістр

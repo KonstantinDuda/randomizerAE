@@ -36,11 +36,7 @@ class _CreateStackPageState extends State<CreateStackPage> {
   Color curentColor = const Color.fromARGB(255, 255, 255, 255); //Colors.white;
   String description = "";
 
-  List<String> stackTypes = const [
-    "Turn order",
-    "Friend",
-    "Foe",
-  ];
+  List<String> stackTypes = const ["Turn order", "Friend", "Foe", "Other"];
   List<Color> stackColors = const [
     Color.fromARGB(255, 76, 175, 80),
     Color.fromARGB(255, 33, 150, 243),
@@ -59,6 +55,8 @@ class _CreateStackPageState extends State<CreateStackPage> {
       stackType = StackType.friend;
     } else if (curentType == "Foe") {
       stackType = StackType.foe;
+    } else if (curentType == "Other") {
+      stackType = StackType.other;
     } else {
       //print(
       //"CreateStackPage stack type != Turn order && Friend / Foe && Gravehold && Hero && Nemesis");

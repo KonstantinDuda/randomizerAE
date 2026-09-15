@@ -63,7 +63,7 @@ class _UpdateDeleteStackPageState extends State<UpdateDeleteStackPage> {
         ),
         ElevatedButton(
           onPressed: () {
-            var text = cards[index].text.split(":")[0];
+            var text = cards[index].name; //text.split(":")[0];
             showDialog(
                 context: context,
                 builder: (BuildContext context) =>

@@ -47,9 +47,12 @@ class DefaultData {
   //   _cards = newCards;
   // }
 
-  newCard(AECard card) {
-    _cards.add(card);
+  newCard(AECard card) async {
+    // _cards.add(card);
+    print("defData newCard _cards.length == ${_cards.length}");
     _db.createCard(card);
+    _cards = await _db.getAllCards();
+    print("defData newCard _cards.length == ${_cards.length}");
   }
 
   updateCard(AECard card) {

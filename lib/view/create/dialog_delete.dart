@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../bloc/crud_stack_bloc.dart';
-import '../../bloc/event_state/crud_stack_es.dart';
+import '/bloc/crud_stack_bloc.dart';
+import '/bloc/event_state/crud_stack_es.dart';
+import '/bloc/providers/provider_bloc.dart';
 
 class DeleteDialog extends StatefulWidget {
   final String text;
@@ -32,7 +33,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
         height: 300,
         child: Center(
             child: Text(
-          "Delete: \n ${widget.text}?",
+          "Delete: \n ${widget.text} ?",
           textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 18),
         )),

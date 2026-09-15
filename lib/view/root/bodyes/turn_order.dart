@@ -286,7 +286,9 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                 // Button List
                                 Expanded(
                                   child: SizedBox(
-                                    width: lbWidth / 3,
+                                    width: (lbWidth / 2) -
+                                        (mainObjSize.width / 2) -
+                                        2, // lbWidth / 3,
                                     child: ListView.builder(
                                         itemCount: lokalLinks.isNotEmpty
                                             ? lokalLinks.length
@@ -325,7 +327,9 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                                 // Add button to Button List
                                 GestureDetector(
                                   child: Container(
-                                    width: lbWidth / 3 + 2,
+                                    width: (lbWidth / 2) -
+                                        (mainObjSize.width / 2) -
+                                        2, // lbWidth / 3 + 2,
                                     height: 50,
                                     decoration: BoxDecoration(
                                       color: Colors.white,
@@ -369,7 +373,9 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                         // Main object
                         Positioned(
                           bottom: -15,
-                          left: lbWidth / 3 + 6,
+                          left: (lbWidth / 2) -
+                              (mainObjSize.width / 2) +
+                              2, // lbWidth / 3 + 6,
                           child: GestureDetector(
                             child: Container(
                               width: mainObjSize.width - 4,
@@ -438,7 +444,9 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                             opacity: allOptions ? 1.0 : 0.0,
                             child: GestureDetector(
                               child: Container(
-                                width: lbWidth / 3 + 4,
+                                width: (lbWidth / 2) -
+                                    (mainObjSize.width / 2) -
+                                    2, // lbWidth / 3 + 4,
                                 height: 50,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
@@ -478,7 +486,9 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                             opacity: allOptions ? 1.0 : 0.0,
                             child: GestureDetector(
                               child: Container(
-                                width: lbWidth / 3 + 4,
+                                width: (lbWidth / 2) -
+                                    (mainObjSize.width / 2) -
+                                    2, // lbWidth / 3 + 4,
                                 height: 50,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
@@ -528,7 +538,9 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                             opacity: allOptions ? 1.0 : 0.0,
                             child: GestureDetector(
                               child: Container(
-                                width: lbWidth / 3 + 4,
+                                width: (lbWidth / 2) -
+                                    (mainObjSize.width / 2) -
+                                    2, // lbWidth / 3 + 4,
                                 height: 50,
                                 //margin: const EdgeInsets.only(bottom: 80),
                                 decoration: BoxDecoration(
@@ -573,7 +585,9 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                             opacity: allOptions ? 1.0 : 0.0,
                             child: GestureDetector(
                               child: Container(
-                                width: lbWidth / 3 + 4,
+                                width: (lbWidth / 2) -
+                                    (mainObjSize.width / 2) -
+                                    2, //lbWidth / 3 + 4,
                                 height: 50,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
@@ -608,7 +622,8 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                           right: 2,
                           child: GestureDetector(
                             child: Container(
-                              width: lbWidth / 3 + 4,
+                              width:
+                                  (lbWidth / 2) - (mainObjSize.width / 2) - 2,
                               height: 50,
                               decoration: BoxDecoration(
                                 color: Colors.white,
@@ -631,12 +646,6 @@ class _TurnOrderBodyState extends State<TurnOrderBody>
                               setState(() {
                                 allOptions = !allOptions;
                               });
-
-                              // if (allOptions) {
-                              //   print("Less options was tapped");
-                              // } else {
-                              //   print("More options was tapped");
-                              // }
                             },
                           ),
                         ),

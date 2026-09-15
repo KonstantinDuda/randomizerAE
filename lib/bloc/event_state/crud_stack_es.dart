@@ -16,20 +16,20 @@ class CRUDStackInitialEvent extends CRUDStackEvent {}
 class CRUDDataFromDBEvent extends CRUDStackEvent {}
 
 class CRUDStackNewCardEvent extends CRUDStackEvent {
-  //final AECard card;
-  final int id;
-  final String name;
-  final bool isOptional;
-  final String textBeforeOr;
-  final String textAfterOr;
-  final String type;
-
-  const CRUDStackNewCardEvent(this.id, this.name, this.isOptional,
-      this.textBeforeOr, this.textAfterOr, this.type);
+  final AECard card;
+  //final int id;
+  // final String name;
+  // final bool isOptional;
+  // final String textBeforeOr;
+  // final String textAfterOr;
+  // final String type;
+  const CRUDStackNewCardEvent(this.card);
+  // const CRUDStackNewCardEvent(this.id, this.name, this.isOptional,
+  //     this.textBeforeOr, this.textAfterOr /*, this.type*/);
 
   @override
-  List<Object> get props =>
-      [id, name, isOptional, textBeforeOr, textAfterOr, type];
+  List<Object> get props => [card];
+  // [id, name, isOptional, textBeforeOr, textAfterOr /*, type*/];
 }
 
 class CRUDStackUpdateAvailableListEvent extends CRUDStackEvent {
