@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
             } else if (state is UpdateDeleteState) {
               return const UpdateDeleteStackPage();
             } else if (state is CreateState) {
-              return CreateStackPage(state.id);
+              return const CreateStackPage(/*state.id*/);
             } else if (state is HistoryProviderState) {
               return const HistoryPage();
             } else /*if(state is HeroListState) {

@@ -9,8 +9,8 @@ import 'add_cards_list_view.dart';
 // import 'dialog_add_card.dart';
 
 class CreateStackPage extends StatefulWidget {
-  final int id;
-  const CreateStackPage(this.id, {super.key});
+  // final int id;
+  const CreateStackPage(/*this.id,*/ {super.key});
 
   @override
   State<StatefulWidget> createState() => _CreateStackPageState();
@@ -62,7 +62,7 @@ class _CreateStackPageState extends State<CreateStackPage> {
       //"CreateStackPage stack type != Turn order && Friend / Foe && Gravehold && Hero && Nemesis");
     }
     var newStack = CardsStack(
-        id: widget.id,
+        id: 0, // widget.id,
         name: stackName,
         isActive: isActive,
         stackType: stackType,
@@ -97,11 +97,11 @@ class _CreateStackPageState extends State<CreateStackPage> {
     return BlocBuilder<CRUDStackBloc, CRUDStackState>(
         builder: (context, state) {
       if (state is CRUDStackSuccessActionState) {
-        for (var element in state.stacks) {
-          if (element.id == widget.id) {
-            stack = element;
-          }
-        }
+        // for (var element in state.stacks) {
+        //   if (element.id == widget.id) {
+        //     stack = element;
+        //   }
+        // }
         allCards = state.cards;
         //print(
         //  "CreateStackPage state is CRUDStackSuccessActionState newStack == $stack allCards.length == ${allCards.length}");
@@ -281,9 +281,7 @@ class _CreateStackPageState extends State<CreateStackPage> {
         floatingActionButton: ElevatedButton(
             onPressed: () {
               createNewStack();
-              context
-                  .read<CRUDStackBloc>()
-                  .add(CRUDStackUpdateStackEvent(stack));
+              context.read<CRUDStackBloc>().add(CRUDStackNewStackEvent(stack));
               // context
               //     .read<CRUDStackBloc>()
               //     .add(CRUDStackInitialEvent());

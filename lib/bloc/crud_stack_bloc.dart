@@ -73,6 +73,17 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
   }
 
   _onNewStack(CRUDStackNewStackEvent event, Emitter<CRUDStackState> emit) {
+    print(
+        "CRUD Bloc event.stack == ${event.stack}, stacks.length == ${stacks.length}");
+
+    defaultData.newStack(event.stack);
+
+    var newId = stacks.last.id + 1;
+    var newStack = event.stack.copyWith(id: newId);
+    stacks.add(newStack);
+
+    print("CRUD Bloc newStack == $newStack, stacks.length == ${stacks.length}");
+
     emit(CRUDStackSuccessActionState(cards.toList(), stacks.toList()));
   }
 
