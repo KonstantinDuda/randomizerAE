@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '/bloc/crud_stack_bloc.dart';
 import '/bloc/event_state/crud_stack_es.dart';
-import '/bloc/providers/provider_bloc.dart';
 
 class DeleteDialog extends StatefulWidget {
   final String text;
