@@ -3,47 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../bloc/event_state/turn_order_body_es.dart';
 import '../../../bloc/turn_order_body_bloc.dart';
+import '../../../database/cards_stack.dart';
+import 'dialog_button.dart';
 
-class ShufflePutBackDialog extends StatelessWidget {
-  final String text;
-  const ShufflePutBackDialog(this.text, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Shuffle or put card in the bottom?'),
-      //content: const Text('Do you want to shuffle the deck and put the card back?'),
-      actions: [
-        TextButton(
-          onPressed: () {
-            context
-                .read<TurnOrderBodyBloc>()
-                .add(TurnOrderBodyShuffleInStackEvent(text));
-            Navigator.of(context).pop();
-          },
-          child: const Text('Suffle card in stack'),
-        ),
-        TextButton(
-          onPressed: () {
-            context
-                .read<TurnOrderBodyBloc>()
-                .add(TurnOrderBodyPutInButtom(text));
-            Navigator.of(context).pop();
-          },
-          child: const Text('Put card in the bottom'),
-        ),
-      ],
-    );
-  }
-}
-
-
-/*class ChangeSequanceDialog extends StatefulWidget {
-  final int cardId;
+class ChangeSequanceDialog extends StatefulWidget {
+  final int stackId;
+  final List<AECard> list;
 
   const ChangeSequanceDialog({
     super.key,
-    required this.cardId,
+    required this.stackId,
+    required this.list,
   });
 
   @override
@@ -51,15 +21,20 @@ class ShufflePutBackDialog extends StatelessWidget {
 }
 
 class _ChangeSequanceDialogState extends State<ChangeSequanceDialog> {
+  List<AECard> newSequance = [];
+  List<bool> isShown = [];
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
-    newSequance = widget.list;
+    for (int i = widget.list.length - 1; i > -1; i--) {
+      //print("DChSeq initState: widget.list[i] == ${widget.list[i]}");
+      newSequance.add(widget.list[i]);
+    }
+
     for (var _ in widget.list) {
-      isShown.add(false);      
+      isShown.add(false);
     }
   }
 
@@ -69,7 +44,7 @@ class _ChangeSequanceDialogState extends State<ChangeSequanceDialog> {
       title: const Text('Change Sequence'),
       content: SizedBox(
         width: 300,
-        height: 300,
+        height: 400,
         child: ListView.builder(
           itemCount: widget.list.length,
           itemBuilder: (context, index) {
@@ -95,17 +70,20 @@ class _ChangeSequanceDialogState extends State<ChangeSequanceDialog> {
                       ),
                       child: index < widget.list.length - 1
                           ? const Icon(Icons.arrow_downward)
-                          : const Text("")
-                    ),
+                          : const Text("")),
                   Expanded(
                     child: Stack(
                       children: [
                         Container(
-                          alignment: Alignment.center,
-                          child: isShown[index] ? const Text("") : const Icon(Icons.remove_red_eye_outlined)),
+                            alignment: Alignment.center,
+                            child: isShown[index]
+                                ? const Text("")
+                                : const Icon(Icons.remove_red_eye_outlined)),
                         ListTile(
                           title: Text(
-                            isShown[index] ? widget.list[index].text : "",
+                            isShown[index]
+                                ? newSequance[index].name
+                                : "", //widget.list[index].name : "",
                             textAlign: TextAlign.center,
                           ),
                           onTap: () {
@@ -143,19 +121,16 @@ class _ChangeSequanceDialogState extends State<ChangeSequanceDialog> {
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: () {
-            newSequance = newSequance.reversed.toList();
-            context.read<TurnOrderBodyBloc>().add(
-                  TurnOrderBodyChangeSequenceEvent(
-                    newSequance,
-                  ),
-                );
-            Navigator.of(context).pop();
-          },
-          child: const Text('Save'),
-        ),
+        dialogButton("Save", () {
+          newSequance = newSequance.reversed.toList();
+          context.read<TurnOrderBodyBloc>().add(
+                TurnOrderBodyChangeSequenceEvent(
+                  widget.stackId,
+                  newSequance,
+                ),
+              );
+        }, context),
       ],
     );
   }
-}*/
+}

@@ -15,15 +15,16 @@ class HistoryPage extends StatelessWidget {
     return BlocBuilder<HistoryBloc, HistoryState>(
       builder: (context, state) {
         List<String> columns = [];
-        //int stepCount = 0;
         List<List<String>> rows = [];
         String text = "";
+        int stackId = 0;
 
         List<DataColumn> columnWidgets = [];
         List<DataRow> rowWidgets = [];
 
         if (state is HistorySuccessState) {
           //text = state.story;
+          stackId = state.stackId;
           if (state.columns.isNotEmpty) {
             columns = state.columns;
           }
@@ -31,8 +32,8 @@ class HistoryPage extends StatelessWidget {
             rows = state.story;
             for (var i = 0; i < rows.length; i++) {
               if (rows[i].length < columns.length) {
-                print(
-                    "HistoryPage: row $i has ${rows[i].length} cells, but columns has ${columns.length} cells.");
+                //print("HistoryPage: row $i has ${rows[i].length} cells,"
+                //" but columns has ${columns.length} cells.");
                 // Fill missing cells with empty strings
                 rows[i].addAll(
                     List.generate(columns.length - rows[i].length, (_) => ""));
@@ -44,7 +45,7 @@ class HistoryPage extends StatelessWidget {
         }
 
         listColumns() {
-          print("HistoryPage _listColumns $columns");
+          //print("HistoryPage _listRows $rows");
           columns.insert(0, "");
           for (var i = 0; i < columns.length; i++) {
             columnWidgets.add(
@@ -62,9 +63,9 @@ class HistoryPage extends StatelessWidget {
         }
 
         listRows() {
-          print("HistoryPage _listRows $rows");
-          for(int i = 0; i < rows.length; i++) {
-            rows[i].insert(0, "Turn ${i+1}");
+          //print("HistoryPage _listRows $rows");
+          for (int i = 0; i < rows.length; i++) {
+            rows[i].insert(0, "Turn ${i + 1}");
           }
           for (var i = 0; i < rows.length; i++) {
             List<DataCell> cells = [];
@@ -73,15 +74,13 @@ class HistoryPage extends StatelessWidget {
               var splitedCell = cell.split(" ");
               cells.add(
                 DataCell(
-                  splitedCell[0] == "Turn" ? 
-                  Text(
-                    cell,
-                    style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 18),
-                  ) : Center(child: Text(cell)),
-                  // Text(
-                  //   cell,
-                  //   style: splitedCell[0] == "Turn" ? const TextStyle(fontStyle: FontStyle.italic, fontSize: 18) : const TextStyle(),
-                  // ),
+                  splitedCell[0] == "Turn"
+                      ? Text(
+                          cell,
+                          style: const TextStyle(
+                              fontStyle: FontStyle.italic, fontSize: 18),
+                        )
+                      : Center(child: Text(cell)),
                 ),
               );
             }
@@ -112,7 +111,7 @@ class HistoryPage extends StatelessWidget {
             ),
             body: const Center(
               child: Text(
-                'This is the History Page. \n History is Epmty now.',
+                'This is the History Page. \n History is Empty now.',
               ),
             ),
           );
@@ -145,10 +144,10 @@ class HistoryPage extends StatelessWidget {
               onPressed: () {
                 columns.clear();
                 rows.clear();
-                context.read<HistoryBloc>().add(HistoryClearEvent());
+                context.read<HistoryBloc>().add(HistoryClearEvent(stackId));
                 context
                     .read<TurnOrderBodyBloc>()
-                    .add(TurnOrderBodyClearStackEvent());
+                    .add(TurnOrderBodyClearStackHistoryEvent(stackId));
                 context.read<ProviderBloc>().add(RootEvent());
               },
               style: ElevatedButton.styleFrom(

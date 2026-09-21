@@ -22,7 +22,7 @@ class SimpleBlocObserver extends BlocObserver {
 
   @override
   void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
-    print('onError myObserver. error == $error');
+    //print('onError myObserver. error == $error');
     super.onError(bloc, error, stackTrace);
   }
 }

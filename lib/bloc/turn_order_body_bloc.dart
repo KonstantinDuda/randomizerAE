@@ -7,37 +7,59 @@ import '../database/cards_stack.dart';
 //import '../database/db_temporary.dart';
 
 class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
-  late CardsStack stack = const CardsStack.empty();
-  late CardsStack alreadyPlayed = const CardsStack.empty();
+  late List<CardsStack> stacks = [];
+  late List<CardsStack> alreadyPlayed = [];
+  Map<String, int> links = {};
   final db = DBProvider();
   final data = DefaultData();
 
   TurnOrderBodyBloc() : super(const TurnOrderBodySuccessActionState()) {
     on<TurnOrderInitialEvent>(_onInit);
     on<TurnOrderBodyNextEvent>(_onNext);
-    on<TurnOrderBodyDelWildEvent>(_onDelWild);
+    //on<TurnOrderBodyDelWildEvent>(_onDelWild);
+    on<TurnOrderBodyDiscardEvent>(_onDiscard);
     on<TurnOrderBodyShuffleEvent>(_onShuffle);
     on<TurnOrderBodyShuffleInStackEvent>(_onShuffleIn);
-    on<TurnOrderBodyPutInButtom>(_onPutInTheButtom);
+    on<TurnOrderBodyPutInButtomEvent>(_onPutInTheButtom);
+    on<TurnOrderBodyPutOnTopEvent>(_onPunOnTop);
     on<TurnOrderBodyChangeSequenceEvent>(_onChangeSequence);
     on<TurnOrderBodyChangeActiveStackEvent>(_onChangeActiveStack);
-    on<TurnOrderBodyClearStackEvent>(_onClearStack);
-    //on<TurnOrderBodyChangeAvailableStackListEvent>(_onChangeAvailableList);
+    on<TurnOrderAddDeleteStackEvent>(_onAddDeleteStack);
+    on<TurnOrderBodyClearStackHistoryEvent>(_onClearStack);
   }
 
   void _onInit(
       TurnOrderInitialEvent event, Emitter<TurnOrderBodyState> emit) async {
-        print("TurnOrderBodyBloc _onInit stack == $stack \n");
-    if (stack.id == 0) {
-      var stackList = await db.getAvailableStacks();
-      //var stackList = await data.getStacks();
-      if (stackList.isNotEmpty) {
-        for (var element in stackList) {
-          if (element.stackType == StackType.turnOrder) {
-            stack = element;
-            break;
+    alreadyPlayedCheck() {
+      if (alreadyPlayed.isEmpty) {
+        //print("TOBB _onInit: alreadyPlayed.isEmpty");
+        alreadyPlayed.addAll(stacks.map((e) => e.copyWith(cards: [])));
+      } else {
+        //print("TOBB _onInit: alreadyPlayed.isEmpty else");
+        for (var i = 0; i < stacks.length; i++) {
+          var alreadyStack = alreadyPlayed.firstWhere(
+              (element) => element.id == stacks[i].id,
+              orElse: () => const CardsStack.empty());
+          if (alreadyStack.id == 0) {
+            alreadyPlayed.add(stacks[i].copyWith(cards: []));
           }
         }
+      }
+    }
+
+    if (stacks.isEmpty) {
+      var stackList =
+          await data.getAvailableStacks(); //db.getAvailableStacks();
+      List<CardsStack> shuffledStacks = [];
+      //var stackList = await data.getStacks();
+      if (stackList.isNotEmpty) {
+        for (int i = 0; i < stackList.length; i++) {
+          List<AECard> cards = stackList[i].cards;
+          cards.shuffle();
+          //print("TOBB _onInit: cards.shuffled == $cards");
+          shuffledStacks.add(stackList[i].copyWith(cards: cards));
+        }
+        stacks.addAll(shuffledStacks);
       }
 
       /*var turnNF = 0;
@@ -116,242 +138,560 @@ class TurnOrderBodyBloc extends Bloc<TurnOrderBodyEvent, TurnOrderBodyState> {
           foe = 0;
         }
       }
-      print(
+      //print(
           "\n \t \t За 100 повторень: \n \t По турам: \n Послідовних кроків Nemesis Foe або Foe Nemesis = $turnNF");
-      print("Немезис ходить підряд по 2 рази = $turnNN");
-      print(
+      //print("Немезис ходить підряд по 2 рази = $turnNN");
+      //print(
           "В різних комбінаціях послідовних кроків Nemesis Nemesis Foe = $turnNNF ");
-      print(
+      //print(
           "\t Якщо вистроїти всі тури підряд (для перевірки 3 кроків немезіса підряд і т.і.): ");
-      print("Nemesis Foe = $NF");
-      print("Nemesis Nemesis = $NN");
-      print("Nemesis Nemesis Foe різні комбінації: $NNF");
-      print("Nemesis Nemesis Foe Foe в різних комбінаціях: $NNFF");
-      print("Nemesis Nemesis Nemesis: $NNN");
-      print("Nemesis Nemesis Nemesis Foe в різних комбінаціях: $NNNF");
-      print("Nemesis Nemesis Nemesis Foe Foe в різних комбінаціях: $NNNFF");
-      print("Nemesis Nemesis Nemesis Nemesis: $NNNN");
-      print("Nemesis Nemesis Nemesis Nemesis Foe в різних комбінаціях: $NNNNF");
-      print(
+      //print("Nemesis Foe = $NF");
+      //print("Nemesis Nemesis = $NN");
+      //print("Nemesis Nemesis Foe різні комбінації: $NNF");
+      //print("Nemesis Nemesis Foe Foe в різних комбінаціях: $NNFF");
+      //print("Nemesis Nemesis Nemesis: $NNN");
+      //print("Nemesis Nemesis Nemesis Foe в різних комбінаціях: $NNNF");
+      //print("Nemesis Nemesis Nemesis Foe Foe в різних комбінаціях: $NNNFF");
+      //print("Nemesis Nemesis Nemesis Nemesis: $NNNN");
+      //print("Nemesis Nemesis Nemesis Nemesis Foe в різних комбінаціях: $NNNNF");
+      //print(
           "Nemesis Nemesis Nemesis Nemesis Foe Foe в різних комбінаціях: $NNNNFF");*/
 
-      stack = stackList.isNotEmpty ? stackList.first : const CardsStack.empty();
-      stack.cards.shuffle();
-      print("TurnOrderBodyBloc _onInit stack.id == 0 stack == $stack \n");
+      //print("TurnOrderBodyBloc _onInit stacks.length == ${stacks.length} \n");
     } else {
-      print(
-          "TurnOrderBodyBloc _onInit stack.id != 0 \n stack.cards == ${stack.cards} \n alreadyPlayed.cards == ${alreadyPlayed.cards}");
+      //print(
+      //"TurnOrderBodyBloc _onInit stacks.isNotEmpty \n stacks.length == ${stacks.length} \n alreadyPlayed.length == ${alreadyPlayed.length}");
+    }
+    alreadyPlayedCheck();
+
+    // Add Friend, Foe and first Turn Order links
+    var friend = stacks.firstWhere((e) => e.stackType == StackType.friend,
+        orElse: () => const CardsStack.empty());
+    var foe = stacks.firstWhere((e) => e.stackType == StackType.foe,
+        orElse: () => const CardsStack.empty());
+    var to = stacks.firstWhere((e) => e.stackType == StackType.turnOrder,
+        orElse: () => const CardsStack.empty());
+    if (friend.id != 0) {
+      links["Friend"] = friend.id;
+    }
+    if (foe.id != 0) {
+      links["Foe"] = foe.id;
+    }
+    if (to.id != 0) {
+      links[to.name] = to.id;
     }
 
-    emit(TurnOrderBodySuccessActionState(stack, alreadyPlayed));
+    //print(
+    //"TurnOrderBodyBloc _onInit alreadyPlayed.length == ${alreadyPlayed.length} \n");
+    //print("TurnOrderBodyBloc _onInit links.length == ${links.length} \n");
+
+    emit(TurnOrderBodySuccessActionState(
+        stacks.firstWhere(
+          ((element) => element.id != 0),
+          orElse: () => const CardsStack.empty(),
+        ),
+        alreadyPlayed.firstWhere((element) => element.id == stacks.first.id,
+            orElse: () => const CardsStack.empty()),
+        stacks,
+        links));
   }
 
   void _onNext(
       TurnOrderBodyNextEvent event, Emitter<TurnOrderBodyState> emit) async {
     // Handle the next event
-    if (stack.id == 0 || stack.cards.isEmpty) {
-      //stack = database.getActiveStack();
+    var curentStack = stacks.firstWhere((element) => element.id == event.id,
+        orElse: () => const CardsStack.empty());
+    var newAlreadyPlayed = alreadyPlayed.firstWhere(
+        (element) => element.id == event.id,
+        orElse: () => const CardsStack.empty());
 
-      stack = await db.getStackById(stack.id);
+    if (curentStack.id == 0 || curentStack.cards.isEmpty) {
+      //print("TOBB: _onNext: cS.id == 0 || cS.cards.isEmpty");
+      curentStack = await db.getStackById(event.id);
 
-      alreadyPlayed = const CardsStack.empty();
-      stack.cards.shuffle();
-    } else {
-      if (alreadyPlayed.id == 0) {
-        alreadyPlayed = CardsStack(
-          id: stack.id,
-          name: stack.name,
-          isActive: false,
-          stackType: StackType.turnOrder,
-          stackColor: stack.stackColor,
-          cards: [],
-        );
+      if (newAlreadyPlayed.id == 0) {
+        newAlreadyPlayed = curentStack.copyWith(cards: []);
       }
-      alreadyPlayed.cards.add(stack.cards.last);
-      stack.cards.removeLast();
+      curentStack.cards.shuffle();
+    } else {
+      if (newAlreadyPlayed.id == 0) {
+        newAlreadyPlayed = curentStack.copyWith(cards: []);
+      }
+      newAlreadyPlayed.cards.insert(0, curentStack.cards.last);
+      curentStack.cards.removeLast();
 
       // Creating story to statistic
-      if (alreadyPlayed.cards.length > 1) {
-        data.addCardToStory(alreadyPlayed.cards.last, false);
+      if (newAlreadyPlayed.cards.length > 1) {
+        data.addCardToStory(
+            newAlreadyPlayed.id, newAlreadyPlayed.cards.first, false);
       } else {
-        data.addCardToStory(alreadyPlayed.cards.last, true);
+        data.addCardToStory(
+            newAlreadyPlayed.id, newAlreadyPlayed.cards.first, true);
       }
     }
 
-    var newStack = CardsStack(
-      id: -1,
-      name: stack.name,
-      isActive: stack.isActive,
-      stackType: StackType.turnOrder,
-      stackColor: stack.stackColor,
-      cards: stack.cards,
-    );
+    bool curentStackIsNew = true;
+    //bool alreadyPlayedIsNew = true;
+    for (var i = 0; i < stacks.length; i++) {
+      if (stacks[i].id == curentStack.id) {
+        stacks[i] = curentStack;
+        curentStackIsNew = false;
+        break;
+      }
+    }
+    if (curentStackIsNew) {
+      stacks.add(curentStack);
+      //print(
+      //"TOBB _onNext $curentStackIsNew is new. alreadyPlayed will be added");
+      alreadyPlayed.add(curentStack.copyWith(cards: []));
+    }
 
-    var newAlreadyPlayed = CardsStack(
-      id: -2,
-      name: alreadyPlayed.name,
-      isActive: alreadyPlayed.isActive,
-      stackType: StackType.turnOrder,
-      stackColor: alreadyPlayed.stackColor,
-      cards: alreadyPlayed.cards,
-    );
-
-    emit(TurnOrderBodySuccessActionState(newStack, newAlreadyPlayed));
+    emit(TurnOrderBodySuccessActionState(
+        curentStack.copyWith(cards: curentStack.cards),
+        newAlreadyPlayed.copyWith(cards: newAlreadyPlayed.cards),
+        List.from(stacks),
+        links));
   }
 
-  void _onDelWild(
-      TurnOrderBodyDelWildEvent event, Emitter<TurnOrderBodyState> emit) {
-    // Handle the delete wild event
-    List<AECard> newAlreadyCards = [];
-    newAlreadyCards
-        .add(AECard(id: 5, text: 'Wild', imgPath: 'assets/images/wild.png'));
+  _onDiscard(
+      TurnOrderBodyDiscardEvent event, Emitter<TurnOrderBodyState> emit) {
+    //print(
+    //"TurnOrderBodyBloc _onDiscard card or stack name from where it colled== ${event.name} \n");
+    //print(
+    // "TurnOrderBodyBloc _onDiscard link or dickard names list == ${event.list} \n");
+    //print(
+    //"TurnOrderBodyBloc _onDiscard event.isDiscard == ${event.isDiscard} \n");
 
-    for (var i = 0; i < stack.cards.length; i++) {
-      if (stack.cards[i].id == 5) {
-        stack.cards.removeAt(i);
+    // String link = "";
+    var curentStack = stacks.firstWhere((element) => element.name == event.name,
+        orElse: () => const CardsStack.empty());
+    var newAlreadyPlayed = alreadyPlayed.firstWhere(
+      //(element) => element.id == event.stackId,
+      (element) => element.id == curentStack.id,
+      orElse: () => const CardsStack.empty(),
+    );
+    String link = event.name;
+
+    if (event.isDiscard) {
+      List<AECard> newAlreadyCards = [];
+
+      for (var name in event.list) {
+        if (curentStack.cards.isNotEmpty &&
+            curentStack.cards.any((card) => card.name == name)) {
+          var cardToRemove =
+              curentStack.cards.firstWhere((card) => card.name == name);
+          newAlreadyCards.add(cardToRemove);
+          curentStack.cards.remove(cardToRemove);
+          //print("TOBB _onDiscard: event.isDiscard. card $name was removed "
+          // "from ${curentStack.name} which now has ${curentStack.cards} cards.");
+        }
       }
+      // for (var i = 0; i < curentStack.cards.length; i++) {
+      //   if (event.list.contains(curentStack.cards[i].name)) {
+      //     newAlreadyCards.add(curentStack.cards[i]);
+      //     curentStack.cards.removeAt(i);
+      //     i--; // Adjust index after removal
+      //   }
+      // }
+      for (var i = 0; i < stacks.length; i++) {
+        if (stacks[i].name == event.name) {
+          stacks[i] = curentStack;
+          break;
+        }
+      }
+      var discardedEarlier = alreadyPlayed.firstWhere(
+          (element) => element.name == event.name,
+          orElse: () => const CardsStack.empty());
+      if (discardedEarlier.id != 0) {
+        for (var i = 0; i < newAlreadyCards.length; i++) {
+          if (newAlreadyPlayed.cards.isEmpty && i == 0) {
+            data.addCardToStory(newAlreadyPlayed.id, newAlreadyCards[i], true);
+          } else {
+            data.addCardToStory(newAlreadyPlayed.id, newAlreadyCards[i], false);
+          }
+          //print(
+          // "TOBB _onDiscard: event.isDiscard discardedEarlier.id != 0. newAlreadyCards.name == ${newAlreadyCards[i].name}");
+        }
+        // for (var card in newAlreadyCards) {
+        //   data.addCardToStory(newAlreadyPlayed.id, card,
+        //       newAlreadyPlayed.cards.isEmpty ? true : false);
+        // }
+        newAlreadyCards.addAll(discardedEarlier.cards);
+        for (var i = 0; i < alreadyPlayed.length; i++) {
+          if (alreadyPlayed[i].name == event.name) {
+            alreadyPlayed[i] =
+                discardedEarlier.copyWith(cards: newAlreadyCards);
+            newAlreadyPlayed = alreadyPlayed[i];
+            break;
+          }
+        }
+      } else {
+        alreadyPlayed.add(curentStack.copyWith(cards: newAlreadyCards));
+        newAlreadyPlayed = alreadyPlayed.last;
+        //print(
+        //  "TOBB _onDiscard: event.isDiscard discardedEarlier.id == 0. alreadyPlayed.add($curentStack)");
+      }
+    } else {
+      // This is for creating links
+      linksCreating(List<String> names) {
+        for (var name in names) {
+          var id = stacks
+              .firstWhere((e) => e.name == name,
+                  orElse: () => const CardsStack.empty())
+              .id;
+          bool nameToDelete = false;
+          if (links.containsKey(name)) {
+            //print(
+            //  "TOBB _onDelete: links.containsKey($name), it'll be deleted ");
+            links.remove(name);
+            nameToDelete = true;
+          }
+          if (id != 0 && nameToDelete == false) {
+            links[name] = id;
+          }
+        }
+      }
+
+      //print("TOBB _onDiscard: discard == false. stacks.names == ${event.list}");
+      if (link != curentStack.name && event.list.isNotEmpty) {
+        var id = stacks.firstWhere((e) => e.name == event.list.first).id;
+        links[link] = id;
+        //print(
+        //  "TOBB _onDiscard: discard == false. The ${links[link]} was created");
+        if (event.list.length > 1) {
+          var list = event.list;
+          list.removeAt(0);
+          linksCreating(list);
+        }
+      } else {
+        linksCreating(event.list);
+        //print("TOBB _onDiscard: discard == false. $links was created");
+      }
+
+      //print("_onDiscard isDiscard == false: links == $links");
     }
-    data.addCardToStory(newAlreadyCards[0], true);
 
-    print(
-        "TurnOrderBodyBlock onDelWild stack.cards after Wild deleted == ${stack.cards} \n");
-    alreadyPlayed = CardsStack(
-      id: stack.id,
-      name: stack.name,
-      isActive: false,
-      stackType: StackType.turnOrder,
-      stackColor: stack.stackColor,
-      cards: newAlreadyCards,
-    );
+    if (curentStack.id == 0) {
+      curentStack =
+          stacks.firstWhere((e) => e.stackType == StackType.turnOrder);
+      newAlreadyPlayed =
+          alreadyPlayed.firstWhere((e) => e.id == curentStack.id);
+    }
 
-    List<AECard> newCardsList = stack.cards;
-    var newStack = CardsStack(
-      id: -1, //stack.id,
-      name: stack.name,
-      isActive: stack.isActive,
-      stackType: StackType.turnOrder,
-      stackColor: stack.stackColor,
-      cards: newCardsList,
-    ); // Something is wrong here
+    //print("TOBB _onDiscard: stacks.length == ${stacks.length}");
+    //print("TOBB _onDiscard: alreadyPlayed.length == ${alreadyPlayed.length}");
+    //print("TOBB _onDiscard: alreadyPlayed == $alreadyPlayed");
 
-    var newAlreadyPlayed = CardsStack(
-      id: -2, // alreadyPlayed.id,
-      name: alreadyPlayed.name,
-      isActive: alreadyPlayed.isActive,
-      stackType: StackType.turnOrder,
-      stackColor: alreadyPlayed.stackColor,
-      cards: newAlreadyCards,
-    );
-
-    emit(TurnOrderBodySuccessActionState(newStack, newAlreadyPlayed));
+    emit(TurnOrderBodySuccessActionState(
+        curentStack.copyWith(cards: curentStack.cards),
+        newAlreadyPlayed.copyWith(cards: newAlreadyPlayed.cards),
+        List.from(stacks),
+        links));
   }
 
   void _onShuffle(
       TurnOrderBodyShuffleEvent event, Emitter<TurnOrderBodyState> emit) async {
-    print(
-        "TurnOrderBodyBlock _onShuffle stack.cards.length == ${stack.cards.length} \n");
+    //print("TOBB _onShuffle: event.stackId == ${event.stackId}");
+    var curentStack = await db.getStackById(event.stackId);
+    List<AECard> cards = [];
+    if (curentStack.id != 0) {
+      //print("TOBB _onShuffle: curentStack.id != 0");
+      cards = curentStack.cards;
+      cards.shuffle();
+      //print("TOBB _onShuffle: cards == $cards");
+      curentStack = curentStack.copyWith(cards: cards);
+      //print("TOBB _onShuffle: curentStack == $curentStack");
+    }
+    var curentAP = curentStack.copyWith(cards: []);
 
-    stack = await db.getStackById(stack.id);
-    stack.cards.shuffle();
-    alreadyPlayed = const CardsStack.empty();
+    _saveStacksAndAP(curentStack.id, curentStack.cards, curentAP.cards);
 
-    emit(TurnOrderBodySuccessActionState(stack, alreadyPlayed));
+    emit(TurnOrderBodySuccessActionState(
+        curentStack, curentAP, List.from(stacks), links));
   }
 
   void _onShuffleIn(TurnOrderBodyShuffleInStackEvent event,
       Emitter<TurnOrderBodyState> emit) {
-    AECard card = AECard(id: 0, text: "", imgPath: "");
-    for (var i = 0; i < alreadyPlayed.cards.length; i++) {
-      if (alreadyPlayed.cards[i].text == event.text) {
-        card = alreadyPlayed.cards[i];
-        alreadyPlayed.cards.removeAt(i);
+    AECard card = AECard(id: 0, text: "", name: "");
+    var curentStack = stacks.firstWhere(
+        (element) => element.id == event.stackId,
+        orElse: () => const CardsStack.empty());
+    var curentAP = alreadyPlayed.firstWhere(
+        (element) => element.id == event.stackId,
+        orElse: () => const CardsStack.empty());
+
+    for (var i = 0; i < curentAP.cards.length; i++) {
+      if (curentAP.cards[i].name == event.text) {
+        card = curentAP.cards[i];
+        curentAP.cards.removeAt(i);
+        curentStack.cards.add(card);
+        curentStack.cards.shuffle();
         break;
       }
     }
+    _saveStacksAndAP(curentStack.id, curentStack.cards, curentAP.cards);
 
-    if (card.id > 0) {
-      stack.cards.add(card);
-      stack.cards.shuffle();
-    }
-
-    emit(TurnOrderBodySuccessActionState(/*newStack*/ stack, alreadyPlayed));
+    emit(TurnOrderBodySuccessActionState(
+        curentStack, curentAP, List.from(stacks), links));
   }
 
-  _onPutInTheButtom(TurnOrderBodyPutInButtom event, Emitter<TurnOrderBodyState> emit) {
-    print("TurnOrderBodyBloc _onPutInTheButtom event.text == ${event.text} \n");
+  _onPutInTheButtom(
+      TurnOrderBodyPutInButtomEvent event, Emitter<TurnOrderBodyState> emit) {
+    //print("TurnOrderBodyBloc _onPutInTheButtom event.text == ${event.text} \n");
+    AECard card = AECard(id: 0, text: "", name: "");
+    var curentStack = stacks.firstWhere(
+        (element) => element.id == event.stackId,
+        orElse: () => const CardsStack.empty());
+    var curentAP = alreadyPlayed.firstWhere(
+        (element) => element.id == event.stackId,
+        orElse: () => const CardsStack.empty());
 
-    AECard card = AECard(id: 0, text: "", imgPath: "");
-    for (var i = 0; i < alreadyPlayed.cards.length; i++) {
-      if (alreadyPlayed.cards[i].text == event.text) {
-        print("TurnOrderBodyBloc _onPutInTheButtom found card to put in the buttom: ${alreadyPlayed.cards[i]} \n");
-        card = alreadyPlayed.cards[i];
-        alreadyPlayed.cards.removeAt(i);
+    for (var i = 0; i < curentAP.cards.length; i++) {
+      if (curentAP.cards[i].name == event.text) {
+        //print(
+        //"TurnOrderBodyBloc _onPutInTheButtom found card to put in the buttom: ${curentAP.cards[i]} \n");
+        card = curentAP.cards[i];
+        curentAP.cards.removeAt(i);
+        curentStack.cards.insert(0, card);
         break;
       }
     }
+    _saveStacksAndAP(curentStack.id, curentStack.cards, curentAP.cards);
 
-    if (card.id > 0) {
-      stack.cards.insert(0, card);
+    emit(TurnOrderBodySuccessActionState(
+        curentStack, curentAP, List.from(stacks), links));
+  }
+
+  _onPunOnTop(
+      TurnOrderBodyPutOnTopEvent event, Emitter<TurnOrderBodyState> emit) {
+    //print("TurnOrderBodyBloc _onPutInTheButtom event.text == ${event.text}");
+    //print(
+    //  "TurnOrderBodyBloc _onPutInTheButtom event.stackId == ${event.stackId} \n");
+    AECard card = AECard(id: 0, text: "", name: "");
+    var curentStack = stacks.firstWhere(
+        (element) => element.id == event.stackId,
+        orElse: () => const CardsStack.empty());
+    var curentAP = alreadyPlayed.firstWhere(
+        (element) => element.id == event.stackId,
+        orElse: () => const CardsStack.empty());
+    //print("TurnOrderBodyBloc _onPutOnTop curentStack == $curentStack");
+    //print("TurnOrderBodyBloc _onPutOnTop curentAP == $curentAP");
+
+    for (var i = 0; i < curentAP.cards.length; i++) {
+      if (curentAP.cards[i].name == event.text) {
+        //print(
+        //  "TurnOrderBodyBloc _onPutOnTop found card to put on top: ${curentAP.cards[i]} \n");
+        card = curentAP.cards[i];
+        curentAP.cards.removeAt(i);
+        curentStack.cards.add(card);
+        break;
+      }
     }
+    _saveStacksAndAP(curentStack.id, curentStack.cards, curentAP.cards);
 
-    emit(TurnOrderBodySuccessActionState(stack, alreadyPlayed));
+    emit(TurnOrderBodySuccessActionState(
+        curentStack.copyWith(), curentAP.copyWith(), List.from(stacks), links));
   }
 
   void _onChangeSequence(TurnOrderBodyChangeSequenceEvent event,
       Emitter<TurnOrderBodyState> emit) {
+    print("TOBB _onChangeSeq: list == ${event.list}");
     var newCardsList = event.list;
+    var stackIndex =
+        stacks.indexWhere((element) => element.id == event.stackId);
+    if (stackIndex != -1) {
+      stacks[stackIndex] = stacks[stackIndex].copyWith(cards: newCardsList);
+    }
 
-    var newStack = CardsStack(
-      id: stack.id,
-      name: stack.name,
-      isActive: stack.isActive,
-      stackType: stack.stackType,
-      stackColor: stack.stackColor,
-      cards: newCardsList,
-    );
-    stack = newStack;
-    print("TurnOrderBodyBlock _onChangeSequence "
-        "stack == $stack \n "
-        "newStack.cards == ${newStack.cards} \n ");
-
-    emit(TurnOrderBodySuccessActionState(newStack, alreadyPlayed));
+    emit(TurnOrderBodySuccessActionState(
+        stacks[stackIndex].copyWith(cards: newCardsList),
+        alreadyPlayed.firstWhere(
+          (element) => element.id == stacks[stackIndex].id,
+          orElse: () => stacks[stackIndex].copyWith(cards: []),
+        ),
+        List.from(stacks),
+        links));
   }
 
   void _onChangeActiveStack(TurnOrderBodyChangeActiveStackEvent event,
       Emitter<TurnOrderBodyState> emit) async {
     //emit(const TurnOrderBodyClearScreenState());
-    print(
-        "TurnOrderBodyBlock. _onChangeActiveStack. event.id == ${event.id} \n");
+    //print(
+    //  "TurnOrderBodyBlock. _onChangeActiveStack. event.stackId == ${event.stackId} \n");
+    var newStack = stacks.firstWhere((element) => element.id == event.stackId,
+        orElse: () => const CardsStack.empty());
+    var newAlreadyPlayed = alreadyPlayed.firstWhere(
+        (element) => element.id == event.stackId,
+        orElse: () => const CardsStack.empty());
 
-    if (event.id == stack.id) {
-      emit(TurnOrderBodySuccessActionState(stack, alreadyPlayed));
+    if (newStack.id != 0 && newAlreadyPlayed.id != 0) {
+      //print(
+      //  "TOBB _onChangeActiveStack: newStack.id != 0 && newAlreadyPlayed.id != 0");
+      emit(TurnOrderBodySuccessActionState(
+          newStack, newAlreadyPlayed, List.from(stacks), links));
+      return;
+    } else if (newStack.id != 0 && newAlreadyPlayed.id == 0) {
+      //print(
+      //  "TOBB _onChangeActiveStack newStack.id != 0 && newAlreadyPlayed.id == 0. $newStack will be added");
+      alreadyPlayed.add(newStack.copyWith(cards: []));
+      newAlreadyPlayed = alreadyPlayed.last;
+    } else if (newStack.id == 0 && newAlreadyPlayed.id != 0) {
+      newStack = await db.getStackById(event.stackId);
+      if (newStack.id != 0) {
+        newStack.cards.shuffle();
+        stacks.add(newStack);
+      }
+      for (var i = 0; i < alreadyPlayed.length; i++) {
+        if (alreadyPlayed[i].id == event.stackId) {
+          alreadyPlayed[i] = newAlreadyPlayed.copyWith(cards: []);
+          break;
+        }
+      }
     } else {
-      var dbStack = await db.getStackById(event.id);
-      stack = dbStack;
-      stack.cards.shuffle();
-      alreadyPlayed = const CardsStack.empty();
-
-      emit(TurnOrderBodySuccessActionState(dbStack, const CardsStack.empty()));
+      newStack = await db.getStackById(event.stackId);
+      if (newStack.id != 0) {
+        newStack.cards.shuffle();
+        stacks.add(newStack);
+        //print("TOBB _onChangeActiveStack else. $newStack will be added");
+        alreadyPlayed.add(newStack.copyWith(cards: []));
+        newAlreadyPlayed = alreadyPlayed.last;
+      }
     }
-//    emit(TurnOrderBodySuccessActionState(newStack, newAlreadyPlayed));
+    emit(TurnOrderBodySuccessActionState(
+        newStack, newAlreadyPlayed, List.from(stacks), links));
   }
 
-  void _onClearStack(TurnOrderBodyClearStackEvent event,
+  _onAddDeleteStack(TurnOrderAddDeleteStackEvent event,
       Emitter<TurnOrderBodyState> emit) async {
-    stack = CardsStack(
-        id: stack.id,
-        name: stack.name,
-        isActive: stack.isActive,
-        stackType: stack.stackType,
-        stackColor: stack.stackColor,
-        cards: []);
-    alreadyPlayed = CardsStack(
-        id: stack.id,
-        name: stack.name,
-        isActive: stack.isActive,
-        stackType: stack.stackType,
-        stackColor: stack.stackColor,
-        cards: []);
-    emit(TurnOrderBodySuccessActionState(stack, alreadyPlayed));
+    //print("TOBB _onAddDeleteStack: event.ids == ${event.ids}");
+
+    List<int> localIds = event.ids;
+
+    for (var i = 0; i < localIds.length; i++) {
+      var forStack = stacks.firstWhere((e) => e.id == localIds[i],
+          orElse: () => const CardsStack.empty());
+      if (forStack.id == 0) {
+        //print("TOBB _onAddDeleteStack: forStack.id == 0");
+        forStack = await db.getStackById(localIds[i]);
+        var cards = forStack.cards;
+        cards.shuffle();
+        // Don't update cause it will be update in CRUD
+        //data.updateStack(forStack.copyWith(isActive: !forStack.isActive));
+        stacks.add(forStack.copyWith(cards: cards));
+        var newAPStack = alreadyPlayed.firstWhere(
+            ((element) => element.id == forStack.id),
+            orElse: () => const CardsStack.empty());
+        if (newAPStack.id == 0) {
+          //print("TOBB _onAddDeleteStack: newAPStack.id == 0");
+          alreadyPlayed.add(forStack.copyWith(cards: []));
+        }
+        //print("TOBB _onAddDeleteStack: ${forStack.name} was added");
+        //print("TOBB _onAddDeleteStack: stacks.length == ${stacks.length}");
+        //print(
+        //  "TOBB _onAddDeleteStack: alreadyPlayed.length == ${alreadyPlayed.length}");
+        //print("TOBB _onAddDeleteStack: links.length == ${links.length}");
+        // Checking
+        //var stackToPrint = await db.getStackById(localIds[i]);
+        //print("TOBB _onAddDeleteStack: after data.updateStack "
+        //  "${stackToPrint.name} == ${stackToPrint.isActive}");
+      } else {
+        //print("TOBB _onAddDeleteStack: forStack.id != 0");
+        // var apIndex =
+        //     alreadyPlayed.indexWhere((element) => element.id == localIds[i]);
+        var stacksIndex = stacks.indexWhere((e) => e.id == localIds[i]);
+        //print(
+        //  "TOBB _onAddDeleteStack: ${stacks[stacksIndex].name} will be deleted");
+        alreadyPlayed.removeWhere(
+            (e) => e.id == localIds[i]); // alreadyPlayed.removeAt(apIndex);
+        stacks.removeAt(stacksIndex);
+        if (links.containsValue(localIds[i])) {
+          //print(
+          //  "TOBB _onAddDeleteStack: links.length Before == ${links.length}");
+          links.removeWhere((key, value) => value == localIds[i]);
+          //print(
+          //  "TOBB _onAddDeleteStack: links.length After == ${links.length}");
+        }
+
+        // //print("TOBB _onAddDeleteStack: stacks.length == ${stacks.length}");
+        // //print(
+        //     "TOBB _onAddDeleteStack: alreadyPlayed.length == ${alreadyPlayed.length}");
+        // //print("TOBB _onAddDeleteStack: links.length == ${links.length}");
+      }
+    }
+    //data.setStacks(stacks);
+    if (!links.containsKey("Friend")) {
+      var newFriend = stacks.firstWhere(
+        ((e) => e.stackType == StackType.friend),
+        orElse: () => const CardsStack.empty(),
+      );
+      if (newFriend.id != 0) {
+        links["Friend"] = newFriend.id;
+      }
+      //print("TOBB _onAddDeleteStack: newFriend == $newFriend");
+    }
+    if (!links.containsKey("Foe")) {
+      var newFoe = stacks.firstWhere(((e) => e.stackType == StackType.foe),
+          orElse: () => const CardsStack.empty());
+      if (newFoe.id != 0) {
+        links["Foe"] = newFoe.id;
+      }
+      //print("TOBB _onAddDeleteStack: newFoe == $newFoe");
+    }
+    var to = stacks.firstWhere((e) => e.stackType == StackType.turnOrder);
+    if (to.id != 0) {
+      links[to.name] = to.id;
+      //print("TOBB _onAddDeleteStack: to.id != 0");
+    }
+
+    //print("TOBB _onAddDeleteStack: stacks.length == ${stacks.length}");
+    //print(
+    //  "TOBB _onAddDeleteStack: alreadyPlayed.length == ${alreadyPlayed.length}");
+    //print("TOBB _onAddDeleteStack: alreadyPlayed == $alreadyPlayed");
+
+    emit(TurnOrderBodySuccessActionState(
+        stacks.isNotEmpty ? stacks.first : const CardsStack.empty(),
+        alreadyPlayed.firstWhere((e) => e.id == stacks.first.id),
+        stacks,
+        links));
+  }
+
+  void _onClearStack(TurnOrderBodyClearStackHistoryEvent event,
+      Emitter<TurnOrderBodyState> emit) async {
+    var curentStack = stacks.firstWhere(
+        (element) => element.id == event.stackId,
+        orElse: () => const CardsStack.empty());
+    var curentAP = alreadyPlayed.firstWhere(
+        (element) => element.id == event.stackId,
+        orElse: () => const CardsStack.empty());
+
+    if (curentStack.id != 0) {
+      curentStack = curentStack.copyWith(cards: []);
+      for (var i = 0; i < stacks.length; i++) {
+        if (stacks[i].id == event.stackId) {
+          stacks[i] = curentStack;
+          break;
+        }
+      }
+    }
+    if (curentAP.id != 0) {
+      curentAP = curentAP.copyWith(cards: []);
+      for (var i = 0; i < alreadyPlayed.length; i++) {
+        if (alreadyPlayed[i].id == event.stackId) {
+          alreadyPlayed[i] = curentAP;
+          break;
+        }
+      }
+    }
+
+    emit(TurnOrderBodySuccessActionState(curentStack, curentAP, stacks, links));
+  }
+
+  _saveStacksAndAP(int stackId, List<AECard> stackCards, List<AECard> apCards) {
+    var stackIndex = stacks.indexWhere((element) => element.id == stackId);
+    //print("TOBB _saveStacksAndAP: stackIndex == $stackIndex");
+    stacks[stackIndex] = stacks[stackIndex].copyWith(cards: stackCards);
+    //print("TOBB _saveStacksAndAP: stack == ${stacks[stackIndex]}");
+    var apIndex = alreadyPlayed.indexWhere((element) => element.id == stackId);
+    alreadyPlayed[apIndex] = alreadyPlayed[apIndex].copyWith(cards: apCards);
   }
 }

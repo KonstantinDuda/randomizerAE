@@ -3,11 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc/crud_stack_bloc.dart';
 import '../../bloc/event_state/crud_stack_es.dart';
-import '../../bloc/event_state/friend_foe_body_es.dart';
 import '../../bloc/event_state/turn_order_body_es.dart';
-import '../../bloc/friend_foe_body_bloc.dart';
-// import '../../bloc/providers/provider_bloc.dart';
-import '../../bloc/providers/root_body_provider.dart';
 import '../../bloc/turn_order_body_bloc.dart';
 import '../../database/cards_stack.dart';
 
@@ -35,18 +31,12 @@ class _RootAppBarState extends State<RootAppBar> {
           for (var element in allStacks) {
             if (element.isActive) {
               localStacks.add(element);
-              //print("RootAppBar Page element.isActive == $element \n");
-              // stacks.add(element);
             }
           }
         }
         stacks = localStacks;
-        // for(var element in stacks) {
-        //   print("RootAppBar stack = id: ${element.id} name: ${element.name}");
-        // }
-        //print("RootAppBar stacks == $stacks \n");
       } else {
-        print("RootAppBar state is NOT CRUDStackSuccessActionState");
+        //print("RootAppBar state is NOT CRUDStackSuccessActionState");
       }
       return Container(
         //width: size.width,
@@ -57,22 +47,22 @@ class _RootAppBarState extends State<RootAppBar> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Aeons End Randomizer'),
-                  Container(
-                    margin: const EdgeInsets.only(left: 10),
-                    child: Stack(children: [
-                      const Icon(Icons.circle_outlined),
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(4, 3, 0, 0),
-                        child: const Icon(Icons.question_mark, size: 16),
-                      ),
-                    ]),
-                  ),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     const Text('Aeons End Randomizer'),
+              //     Container(
+              //       margin: const EdgeInsets.only(left: 10),
+              //       child: Stack(children: [
+              //         const Icon(Icons.circle_outlined),
+              //         Container(
+              //           margin: const EdgeInsets.fromLTRB(4, 3, 0, 0),
+              //           child: const Icon(Icons.question_mark, size: 16),
+              //         ),
+              //       ]),
+              //     ),
+              //   ],
+              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
@@ -105,7 +95,7 @@ class _RootAppBarState extends State<RootAppBar> {
                         //  context.read<ProviderBloc>()
                         //              .add(DrawerEvent());
                       } else {
-                        print("RootAppBar widget is not mounted");
+                        //print("RootAppBar widget is not mounted");
                       }
                     },
                   ),
@@ -133,36 +123,11 @@ class _RootAppBarState extends State<RootAppBar> {
                             ),
                           ),
                           onTap: () {
-                            print("\n \n \n");
-                                  print("RootAppBar stacks[index].stackType == ${stacks[index].stackType} \n");
-                            //if (db[index].stackType == StackType.turnOrder) {
-                            if (stacks[index].stackType ==
-                                StackType.turnOrder) {
-                              context
-                                  .read<TurnOrderBodyBloc>()
-                                  .add(TurnOrderBodyChangeActiveStackEvent(
-                                      // db[index].id));
-                                      stacks[index].id));
-                              context
-                                  .read<RootBodyProviderBloc>()
-                                  .add(const RootBodyTurnOrderEvent());
-                            } else if (stacks[index].stackType ==
-                                StackType.friend || stacks[index].stackType == StackType.foe) { 
-                                  print("RootAppBar stacks[index].stackType friend or foe \n");
-                              var stack =
-                                  stacks[index];
-                              print("RootAppBar heroStack == $stack \n");
-                              
-                              context
-                                  .read<RootBodyProviderBloc>()
-                                  .add(RootBodyFriendFoeEvent());
-                              
-                              context.read<FriendFoeBodyBloc>().add(FriendFoeChangeActiveStackEvent(stack.id));
-                            } else {
-                              context
-                                  .read<RootBodyProviderBloc>()
-                                  .add(RootBodyLoadingEvent());
-                            }
+                            //print(
+                            //  "\n RootAppBar stacks[index].stackType == ${stacks[index].stackType} \n");
+                            context.read<TurnOrderBodyBloc>().add(
+                                TurnOrderBodyChangeActiveStackEvent(
+                                    stacks[index].id));
                           },
                         );
                       },

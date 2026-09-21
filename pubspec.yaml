@@ -1,11 +1,11 @@
-name: randomizer_new
+name: card_randomizer
 description: A new Flutter project.
 
-publish_to: 'none' 
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.18.2 <3.0.0'
+  sdk: ">=2.18.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -17,6 +17,7 @@ dependencies:
   path: ^1.9.1
   path_provider: ^2.0.14
   sqflite: ^2.2.8
+  flutter_html: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -25,5 +26,7 @@ dev_dependencies:
   flutter_lints: ^2.0.0
 
 flutter:
-
   uses-material-design: true
+
+  assets:
+    - assets/json/

@@ -10,18 +10,20 @@ class LoadingPage extends StatefulWidget {
   createState() => _LoadingPage();
 }
 
-class _LoadingPage extends State<LoadingPage> with SingleTickerProviderStateMixin{
+class _LoadingPage extends State<LoadingPage>
+    with SingleTickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController controller;
 
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(duration: const Duration(seconds: 2) ,vsync: this);
+    controller =
+        AnimationController(duration: const Duration(seconds: 2), vsync: this);
     animation = Tween<double>(begin: 0, end: 10).animate(controller)
       ..addListener(() {
         // setState(() {
-          
+
         // });
       });
     controller.forward();
@@ -29,8 +31,7 @@ class _LoadingPage extends State<LoadingPage> with SingleTickerProviderStateMixi
 
   @override
   Widget build(BuildContext context) {
-
-    print("Loading Page");
+    //print("Loading Page");
     context.read<ProviderBloc>().add(RootEvent());
     return Scaffold(
       body: Container(
@@ -38,42 +39,44 @@ class _LoadingPage extends State<LoadingPage> with SingleTickerProviderStateMixi
         color: Colors.black,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text("Created by \n Duda Kostiantyn",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 35,
-                  color: Colors.white,
+          children: [
+            const Text(
+              "Created by \n Duda Kostiantyn",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 35,
+                color: Colors.white,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "Loading ",
+                  style: TextStyle(
+                    fontSize: 25,
+                    color: Colors.grey,
+                  ),
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Loading ",
-                        style: TextStyle(
-                          fontSize: 25,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    Transform.rotate(
-                      angle: animation.value,
-                      child:
-                    const Icon(
-                      Icons.rotate_right_outlined,
-                      size: 50.0,
-                      color: Colors.blue,
-                    ),),
-                  ],
-              ),
-            ],
-          ),
+                Transform.rotate(
+                  angle: animation.value,
+                  child: const Icon(
+                    Icons.rotate_right_outlined,
+                    size: 50.0,
+                    color: Colors.blue,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
+      ),
     );
   }
 
-  @override 
+  @override
   void dispose() {
     controller.dispose();
     super.dispose();
   }
-} 
+}

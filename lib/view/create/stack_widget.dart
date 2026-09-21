@@ -1,41 +1,17 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-// import '../../bloc/create_stack_bloc.dart';
-// import '../../bloc/event_state/create_stack_es.dart';
-// import '../../database/cards_stack.dart';
-import '../root/bodyes/my_card.dart';
+import '../../bloc/crud_stack_bloc.dart';
+import '../../bloc/event_state/crud_stack_es.dart';
+import '../../database/cards_stack.dart';
+import '../root/description.dart';
+import 'dialog_add_card.dart';
+import 'dialog_delete.dart';
+import 'dialog_description.dart';
 
 class StackWidget extends StatefulWidget {
-  final Widget stackName;
-  final String cardNames;
-  final bool checkbox;
-  final String curentType;
-  final Color curentColor;
-  final Function changeName;
-  final Function addCard;
-  final Function checkboxChange;
-  final Function changeType;
-  final Function changeColor;
-  final Function saveStack;
-  final Function deleteStack;
-  const StackWidget(
-      this.stackName,
-      this.cardNames,
-      this.checkbox,
-      this.curentType,
-      this.curentColor,
-      this.changeName,
-      this.addCard,
-      this.checkboxChange,
-      this.changeType,
-      this.changeColor,
-      this.saveStack,
-      this.deleteStack,
-      {super.key});
-
-  // final int index;
-  // const StackWidgetPage(this.index, {super.key});
+  final CardsStack stack;
+  const StackWidget(this.stack, {super.key});
 
   @override
   State<StatefulWidget> createState() => _StackWidgetState();
@@ -43,11 +19,9 @@ class StackWidget extends StatefulWidget {
 
 class _StackWidgetState extends State<StackWidget> {
 //  List<CardsStack> stacks = [];
-  List<String> stackTypes = const [
-    "Turn order",
-    "Friend", 
-    "Foe",
-  ];
+  CardsStack changedStack = const CardsStack.empty();
+  List<String> stackTypes = const ["Turn order", "Friend", "Foe", "Other"];
+  String stringType = "";
   List<Color> stackColors = const [
     Color.fromARGB(255, 76, 175, 80),
     Color.fromARGB(255, 33, 150, 243),
@@ -57,39 +31,173 @@ class _StackWidgetState extends State<StackWidget> {
     Color.fromARGB(255, 0, 0, 0),
     Color.fromARGB(255, 255, 255, 255),
   ];
+  String cardNames = "\n";
+  //String stackName = "";
+  String descriptionHtml = "";
+
+  @override
+  void initState() {
+    super.initState();
+
+    changedStack = widget.stack;
+
+    if (changedStack.cards.isNotEmpty) {
+      for (var i = 0; i < changedStack.cards.length; i++) {
+        cardNames = "$cardNames ${changedStack.cards[i]} \n";
+      }
+    }
+
+    if (changedStack.stackType == StackType.turnOrder) {
+      stringType = "Turn order";
+    } else if (changedStack.stackType == StackType.friend) {
+      stringType = "Friend";
+    } else if (changedStack.stackType == StackType.foe) {
+      stringType = "Foe";
+    } else {
+      stringType = "Other";
+    }
+
+    descriptionHtml = widget.stack.description;
+    //stackName = widget.stack.name;
+  }
+
+  changeType(String value) {
+    if (value != stringType) {
+      //print("StackWidget: ${changedStack.name} Stack type changed to $value");
+      var newStackType = StackType.turnOrder;
+      if (value == "Turn order") {
+        newStackType = StackType.turnOrder;
+      } else if (value == "Friend") {
+        newStackType = StackType.friend;
+      } else if (value == "Foe") {
+        newStackType = StackType.foe;
+      } else if (value == "Other") {
+        newStackType = StackType.other;
+      }
+      if (mounted) {
+        setState(() {
+          changedStack = changedStack.copyWith(stackType: newStackType);
+        });
+      }
+    } else {
+      //print("StackWidget: ${changedStack.name} Stack type not changed");
+    }
+  }
+
+  changeColor(Color value) {
+    if (value != changedStack.stackColor) {
+      //print("StackWidget: "
+      //  "${changedStack.name} Stack color changed to ${value.toARGB32()}");
+      if (mounted) {
+        setState(() {
+          changedStack = changedStack.copyWith(stackColor: value);
+        });
+      }
+    } else {
+      //print("StackWidget: Stack color not changed");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context).size;
-    return MyCard(
-      Column(
-        //mainAxisAlignment: MainAxisAlignment.start,
+    var screenSize = Size(
+        350, MediaQuery.of(context).size.height); //MediaQuery.of(context).size;
+    return Container(
+      width: screenSize.width,
+      height: 525, // screenSize.height,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(
+          color: Colors.black,
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      margin: const EdgeInsets.all(5),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          widget.stackName,
+          SizedBox(
+            height: 40,
+            width: screenSize.width,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      changedStack.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => DescriptionDialog(
+                            stack: changedStack,
+                            isDescription: false)).then((value) {
+                      if (value != null) {
+                        setState(() {
+                          //stackName = value;
+                          changedStack = changedStack.copyWith(name: value);
+                        });
+                      }
+                    });
+                  },
+                ),
+                // ),
+              ],
+            ),
+          ),
           Row(
             children: [
+              // Cards in Stack part
               Column(
                 children: [
                   const Text(
                     "Cards in stack: ",
                     style: TextStyle(
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  MyCard(
-                    Column(
+                  Container(
+                    width: 130,
+                    height: screenSize.height / 3.3,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    margin: const EdgeInsets.fromLTRB(2, 0, 2, 0),
+                    child: Column(
                       children: [
                         Expanded(
                           child: Text(
-                            widget.cardNames,
+                            //widget.cardNames,
+                            cardNames,
                             maxLines: 10,
                             textAlign: TextAlign.center,
                           ),
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            widget.addCard();
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    AddCardToStackDialog(stack: changedStack));
+                            //widget.addCard();
                           },
                           child: const Icon(
                             Icons.add,
@@ -99,120 +207,192 @@ class _StackWidgetState extends State<StackWidget> {
                         )
                       ],
                     ),
-                    const Size(100, 270),
-                    margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                   ),
                 ],
               ),
-              Container(
-                width: screenSize.width - 170,
-                height: 270,
-                alignment: Alignment.center,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text("Is Active: "),
-                            Checkbox(
-                                value:
-                                    widget.checkbox, //stacks[index].isActive,
-                                onChanged: (value) {
-                                  widget.checkboxChange(value);
-                                }),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text("Stack Type: "),
-                            DropdownButton<String>(
-                              iconSize: 35,
-                              value: widget.curentType, //typesList[index],
-                              items: stackTypes.map((String type) {
-                                return DropdownMenuItem<String>(
-                                  alignment: AlignmentDirectional.center,
-                                  value: type,
-                                  child: Text(type),
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                widget.changeType(value);
-                              },
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text("Stack color: "),
-                            SizedBox(
-                              //width: 60,
-                              //height: 25,
-                              child: DropdownButton<Color>(
+              Expanded(
+                child: Container(
+                  width: screenSize.width - 200,
+                  height: 270,
+                  alignment: Alignment.center,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          // Is Active boolean
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text("Is Active: "),
+                              Checkbox(
+                                  value:
+                                      // widget.checkbox,
+                                      changedStack.isActive,
+                                  onChanged: (value) {
+                                    //widget.checkboxChange(value);
+                                    //print(
+                                    //  "StackWidget: IsActive change to $value");
+                                    var newIsActive = value;
+                                    setState(() {
+                                      changedStack = changedStack.copyWith(
+                                          isActive: newIsActive);
+                                    });
+                                  }),
+                            ],
+                          ),
+                          // StackType
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text("Stack Type: "),
+                              DropdownButton<String>(
                                 iconSize: 35,
-                                value: widget.curentColor, //colorsList[index],
-                                items: stackColors.map((Color type) {
-                                  return DropdownMenuItem<Color>(
+                                value: stringType, //widget.curentType,
+                                items: stackTypes.map((String type) {
+                                  return DropdownMenuItem<String>(
                                     alignment: AlignmentDirectional.center,
-                                    value: type, //type,
-                                    child: Container(
-                                        width: 70,
-                                        height: 25,
-                                        decoration: BoxDecoration(
-                                          color: type,
-                                          border: Border.all(
-                                            color: Colors.black,
-                                            width: 1,
-                                          ),
-                                        )),
+                                    value: type,
+                                    child: Text(type),
                                   );
                                 }).toList(),
                                 onChanged: (value) {
-                                  widget.changeColor(value);
+                                  changeType(value!);
+                                  //widget.changeType(value);
                                 },
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const Expanded(child: SizedBox()),
-                    Container(
-                      alignment: Alignment.bottomRight,
-                      margin: const EdgeInsets.only(right: 5),
-                      child: Column(
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              widget.saveStack();
-                            },
-                            child: const Text("Save"),
+                            ],
                           ),
-                          ElevatedButton(
-                            onPressed: () {
-                              widget.deleteStack();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                            ),
-                            child: const Text("Delete stack"),
+                          // Stack color
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text("Stack color: "),
+                              SizedBox(
+                                //width: 60,
+                                //height: 25,
+                                child: Builder(builder: (context) {
+                                  Color? matchedColor;
+                                  for (final c in stackColors) {
+                                    if (c.toARGB32() ==
+                                        changedStack.stackColor.toARGB32()) {
+                                      //widget.curentColor.toARGB32()) {
+                                      matchedColor = c;
+                                      break;
+                                    }
+                                  }
+                                  return DropdownButton<Color>(
+                                    iconSize: 35,
+                                    value: matchedColor, // widget.curentColor,
+                                    hint: const Text("Select color"),
+                                    items: stackColors.map((Color type) {
+                                      return DropdownMenuItem<Color>(
+                                        alignment: AlignmentDirectional.center,
+                                        value: type,
+                                        child: Container(
+                                            width: 70,
+                                            height: 25,
+                                            decoration: BoxDecoration(
+                                              color: type,
+                                              border: Border.all(
+                                                color: Colors.black,
+                                                width: 1,
+                                              ),
+                                            )),
+                                      );
+                                    }).toList(),
+                                    onChanged: (Color? value) {
+                                      if (value != null) {
+                                        changeColor(value);
+                                        //widget.changeColor(value);
+                                      }
+                                    },
+                                  );
+                                }),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                      const Expanded(child: SizedBox()),
+                      Container(
+                        alignment: Alignment.bottomRight,
+                        margin: const EdgeInsets.only(right: 5),
+                        child: Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                context.read<CRUDStackBloc>().add(
+                                    CRUDStackUpdateStackEvent(changedStack));
+                                //widget.saveStack();
+                              },
+                              child: const Text("Save"),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                //print("Delete ${changedStack.name} stack");
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        DeleteDialog(changedStack.name, false,
+                                            true, changedStack.id));
+                                //widget.deleteStack();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                              ),
+                              child: const Text("Delete stack"),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
+          const Center(
+              child: Text(
+            "Description:",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          )),
+          Expanded(
+            child: Container(
+              // color: Colors.amber,
+              margin: const EdgeInsets.fromLTRB(3, 0, 3, 2),
+              child: Stack(
+                children: [
+                  Description(descriptionHtml),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                DescriptionDialog(
+                                    stack: changedStack,
+                                    isDescription: true)).then((value) {
+                          if (value != null) {
+                            setState(() {
+                              descriptionHtml = value;
+                              changedStack = changedStack.copyWith(
+                                  description: descriptionHtml);
+                            });
+                          }
+                        });
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
         ],
       ),
-      Size(screenSize.width - 50, 320),
     );
   }
-
 }

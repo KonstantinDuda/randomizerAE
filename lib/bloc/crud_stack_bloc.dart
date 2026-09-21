@@ -21,133 +21,39 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
     on<CRUDStackUpdateStackEvent>(_onUpdateStack);
     on<CRUDStackUpdateAvailableListEvent>(_onUpdateAvailableList);
     on<CRUDStackDeleteStackEvent>(_onDeleteStack);
-
     on<CRUDDataFromDBEvent>(_onDBData);
+    on<CRUDStackFilterEvent>(_onFilter);
   }
 
   _onInit(CRUDStackInitialEvent event, Emitter<CRUDStackState> emit) async {
-    print("CRUDStackBlock _onInit event == $event");
+    //print("CRUDStackBlock _onInit event == $event");
 
     cards = await defaultData.getCards();
     stacks = await defaultData.getStacks();
 
-    // for(var element in stacks) {
-    //   print("CRUDStackBlock stack = id: ${element.id} name: ${element.name}, \t isActive: ${element.isActive}");
-    // }
-
-    emit(CRUDStackSuccessActionState(cards, stacks));
+    emit(CRUDStackSuccessActionState(cards.toList(), stacks.toList()));
   }
 
   _onNewCard(CRUDStackNewCardEvent event, Emitter<CRUDStackState> emit) async {
     print(
-        "CRUDStackBlock _onNewCard event.data == \n ${event.id}, ${event.name}, ${event.isOptional}, ${event.textBeforeOr}, ${event.textAfterOr}, ${event.type} ");
-    AECard newCard = AECard(id: event.id, text: "", imgPath: "");
-    var cardName = event.name.isNotEmpty ? event.name : "";
-    var cardIsOptional = event.isOptional;
-    var cardTextBeforeOr = "";
-    var cardTextAfterOr = "";
-    var cardType = event.type;
-    if (event.textBeforeOr.isNotEmpty && event.textAfterOr.isNotEmpty) {
-      cardTextBeforeOr = event.textBeforeOr;
-      cardTextAfterOr = event.textAfterOr;
-    } else if (event.textBeforeOr.isEmpty && event.textAfterOr.isNotEmpty) {
-      cardTextBeforeOr = event.textAfterOr;
-    } else if (event.textBeforeOr.isNotEmpty && event.textAfterOr.isEmpty) {
-      cardTextBeforeOr = event.textBeforeOr;
+        "CRUDStackNewCard event.card.name == ${event.card.name} \n event.card.text == ${event.card.text}");
+    AECard newCard = event.card;
+
+    if (newCard.name.isEmpty && newCard.text.isNotEmpty) {
+      var cardName = newCard.text.split(' ').first;
+      newCard.name = cardName;
     }
 
-    void isOptionalFunc(String type) {
-      print("CRUDStackBlock _onNewCard isOptionalFunc type == $type");
+    print(
+        "CRUDStackNewCard newCard == $newCard, cards.length == ${cards.length}");
+    cards.add(
+        AECard(id: cards.last.id + 1, name: newCard.name, text: newCard.text));
+    defaultData.newCard(newCard);
+    print(
+        "\n CRUDStackNewCard after getCards cards.length == ${cards.length} \n");
 
-      var resultType = "";
-      if (type == "Friend" || type == "Foe") {
-        resultType = "friend foe/${type.toLowerCase()}/";
-      } else {
-        resultType = "${type.toLowerCase()}/";
-      }
-
-      if (cardIsOptional) {
-        print("CRUDStackBlock _onNewCard isOptionalFunc event.isOptional \n");
-        if (type == "Turn order") {
-          if (cardTextAfterOr.isNotEmpty) {
-            newCard.imgPath =
-                "assets/images/${resultType.toLowerCase()}$cardTextBeforeOr or $cardTextAfterOr.png";
-            newCard.text = "$cardTextBeforeOr OR $cardTextAfterOr";
-          } else {
-            newCard.imgPath =
-                "assets/images/${resultType.toLowerCase()}$cardTextBeforeOr.png";
-            newCard.text = cardTextBeforeOr;
-          }
-        } else {
-          newCard.imgPath =
-              "assets/images/${resultType.toLowerCase()}$cardName.png";
-          if (cardTextAfterOr.isNotEmpty) {
-            newCard.text = "$cardName: $cardTextBeforeOr OR $cardTextAfterOr";
-          } else {
-            newCard.text = "$cardName: $cardTextBeforeOr";
-          }
-        }
-      } else {
-        print(
-            "CRUDStackBlock _onNewCard isOptionalFunc event.isOptional ELSE: \n");
-        if (type == "Turn order") {
-          if (cardTextAfterOr.isNotEmpty) {
-            newCard.imgPath =
-                "assets/images/${resultType.toLowerCase()}$cardTextBeforeOr $cardTextAfterOr.png";
-            newCard.text = "$cardTextBeforeOr $cardTextAfterOr";
-          } else {
-            newCard.imgPath =
-                "assets/images/${resultType.toLowerCase()}$cardTextBeforeOr.png";
-            newCard.text = cardTextBeforeOr;
-          }
-        } else {
-          newCard.imgPath =
-              "assets/images/${resultType.toLowerCase()}$cardName.png";
-          if (cardTextAfterOr.isNotEmpty) {
-            newCard.text = "$cardName: $cardTextBeforeOr $cardTextAfterOr";
-          } else {
-            newCard.text = "$cardName: $cardTextBeforeOr";
-          }
-        }
-      }
-      print("CRUDStackBlock _onNewCard isOptional result == $newCard");
-    }
-
-    if (cardTextBeforeOr.isNotEmpty) {
-      print("CRUDStackBlock _onNewCard event.textBeforeOr.isNotEmpty");
-      if (cardType == "Turn order") {
-        isOptionalFunc("Turn order");
-      } else if (cardType == "Friend") {
-        isOptionalFunc("Friend");
-      } else if (cardType == "Foe") {
-        isOptionalFunc("Foe");
-      } else {
-        print("CRUDStackBlock _onNewCard event.type != Turn order, != Friend, != Foe");
-        isOptionalFunc("Other");
-      }
-    }
-
-    if (newCard.id == 0) {
-      if (newCard.text.isNotEmpty && newCard.imgPath.isNotEmpty) {
-        print(
-            "CRUDStackBlock _onNewCard newCard.id == 0 \n create newCard == $newCard");
-        //db.createCard(newCard);
-        await defaultData.newCard(newCard);
-        //cards.add(newCard);
-      }
-    } else if (newCard.text.isNotEmpty && newCard.imgPath.isNotEmpty) {
-      print(
-          "CRUDStackBlock _onNewCard newCard.id != 0 \n update newCard == $newCard");
-      //db.updateCard(newCard);
-      await defaultData.updateCard(newCard);
-    }
-
-    print("CRUDStackBlock _onNewCard newCard == $newCard");
-
-    // List<AECard> newCardsList = await db.getAllCards();
-    // cards = newCardsList;
-
-    emit(CRUDStackSuccessActionState(/*newCardsList*/cards, stacks));
+    emit(CRUDStackSuccessActionState(
+        /*newCardsList*/ cards.toList(), stacks.toList()));
   }
 
   // _onUpdateCard(CRUDStackUpdateCardEvent event, Emitter<CRUDStackState> emit) {
@@ -158,39 +64,50 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
 
   _onDeleteCard(
       CRUDStackDeleteCardEvent event, Emitter<CRUDStackState> emit) async {
-    print("CRUDStackBloc _onDeleteCard card.id == ${event.id}");
+    //print("CRUDStackBloc _onDeleteCard card.id == ${event.id}");
 
     defaultData.deleteCard(event.id);
     cards = await defaultData.getCards();
 
-    emit(CRUDStackSuccessActionState(cards, stacks));
+    emit(CRUDStackSuccessActionState(cards.toList(), stacks.toList()));
   }
 
   _onNewStack(CRUDStackNewStackEvent event, Emitter<CRUDStackState> emit) {
-    emit(CRUDStackSuccessActionState(cards, stacks));
+    print(
+        "CRUD Bloc event.stack == ${event.stack}, stacks.length == ${stacks.length}");
+
+    defaultData.newStack(event.stack);
+
+    var newId = stacks.last.id + 1;
+    var newStack = event.stack.copyWith(id: newId);
+    stacks.add(newStack);
+
+    print("CRUD Bloc newStack == $newStack, stacks.length == ${stacks.length}");
+
+    emit(CRUDStackSuccessActionState(cards.toList(), stacks.toList()));
   }
 
   _onUpdateStack(
       CRUDStackUpdateStackEvent event, Emitter<CRUDStackState> emit) async {
-    print("CRUDStackBloc _onUpdateStack event.stack == ${event.stack}");
-    var stacksFromDB = await db.getAllStacks();
+    //print("CRUDStackBloc _onUpdateStack event.stack == ${event.stack}");
+    //var stacksFromDB = await db.getAllStacks();
     List<CardsStack> newStacks = [];
+    //print(
+    //"CRUDStackBloc _onUpdateStack event.stack.description == ${event.stack.description}");
 
     var stackFromDB = await db.getStackById(event.stack.id);
     if (stackFromDB.id == 0) {
-      print("CRUDStackBloc _onUpdateStack stackFromDB.id == 0");
-      // await db.createStack(event.stack);
-      // newStacks = await db.getAllStacks();
-      // defaultData.setStacks(newStacks);
+      //print("CRUDStackBloc _onUpdateStack stackFromDB.id == 0");
       defaultData.newStack(event.stack);
       newStacks = await defaultData.getStacks();
     } else {
-      print("CRUDStackBloc _onUpdateStack stackFromDB.id != 0");
+      //print("CRUDStackBloc _onUpdateStack stackFromDB.id != 0");
       if (stackFromDB.name == event.stack.name &&
           stackFromDB.isActive == event.stack.isActive &&
           stackFromDB.stackType == event.stack.stackType &&
           stackFromDB.stackColor == event.stack.stackColor &&
-          stackFromDB.cards.length == event.stack.cards.length) {
+          stackFromDB.cards.length == event.stack.cards.length &&
+          stackFromDB.description == event.stack.description) {
         var cardsIsEqual = true;
         for (var i = 0; i < stackFromDB.cards.length; i++) {
           stackFromDB.cards[i] == event.stack.cards[i]
@@ -198,15 +115,15 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
               : cardsIsEqual = false;
         }
         if (cardsIsEqual) {
-          print("CRUDStackBloc _onUpdateStack stackFromDB == event.stack");
+          //print("CRUDStackBloc _onUpdateStack stackFromDB == event.stack");
         } else {
           //db.updateStack(event.stack);
           newStacks = defaultData.updateStack(event.stack);
-          print("CRUDStackBloc _onUpdateStack cardsIsEqual == $cardsIsEqual");
+          //print("CRUDStackBloc _onUpdateStack cardsIsEqual == $cardsIsEqual");
         }
       } else {
-        print(
-            "CRUDStackBloc _onUpdateStack stackFromDB.id == event.stack.id, stackFromDB != event.stack");
+        //print(
+        //"CRUDStackBloc _onUpdateStack stackFromDB.id == event.stack.id, stackFromDB != event.stack");
         //db.updateStack(event.stack);
         newStacks = defaultData.updateStack(event.stack);
       }
@@ -214,18 +131,20 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
 
     //var newStacks = await db.getAllStacks();
     //defaultData.setStacks(newStacks);
-    stacks = newStacks; //await defaultData.getStacks();
+    stacks =
+        newStacks; // TODO: Новостворені карти не додаються до нового стосу, та він не відображається у боковому меню,
+    // Але в БД все записується коректно, адже після перезаходу в програму новостворена катра там є і в боковому меню стос є
     cards = await defaultData.getCards();
 
-    emit(CRUDStackSuccessActionState(cards, newStacks));
+    emit(CRUDStackSuccessActionState(cards.toList(), newStacks.toList()));
 
-    print(
-        "CRUDStackBloc _onUpdateStack stacks.length == ${stacksFromDB.length}, newStacks.length == ${stacks.length}");
+    // print(
+    //     "CRUDStackBloc _onUpdateStack stacks.length == ${stacksFromDB.length}, newStacks.length == ${stacks.length}");
   }
 
   _onUpdateAvailableList(CRUDStackUpdateAvailableListEvent event,
       Emitter<CRUDStackState> emit) async {
-    print("CRUDStackBloc _onUpdateAvailableList event.List<id> == ${event.id}");
+    //print("CRUDStackBloc _onUpdateAvailableList event.List<id> == ${event.id}");
 
     var ddStacks = await defaultData.getStacks();
     List<CardsStack> newStackList = [];
@@ -238,13 +157,16 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
           //     "CRUDStackBloc _onUpdateAvailableList ddStacks[$i].id == event.id[$j]");
 
           localStack = CardsStack(
-              id: ddStacks[i].id,
-              name: ddStacks[i].name,
-              isActive: ddStacks[i].isActive == true ? false : true,
-              stackType: ddStacks[i].stackType,
-              stackColor: ddStacks[i].stackColor,
-              cards: ddStacks[i].cards);
-          defaultData.updateStack(localStack); // Added to update the stack in DB
+            id: ddStacks[i].id,
+            name: ddStacks[i].name,
+            isActive: ddStacks[i].isActive == true ? false : true,
+            stackType: ddStacks[i].stackType,
+            stackColor: ddStacks[i].stackColor,
+            cards: ddStacks[i].cards,
+            description: ddStacks[i].description,
+          );
+          defaultData
+              .updateStack(localStack); // Added to update the stack in DB
         }
       }
       newStackList.add(localStack);
@@ -252,29 +174,103 @@ class CRUDStackBloc extends Bloc<CRUDStackEvent, CRUDStackState> {
     stacks = newStackList;
     defaultData.setStacks(newStackList);
 
-    print("CRUDStackBloc _onUpdateAvailableList newStackList.length == ${newStackList.length}");
+    //print(
+    // "CRUDStackBloc _onUpdateAvailableList newStackList.length == ${newStackList.length}");
 
-    emit(CRUDStackSuccessActionState(cards, stacks));
+    emit(CRUDStackSuccessActionState(cards.toList(), stacks.toList()));
   }
 
   _onDeleteStack(
       CRUDStackDeleteStackEvent event, Emitter<CRUDStackState> emit) async {
-    print("CRUDStackBloc _onDeleteStack delete ${event.id}?");
+    //print("CRUDStackBloc _onDeleteStack delete ${event.id}?");
     defaultData.deleteStack(event.id);
     stacks = await defaultData.getStacks();
 
-    emit(CRUDStackSuccessActionState(cards, stacks));
+    emit(CRUDStackSuccessActionState(cards.toList(), stacks.toList()));
   }
 
   _onDBData(CRUDDataFromDBEvent event, Emitter<CRUDStackState> emit) async {
-    print("CRUDStackBloc _onDBData event == $event");
+    //print("CRUDStackBloc _onDBData event == $event");
 
     var localCards = await db.getAllCards();
     var localStacks = await db.getAllStacks();
 
-    print("CRUDStackBloc _onDBData localCards.length == ${localCards.length}");
-    print("CRUDStackBloc _onDBData localStacks.length == ${localStacks.length}");
+    //print("CRUDStackBloc _onDBData localCards.length == ${localCards.length}");
+    //print(
+    //"CRUDStackBloc _onDBData localStacks.length == ${localStacks.length}");
 
-    emit(CRUDStackSuccessActionState(localCards, localStacks));
+    emit(
+        CRUDStackSuccessActionState(localCards.toList(), localStacks.toList()));
+  }
+
+  _onFilter(CRUDStackFilterEvent event, Emitter<CRUDStackState> emit) async {
+    //print(
+    //"CRUDStackBloc _onFilter event.filterType == ${event.filterType}, event.filterString == ${event.filterString}");
+
+    List<CardsStack> filteredStacks = [];
+    List<AECard> filteredCards = [];
+
+    if (event.filterType == "All") {
+      filteredStacks = stacks;
+    } else if (event.filterType == "Turn order") {
+      for (var stack in stacks) {
+        if (stack.stackType == StackType.turnOrder) {
+          filteredStacks.add(stack);
+        }
+      }
+    } else if (event.filterType == "Friends and Foes") {
+      for (var stack in stacks) {
+        if (stack.stackType == StackType.friend ||
+            stack.stackType == StackType.foe) {
+          filteredStacks.add(stack);
+        }
+      }
+    } else if (event.filterType == "Friends") {
+      for (var stack in stacks) {
+        if (stack.stackType == StackType.friend) {
+          filteredStacks.add(stack);
+        }
+      }
+    } else if (event.filterType == "Foes") {
+      for (var stack in stacks) {
+        if (stack.stackType == StackType.foe) {
+          filteredStacks.add(stack);
+        }
+      }
+    } else if (event.filterType == "Other") {
+      for (var stack in stacks) {
+        if (stack.stackType == StackType.other) {
+          filteredStacks.add(stack);
+        }
+      }
+    }
+
+    if (event.filterString.isNotEmpty) {
+      if (filteredStacks.isNotEmpty) {
+        filteredStacks = filteredStacks.where((stack) {
+          return stack.name
+              .toLowerCase()
+              .contains(event.filterString.toLowerCase());
+        }).toList();
+      }
+      for (var card in cards) {
+        if (card.name
+            .toLowerCase()
+            .contains(event.filterString.toLowerCase())) {
+          filteredCards.add(card);
+        }
+      }
+    } else {
+      filteredCards = cards;
+    }
+    // if (filteredStacks.isEmpty) {
+    //   filteredStacks = stacks;
+    // }
+
+    //print(
+    //"CRUDStackBloc _onFilter filteredStacks.length == ${filteredStacks.length}");
+
+    emit(CRUDStackSuccessActionState(filteredCards.toList(),
+        filteredStacks.toList(), event.filterType, event.filterString));
   }
 }
